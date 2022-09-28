@@ -1,0 +1,40 @@
+uvod
+predstavenie problému
+	čo su DS
+	aké operácie chceme riešiť/ problém
+	rozloženie mojeho riešenia - prečo predstavujem riešenie, jeho výhody
+ST-trees
+	rozloženie riešenia - 
+	cesta
+		čo sú cesty/pravidlá pre cesty
+		ako cesty reprezentujeme - z čoho je cesta zložená (vonkajšie/vnútorne uzly) rozdiel medzi uzlami, vnutorne uzly niesu zobrazené v strome. 
+		operácie na cestách
+	naive partition
+		konkrétna dat. štruktúra + ktorá hodnota čo znamená
+		extra operácie 
+		operácie na cestách ako presne budú fungovať + pomocné operácie
+	partition by size
+		extra operácie 
+		konkrétna dat. štruktúra + ktorá hodnota čo znamená
+		operácie na cestách ako presne budú fungovať + pomocné operácie
+
+
+
+\paragraph{ET-Tree} 
+ 
+Je to najjednoduchšie ale zároveň najlimitovanejšie riešenie pre dynamické stromy. Riešenie využíva dátovú štruktúru, ktorá je reprezentovaná pomocou $arbitrary \ unrooted \ trees$.  $Arbitrary \ tree$ označujeme strom, ktorý má ľubovolný počet detí. $Unrooted$ znamená, že žiaden uzol nemá definovaného svojho ročia. Prechod stromu je pomocou $Euler tour$. Navštívenie každého uzlu cestou dnu a von. Sekvenciu prechodu uzlov označíme ako ET-sequence
+/*tu bude obrazok o euler tour*/
+ \\
+Vytvoríme si z ET-sequence binárny strom pre efektívnejšiu prácu so sekvenciou. Takýto binárny strom nám umožňuje v O(log n) v čase používať funkcie $link$, $cut$, či nájdenie minimálnej hodnoty v strome. Každý uzol v strome prejdeme aspoň dvakrát, z toho plynie že každá hrana sa tak isto objaví v binárnom strome dvakrát. Preto je možné aggregovať informáciu iba cez stromy a nie cez cesty.  
+\\
+\paragraph{Tree contraction} /*preštylizovať*/
+Ďalším možným riešením je kontrakcia stromov pomocou jednej zo štruktúr: $topology \ tree,\ RC-trees \ alebo \ Top \ trees$. Kontrakcia stromov je modifikácia stromu pomocou dvoch základných operácii $(Rake, \ Compress)$. Výsledkom týchto operácii je $cluster$. $Cluster$ je uzol, ktorý nám reprezentuje cestu aj podstrom zároveň. Tree contraction využívajú dve základné operácie. Rake a Compress.
+/* obrazok */
+\begin{itemize}
+    \item Rake – zoberie uzol, ktorý má len jednu hranu a skombinuje ho s uzlom na druhej strane  – tieto dva uzli , aj s ich hranou , nám vytvoria cluster
+    \item Compress – zoberie uzol, ktorý má dve hrany , tieto hrany skombinuje do jednej – táto hrana bude reprezenotvaná ako cluster 
+\end{itemize}
+
+
+Najvšeobecnejšou štruktúrou využívanou tree contraction je štruktúra Top trees. Základnou  myšlienkou je spracovať balanced Binary tree. V podstate reprezentujú rekurzivne delenie pôvodného stromu na cluster. Výhodou tejto dátovej štruktúry oproti ET-trees že podporuje operácie vykonávane na cestách(paths). V porovnaní s ST-trees je avšak pomalšia. 
+\\

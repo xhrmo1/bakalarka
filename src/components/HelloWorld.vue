@@ -1,58 +1,301 @@
+<script setup lang="ts">
+console.log("<-----------------HelloWorld------------------>");
+import { reactive, ref, defineEmits, defineProps, watch } from "vue";
+import { Nodes, Edges, Paths } from "v-network-graph";
+import * as vNG from "v-network-graph";
+import data from "./data";
+import firstTry from "../js/mainFunctions";
+import isEqual from "lodash.isequal";
+
+var nodes: Nodes = reactive({ ...data.nodes });
+var edges: Edges = reactive({ ...data.edges });
+var paths: Paths = reactive({ ...data.paths });
+var nextNodeIndex = ref(Object.keys(nodes).length + 1);
+var nextEdgeIndex = ref(Object.keys(edges).length + 1);
+var nextPathIndex = ref(Object.keys(paths).length + 1);
+
+var selectedNodes = ref<string[]>([]);
+var selectedEdges = ref<string[]>([]);
+//var selectedPaths = ref<string[]>([]);
+
+/*interface Props {
+  paths?: Paths;
+}
+
+const props = withDefaults(defineProps<{paths?: Nodes}>(), {
+  paths? :  data.nodes ;
+});*/
+console.log("type", nodes);
+console.log(typeof paths);
+
+const emit = defineEmits([
+  "customChange",
+  "nodesOut",
+  "edgesOut",
+  "pathsOut",
+  "treeOut",
+  "nodeRemove",
+  "buildPaths",
+  "removeNode",
+]);
+const props = defineProps({
+  text: {
+    type: String,
+    default: "",
+  },
+  callFunction: Object,
+});
+console.log("this prop is text", props.callFunction);
+emit("pathsOut", paths);
+emit("nodesOut", nodes);
+emit("edgesOut", edges);
+console.log(nodes, edges, paths);
+
+const eventHandlers: vNG.EventHandlers = {
+  "node:click": ({ node }) => {
+    // toggle
+    if (node == null) {
+      console.log("empssxssssssz");
+    }
+    emit("customChange", node);
+  },
+};
+
+function addNode() {
+  var nodeId = `node${nextNodeIndex.value}`;
+  var name = `node${nextNodeIndex.value}`;
+  nodes[nodeId] = { name };
+  nextNodeIndex.value++;
+  console.log("addNode name", name);
+  outPutTree = firstTry({ code: 1, name: name }, [], [], [], outPutTree);
+  emit("treeOut", outPutTree);
+  emit("nodesOut", nodes);
+}
+
+function removeNode() {
+  console.log("edges:", edges, edges.length);
+  for (const nodeId of selectedNodes.value) {
+    emit("removeNode", nodes[nodeId]);
+    outPutTree = firstTry({ code: 2, name: nodeId }, [], [], [], outPutTree);
+    delete nodes[nodeId];
+    emit("nodeRemove", nodeId);
+    for (let p in paths) {
+      let arraCopy = [...paths[p].edges];
+      let arraCopyD = [...paths[p].edges];
+      for (let pe in paths[p].edges) {
+        if (edges[paths[p].edges[pe]].source == nodeId) {
+          const index = arraCopy.indexOf(arraCopy[pe]);
+          arraCopy.splice(0, index);
+          arraCopy.splice(0, 1);
+        }
+        if (edges[paths[p].edges[pe]].target == nodeId) {
+          const index = paths[p].edges.indexOf(paths[p].edges[pe]);
+          var edgesNew = arraCopyD.splice(0, index);
+          arraCopyD.splice(0, 1);
+          var pathName = `path${nextPathIndex.value}`;
+          if (edgesNew.length != 0) {
+            paths[pathName] = {
+              id: (pathName = `path${nextPathIndex.value}`),
+              edges: edgesNew,
+              color: "#d55040cc",
+              canSee: true,
+              mouseOver: false,
+              width: 45,
+            };
+          }
+        }
+      }
+      console.log("ArrayCopy-length", arraCopy.length, paths[p].edges.length);
+
+      if (arraCopy.length == 0 || arraCopyD.length == 0) {
+        delete paths[p];
+      } else {
+        console.log(
+          "ArrayCopy-length222",
+          arraCopy.length,
+          paths[p].edges.length
+        );
+
+        paths[p].edges = [...arraCopy];
+      }
+    }
+    for (let index in edges) {
+      if (edges[index].source == nodeId || edges[index].target == nodeId) {
+        delete edges[index];
+
+        console.log("mazeme edge");
+      }
+    }
+  }
+  console.log("edges:", edges, edges.length);
+  outPutTree = firstTry({ code: 0 }, nodes, edges, paths);
+  console.log("x", outPutTree);
+
+  emit("edgesOut", nodes);
+  emit("pathsOut", paths);
+  emit("treeOut", outPutTree);
+  //emit("nodesOut", nodes);
+}
+
+function addEdge() {
+  if (selectedNodes.value.length !== 2) return;
+  const [source, target] = selectedNodes.value;
+  const edgeId = `edge${nextEdgeIndex.value}`;
+  edges[edgeId] = {
+    source,
+    target,
+    label: Math.floor(Math.random() * 20).toString(),
+    dashed: false,
+  };
+  nextEdgeIndex.value++;
+  emit("edgesOut", nodes);
+}
+
+function removeEdge() {
+  console.log("test");
+  console.log(
+    edges[selectedEdges.value[0]].source,
+    edges[selectedEdges.value[0]].label
+  );
+  edges[selectedEdges.value[0]].label = "88888";
+  console.log(selectedEdges.value[0]);
+  for (const edgeId of selectedEdges.value) {
+    delete edges[edgeId];
+    for (let p in paths) {
+      for (let pe in paths[p].edges) {
+        console.log("paths:", paths[p].edges[pe], edgeId);
+        if (paths[p].edges[pe] == edgeId) {
+          if (paths[p].edges.length == 1) {
+            delete paths[p];
+          } else {
+            const index = paths[p].edges.indexOf(paths[p].edges[pe]);
+            console.log("INDEXXXXXXXX", index, pe);
+            var arr2 = paths[p].edges.splice(0, index);
+            paths[p].edges.splice(0, 1);
+            var pathName = `path${nextPathIndex.value}`;
+            if (arr2.length != 0) {
+              paths[pathName] = {
+                id: (pathName = `path${nextPathIndex.value}`),
+                edges: arr2,
+                color: "#d55040cc",
+                canSee: true,
+                mouseOver: false,
+                width: 45,
+              };
+            }
+            if (paths[p].edges.length == 0) {
+              delete paths[p];
+            }
+          }
+        }
+      }
+    }
+  }
+
+  emit("pathsOut", paths);
+  emit("edgesOut", nodes);
+  outPutTree = firstTry({ code: 0 }, nodes, edges, paths);
+  console.log("x", outPutTree);
+  emit("treeOut", outPutTree);
+}
+
+function hidePath(id: string) {
+  console.log("som tu");
+  console.log(paths[id]);
+
+  paths[id].canSee = false;
+}
+
+function smrdis() {
+  console.log(props.callFunction, "xxxxxxxxxxxxxxxxxxx");
+  paths["paths20"] = {
+    id: "02",
+    edges: ["edge11"],
+    color: "#00aa0066", // #rrggbbaa <- with alpha
+    canSee: true,
+  };
+  emit("pathsOut", paths);
+}
+
+/*watch(
+  nodes,
+  (newNodes, oldNodes) => {
+    console.log(newNodes, oldNodes);
+  },
+  {
+    immediate: true,
+    deep: true,
+  }
+);*/
+var outPutTree: any[] | undefined;
+watch(
+  () => props.callFunction,
+  (x, z) => {
+    if (isEqual(outPutTree, x)) {
+      console.log("sameXXXXXXXXXXXX sad asdXx");
+    }
+    console.log("AAAAAAXAXAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    console.log(x, z, "xxxx");
+    outPutTree = firstTry(x, nodes, edges, paths);
+    console.log("x", outPutTree);
+    emit("treeOut", outPutTree);
+  },
+  {
+    immediate: true,
+    deep: true,
+  }
+);
+</script>
+
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div style="height: 100%">
+    <div class="operations">
+      <div>
+        <button @click="smrdis"></button>
+        <label>Node:</label>
+        <button @click="addNode">add</button>
+        <button :disabled="selectedNodes.length == 0" @click="removeNode">
+          remove
+        </button>
+      </div>
+      <div>
+        <label>Edge:</label>
+        <button :disabled="selectedNodes.length != 2" @click="addEdge">
+          add
+        </button>
+        <button :disabled="selectedEdges.length == 0" @click="removeEdge">
+          remove
+        </button>
+      </div>
+    </div>
+
+    <v-network-graph
+      v-model:selected-nodes="selectedNodes"
+      v-model:selected-edges="selectedEdges"
+      :nodes="nodes"
+      :edges="edges"
+      :layouts="data.layouts"
+      :configs="data.configs"
+      :event-handlers="eventHandlers"
+      :paths="paths"
+      style="height: 96%"
+    >
+      <template #edge-label="{ edge, ...slotProps }">
+        <v-edge-label
+          :text="edge.label"
+          align="center"
+          vertical-align="above"
+          v-bind="slotProps"
+        />
+      </template>
+    </v-network-graph>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
-</script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+.operations {
+  background-color: grey;
+  display: flex;
+  height: 4%;
 }
 </style>

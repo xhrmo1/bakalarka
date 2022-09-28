@@ -1,0 +1,325 @@
+<------- Pôvodný návrh --------->
+
+let nodes: Nodes = {
+  node1: { name: "node1", direction: "north", },
+  node2: { name: "node2" },
+  node3: { name: "node3" },
+  node4: { name: "node4" },
+  node5: { name: "node5" },
+  node6: { name: "node6" },
+  node7: { name: "node7" },
+  node8: { name: "node8" },
+  node9: { name: "node9" },
+  node10: { name: "node10" },
+  node11: { name: "node11" },
+
+}
+
+let edges: Edges = {
+  edge1: { source: "node1", target: "node2", label: "99", dashed: true },
+  edge2: { source: "node2", target: "node3", label: "1", dashed: false },
+  edge3: { source: "node1", target: "node4", label: "17", dashed: false },
+  edge4: { source: "node4", target: "node5", label: "2", dashed: false },
+  edge5: { source: "node5", target: "node6", label: "1", dashed: true },
+  edge6: { source: "node5", target: "node7", label: "57", dashed: false },
+  edge7: { source: "node7", target: "node8", label: "1", dashed: false },
+  edge8: { source: "node7", target: "node11", label: "1", dashed: true },
+  edge9: { source: "node1", target: "node9", label: "26", dashed: true },
+  edge10: { source: "node9", target: "node10", label: "3", dashed: false },
+  edge11: { source: "node10", target: "node7", label: "5", dashed: true },
+}
+
+let layouts: Layouts = {
+  nodes: {
+    node1: { x: 100, y: -350 },
+    node2: { x: 0, y: -250 },
+    node3: { x: 0, y: -150 },
+    node4: { x: 100, y: -250 },
+    node5: { x: 100, y: -150 },
+    node6: { x: 50, y: -50 },
+    node7: { x: 150, y: -50 },
+    node8: { x: 100, y: 50 },
+    node9: { x: 200, y: -250 },
+    node10: { x: 250, y: -150 },
+    node11: { x: 200, y: 50 },
+
+  },
+}
+
+let paths: Paths = {
+  path1: {
+    id: "01",
+    edges: ["edge2"],
+    color: "#ff00ff66", // #rrggbbaa <- with alpha
+    canSee: true,
+    mouseOver: false,
+    width: 45,
+  },
+  path2: {
+    id: "02",
+    edges: ["edge3", "edge4", "edge6", "edge7"],
+    color: "#00aa0066", // #rrggbbaa <- with alpha
+    canSee: true,
+    mouseOver: false,
+  },
+  path3: {
+    id: "03",
+    edges: ["edge10"],
+    color: "#ffc341cc", // #rrggbbaa <- with alpha
+    canSee: false,
+    mouseOver: false,
+  },
+}
+
+
+<------------- Obrázok 1 a 2 --------------> 
+
+let nodes: Nodes = {
+  node1: { name: "A", direction: "north", },
+  node2: { name: "B", direction: "north" },
+  node3: { name: "C", direction: "north-west" },
+  node4: { name: "D" },
+  node6: { name: "F", direction: "north-west" },
+  node7: { name: "G" },
+  node10: { name: "J" },
+  node11: { name: "K", direction: "north-west" },
+  node12: { name: "L" },
+  node13: { name: "M", direction: "north-west" },
+  node14: { name: "N" },
+  node15: { name: "O" },
+  node16: { name: "P" },
+  node17: { name: "Q" },
+  node18: { name: "R" },
+  node19: { name: "S" },
+  node20: { name: "T" },
+  //END OF FIRST
+  node21: { name: "U" },
+  node22: { name: "V" },
+  node23: { name: "W" },
+  node24: { name: "X" },
+  node25: { name: "Y" },
+  node26: { name: "Z" },
+}
+
+// edge1: { source: "node1", target: "node2", label: "99", dashed: true },
+let edges: Edges = {
+  edge1: { source: "node1", target: "node2", label: "7", dashed: false },
+  edge2: { source: "node1", target: "node3", label: "2", dashed: false },
+  edge3: { source: "node1", target: "node4", label: "9", dashed: false },
+  edge4: { source: "node2", target: "node6", label: "21", dashed: false },
+  edge5: { source: "node2", target: "node7", label: "13", dashed: false },
+  edge6: { source: "node6", target: "node10", label: "17", dashed: false },
+  edge7: { source: "node11", target: "node13", label: "3", dashed: false },
+  edge8: { source: "node11", target: "node15", label: "5", dashed: false },
+  edge9: { source: "node11", target: "node14", label: "9", dashed: false },
+  edge10: { source: "node13", target: "node18", label: "2", dashed: false },
+  edge11: { source: "node15", target: "node19", label: "11", dashed: false },
+  edge12: { source: "node15", target: "node20", label: "0", dashed: false },
+  edge13: { source: "node4", target: "node12", label: "2", dashed: false },
+  edge14: { source: "node12", target: "node16", label: "20", dashed: false },
+  edge15: { source: "node3", target: "node11", label: "20", dashed: false },
+  edge16: { source: "node12", target: "node17", label: "13", dashed: false },
+  edge17: { source: "node21", target: "node22", label: "7", dashed: false },
+  edge18: { source: "node21", target: "node23", label: "2", dashed: false },
+  edge19: { source: "node24", target: "node25", label: "0", dashed: false },
+  edge20: { source: "node24", target: "node26", label: "0", dashed: false },
+}
+let layouts: Layouts = {
+  nodes: {
+    node1: { x: 0, y: -350 },
+    node2: { x: -40, y: -300 },
+    node3: { x: 0, y: -300 },
+    node4: { x: 40, y: -300 },
+    node6: { x: -70, y: -250 },
+    node7: { x: -30, y: -250 },
+    node10: { x: -70, y: -200 },
+    node11: { x: 0, y: -250 },
+    node12: { x: 80, y: -250 },
+    node13: { x: -30, y: -200 },
+    node14: { x: 0, y: -200 },
+    node15: { x: 30, y: -200 },
+    node16: { x: 60, y: -200 },
+    node17: { x: 100, y: -200 },
+    node18: { x: -30, y: -150 },
+    node19: { x: 10, y: -150 },
+    node20: { x: 50, y: -150 },
+    node21: { x: 180, y: -350 },
+    node22: { x: 150, y: -300 },
+    node23: { x: 210, y: -300 },
+    node24: { x: 180, y: -250 },
+    node25: { x: 150, y: -200 },
+    node26: { x: 210, y: -200 },
+
+
+  },
+}
+
+<----------------- Obrazky 2.1 ------------------>
+// node1: { name: "node1", direction: "north", },
+let nodes: Nodes = {
+  node1: { name: "A", direction: "north", },
+  node2: { name: "B", direction: "north-west" },
+  node3: { name: "C" },
+  node4: { name: "D", direction: "north-west" },
+  node5: { name: "E" },
+  node6: { name: "F" },
+  node7: { name: "G" },
+  node8: { name: "H" },
+  node9: { name: "I" },
+  node10: { name: "J" },
+  node11: { name: "K" },
+  node12: { name: "L" },
+  node13: { name: "M" },
+  node14: { name: "N" },
+  node15: { name: "O" },
+  node16: { name: "P" },
+  node17: { name: "Q" },
+  node18: { name: "R" },
+
+}
+
+let edges: Edges = {
+  edge1: { source: "node1", target: "node2", label: "99", dashed: true },
+  edge2: { source: "node2", target: "node3", label: "1", dashed: false },
+  edge3: { source: "node1", target: "node4", label: "17", dashed: false },
+  edge4: { source: "node4", target: "node5", label: "2", dashed: false },
+  edge5: { source: "node5", target: "node6", label: "1", dashed: true },
+  edge6: { source: "node5", target: "node7", label: "57", dashed: false },
+  edge7: { source: "node7", target: "node8", label: "1", dashed: false },
+  edge8: { source: "node7", target: "node11", label: "1", dashed: true },
+  edge9: { source: "node1", target: "node9", label: "26", dashed: true },
+  edge10: { source: "node9", target: "node10", label: "3", dashed: false },
+  edge11: { source: "node10", target: "node7", label: "5", dashed: true },
+  edge12: { source: "node12", target: "node13", label: "2", dashed: false },
+  edge13: { source: "node12", target: "node16", label: "7", dashed: true },
+  edge14: { source: "node13", target: "node14", label: "4", dashed: false },
+  edge15: { source: "node13", target: "node15", label: "13", dashed: false },
+  edge16: { source: "node16", target: "node17", label: "9", dashed: false },
+  edge17: { source: "node16", target: "node18", label: "1", dashed: false },
+}
+
+let layouts: Layouts = {
+  nodes: {
+    node1: { x: 100, y: -350 },
+    node2: { x: 0, y: -250 },
+    node3: { x: 0, y: -150 },
+    node4: { x: 100, y: -250 },
+    node5: { x: 100, y: -150 },
+    node6: { x: 50, y: -50 },
+    node7: { x: 150, y: -50 },
+    node8: { x: 100, y: 50 },
+    node9: { x: 200, y: -250 },
+    node10: { x: 250, y: -150 },
+    node11: { x: 200, y: 50 },
+
+  },
+}
+
+/*path1: { id: "01", edges: ["edge2"], color: "#ff00ff66", // #rrggbbaa <- with alpha 
+canSee: true,mouseOver: false,width: 45,},*/
+let paths: Paths = {
+  path1: {
+    id: "01",
+    edges: ["edge2"],
+    color: "#ff00ff66", // #rrggbbaa <- with alpha
+    canSee: true,
+    mouseOver: false,
+    width: 45,
+  },
+  path2: {
+    id: "02",
+    edges: ["edge3", "edge4", "edge6", "edge7"],
+    color: "#00aa0066", // #rrggbbaa <- with alpha
+    canSee: true,
+    mouseOver: false,
+  },
+  path3: {
+    id: "03",
+    edges: ["edge10"],
+    color: "#33f4e6cc", // #rrggbbaa <- with alpha
+    canSee: false,
+    mouseOver: false,
+  },
+
+}
+
+<--------------------------- Obrazok 11 operacii ------------------------------------->
+// node1: { name: "node1", direction: "north", },
+let nodes: Nodes = {
+  node1: { name: "A", direction: "north", },
+  node2: { name: "B", direction: "north-west" },
+  node3: { name: "C", direction: "north-east" },
+  node4: { name: "D", direction: "north-west" },
+  node5: { name: "E" },
+  node6: { name: "F" },
+  node7: { name: "G" },
+  node8: { name: "H" },
+  //node9: { name: "I", direction: "north-east" },
+  node10: { name: "J" },
+  node11: { name: "K" },
+
+
+}
+
+let edges: Edges = {
+  edge1: { source: "node1", target: "node2", label: "99", dashed: true },
+  edge2: { source: "node2", target: "node3", label: "1", dashed: false },
+  edge3: { source: "node1", target: "node4", label: "17", dashed: false },
+  edge4: { source: "node4", target: "node5", label: "2", dashed: false },
+  edge5: { source: "node5", target: "node6", label: "1", dashed: true },
+  edge6: { source: "node5", target: "node7", label: "57", dashed: false },
+  edge7: { source: "node7", target: "node8", label: "1", dashed: false },
+  edge8: { source: "node7", target: "node11", label: "1", dashed: true },
+  edge9: { source: "node3", target: "node9", label: "26", dashed: true },
+  edge10: { source: "node6", target: "node10", label: "3", dashed: false },
+  edge12: { source: "node12", target: "node13", label: "2", dashed: false },
+  edge13: { source: "node12", target: "node16", label: "7", dashed: true },
+  edge14: { source: "node13", target: "node14", label: "4", dashed: false },
+  edge15: { source: "node13", target: "node15", label: "13", dashed: false },
+  edge16: { source: "node16", target: "node17", label: "9", dashed: false },
+  edge17: { source: "node16", target: "node18", label: "1", dashed: false },
+}
+
+let layouts: Layouts = {
+  nodes: {
+    node1: { x: 100, y: -350 },
+    node2: { x: 0, y: -250 },
+    node3: { x: 0, y: -150 },
+    node4: { x: 100, y: -250 },
+    node5: { x: 100, y: -150 },
+    node6: { x: 50, y: -50 },
+    node7: { x: 150, y: -50 },
+    node8: { x: 100, y: 50 },
+    node9: { x: 0, y: -50 },
+    node10: { x: 0, y: 50 },
+    node11: { x: 200, y: 50 },
+
+  },
+}
+
+/*path1: { id: "01", edges: ["edge2"], color: "#ff00ff66", // #rrggbbaa <- with alpha 
+canSee: true,mouseOver: false,width: 45,},*/
+let paths: Paths = {
+  path1: {
+    id: "01",
+    edges: ["edge2"],
+    color: "#ff00ff66", // #rrggbbaa <- with alpha
+    canSee: true,
+    mouseOver: false,
+    width: 45,
+  },
+  path2: {
+    id: "02",
+    edges: ["edge3", "edge4", "edge6", "edge7"],
+    color: "#00aa0066", // #rrggbbaa <- with alpha
+    canSee: true,
+    mouseOver: false,
+  },
+  path3: {
+    id: "03",
+    edges: ["edge10"],
+    color: "#33f4e6cc", // #rrggbbaa <- with alpha
+    canSee: false,
+    mouseOver: false,
+  },
+}
