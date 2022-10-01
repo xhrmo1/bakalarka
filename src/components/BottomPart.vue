@@ -147,9 +147,6 @@ export default {
     };
   },
   props: ["nodes", "paths"],
-  mounted() {
-    this.$emit("callFunction", this.callFunctionData);
-  },
   methods: {
     runFunction() {
       this.callFunctionData.nodes = [];
@@ -172,13 +169,13 @@ export default {
       }
       this.callFunctionData.code = this.code;
       this.$emit("callFunction", this.callFunctionData);
-      console.log("aaa");
-      console.log(this.callFunctionData);
-      console.log("aaa");
+      //console.log("aaa");
+      //console.log(this.callFunctionData);
+      //console.log("aaa");
     },
     functionDetails() {
       var e = document.getElementById("functionSelector");
-      console.log(e.value, "selector");
+      //console.log(e.value, "selector");
       this.currentlySelected = e.value;
       this.nodesCount = this.functionSet.find((x) => x.name == e.value).nodes;
       this.pathsCount = this.functionSet.find((x) => x.name == e.value).paths;
@@ -190,7 +187,7 @@ export default {
     },
     functionCategory() {
       var e = document.getElementById("categorySelector");
-      console.log(e.value, "selector2", this.paths);
+      //console.log(e.value, "selector2", this.paths);
 
       this.functionSet = functionData.functionSetX.filter(
         (fnc) => fnc.category == e.value || e.value == "all" || fnc.name == ""

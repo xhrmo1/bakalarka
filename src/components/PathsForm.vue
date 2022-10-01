@@ -60,7 +60,7 @@
 import PopUpStructure from "./PopUpStructure.vue";
 import Popup from "./PopUpForm.vue";
 import data from "./data";
-console.log(data.paths);
+//console.log(data.paths);
 export default {
   components: {
     Popup,
@@ -82,11 +82,11 @@ export default {
     },
     showPopUpStructure() {
       this.boolPopUpStructure = !this.boolPopUpStructure;
-      console.log(this.treeOut[1][1], "pensasis");
-      console.log(
+      //console.log(this.treeOut[1][1], "pensasis");
+      /*console.log(
         this.treeOut[1].filter((x) => x.name == this.clickedId)[0].allNodes
-      );
-      console.log(this.clickedId);
+      );*/
+      //console.log(this.clickedId);
     },
     inputChange(obj) {
       for (var x in this.modelValue) {

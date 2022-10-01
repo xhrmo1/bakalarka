@@ -67,17 +67,10 @@ const eventHandlers: vNG.EventHandlers = {
   },
 };
 
-function addNode() {
-  var nodeId = `node${nextNodeIndex.value}`;
-  var name = `node${nextNodeIndex.value}`;
-  nodes[nodeId] = { name };
-  nextNodeIndex.value++;
-  outPutTree = firstTry({ code: 1, name: name }, [], [], [], outPutTree);
-}
+
 
 function removeNode() {
   for (const nodeId of selectedNodes.value) {
-    outPutTree = firstTry({ code: 2, name: nodeId }, [], [], [], outPutTree);
     delete nodes[nodeId];
     // emit("nodeRemove", nodeId);
   }
@@ -85,31 +78,7 @@ function removeNode() {
   //emit("nodesOut", nodes);
 }
 
-function addEdge() {
-  if (selectedNodes.value.length !== 2) return;
-  const [source, target] = selectedNodes.value;
-  const edgeId = `edge${nextEdgeIndex.value}`;
-  edges[edgeId] = {
-    source,
-    target,
-    label: Math.floor(Math.random() * 20).toString(),
-    dashed: false,
-  };
-  nextEdgeIndex.value++;
-}
 
-function removeEdge() {
-  console.log("test");
-  console.log(
-    edges[selectedEdges.value[0]].source,
-    edges[selectedEdges.value[0]].label
-  );
-  edges[selectedEdges.value[0]].label = "88888";
-  console.log(selectedEdges.value[0]);
-  for (const edgeId of selectedEdges.value) {
-    delete edges[edgeId];
-  }
-}
 let layouts: Layouts = {
   nodes: {},
 };
@@ -193,7 +162,7 @@ var outPutTree: any[] | undefined;
           class="PopGrid--Structure"
           :clickedNodes="clickedNodes"
           :treeDataStructure="treeDataStructure"
-          :whichStructure="this.naivePartition ? 'naive' : 'size'"
+          :whichStructure="props.naivePartition ? 'naive' : 'size'"
           @removeNode="getEmit"
           >XX</Structure
         >

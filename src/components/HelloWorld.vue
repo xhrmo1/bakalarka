@@ -24,8 +24,8 @@ var selectedEdges = ref<string[]>([]);
 const props = withDefaults(defineProps<{paths?: Nodes}>(), {
   paths? :  data.nodes ;
 });*/
-console.log("type", nodes);
-console.log(typeof paths);
+//console.log("type", nodes);
+//console.log(typeof paths);
 
 const emit = defineEmits([
   "customChange",
@@ -40,17 +40,17 @@ const emit = defineEmits([
 const props = defineProps({
   callFunction: Object,
 });
-console.log("this prop is text", props.callFunction);
+//console.log("this prop is text", props.callFunction);
 emit("pathsOut", paths);
 emit("nodesOut", nodes);
 emit("edgesOut", edges);
-console.log(nodes, edges, paths);
+//console.log(nodes, edges, paths);
 
 const eventHandlers: vNG.EventHandlers = {
   "node:click": ({ node }) => {
     // toggle
     if (node == null) {
-      console.log("empssxssssssz");
+      //console.log("empssxssssssz");
     }
     emit("customChange", node);
   },
@@ -61,17 +61,17 @@ function addNode() {
   var name = `node${nextNodeIndex.value}`;
   nodes[nodeId] = { name };
   nextNodeIndex.value++;
-  console.log("addNode name", name);
-  outPutTree = firstTry({ code: 1, name: name }, [], [], [], outPutTree);
+  //console.log("addNode name", name);
+  outPutTree = firstTry({ code: 1, name: name }, nodes, edges, paths, outPutTree);
   emit("treeOut", outPutTree);
   emit("nodesOut", nodes);
 }
 
 function removeNode() {
-  console.log("edges:", edges, edges.length);
+  //console.log("edges:", edges, edges.length);
   for (const nodeId of selectedNodes.value) {
     emit("removeNode", nodes[nodeId]);
-    outPutTree = firstTry({ code: 2, name: nodeId }, [], [], [], outPutTree);
+    outPutTree = firstTry({ code: 2, name: nodeId }, nodes, edges, paths, outPutTree);
     delete nodes[nodeId];
     emit("nodeRemove", nodeId);
     for (let p in paths) {
@@ -100,16 +100,16 @@ function removeNode() {
           }
         }
       }
-      console.log("ArrayCopy-length", arraCopy.length, paths[p].edges.length);
+      //console.log("ArrayCopy-length", arraCopy.length, paths[p].edges.length);
 
       if (arraCopy.length == 0 || arraCopyD.length == 0) {
         delete paths[p];
       } else {
-        console.log(
+        /*console.log(
           "ArrayCopy-length222",
           arraCopy.length,
           paths[p].edges.length
-        );
+        );*/
 
         paths[p].edges = [...arraCopy];
       }
@@ -118,13 +118,14 @@ function removeNode() {
       if (edges[index].source == nodeId || edges[index].target == nodeId) {
         delete edges[index];
 
-        console.log("mazeme edge");
+        //console.log("mazeme edge");
       }
     }
   }
-  console.log("edges:", edges, edges.length);
-  outPutTree = firstTry({ code: 0 }, nodes, edges, paths);
-  console.log("x", outPutTree);
+  //console.log("edges:", edges, edges.length);
+  outPutTree = firstTry({ code: 0 }, nodes, edges, paths); // toto je asi zle
+  
+  //console.log("x", outPutTree);
 
   emit("edgesOut", nodes);
   emit("pathsOut", paths);
@@ -142,29 +143,31 @@ function addEdge() {
     label: Math.floor(Math.random() * 20).toString(),
     dashed: false,
   };
+  outPutTree = firstTry({code: 3, edgeID: edgeId}, nodes,edges, paths,outPutTree)
+  emit("treeOut", outPutTree)
   nextEdgeIndex.value++;
   emit("edgesOut", nodes);
 }
 
 function removeEdge() {
-  console.log("test");
-  console.log(
+  //console.log("test");
+  /*console.log(
     edges[selectedEdges.value[0]].source,
     edges[selectedEdges.value[0]].label
-  );
+  );*/
   edges[selectedEdges.value[0]].label = "88888";
-  console.log(selectedEdges.value[0]);
+  //console.log(selectedEdges.value[0]);
   for (const edgeId of selectedEdges.value) {
     delete edges[edgeId];
     for (let p in paths) {
       for (let pe in paths[p].edges) {
-        console.log("paths:", paths[p].edges[pe], edgeId);
+        //console.log("paths:", paths[p].edges[pe], edgeId);
         if (paths[p].edges[pe] == edgeId) {
           if (paths[p].edges.length == 1) {
             delete paths[p];
           } else {
             const index = paths[p].edges.indexOf(paths[p].edges[pe]);
-            console.log("INDEXXXXXXXX", index, pe);
+            //console.log("INDEXXXXXXXX", index, pe);
             var arr2 = paths[p].edges.splice(0, index);
             paths[p].edges.splice(0, 1);
             var pathName = `path${nextPathIndex.value}`;
@@ -190,20 +193,20 @@ function removeEdge() {
   emit("pathsOut", paths);
   emit("edgesOut", nodes);
   outPutTree = firstTry({ code: 0 }, nodes, edges, paths);
-  console.log("x", outPutTree);
+  //console.log("x", outPutTree);
   emit("treeOut", outPutTree);
 }
 
 function hidePath(id: string) {
-  console.log("som tu");
-  console.log(paths[id]);
+  //console.log("som tu");
+  //console.log(paths[id]);
 
   paths[id].canSee = false;
 }
 
 //maly cudlik, co prida path
 function smrdis() {
-  console.log(props.callFunction, "xxxxxxxxxxxxxxxxxxx");
+  //console.log(props.callFunction, "xxxxxxxxxxxxxxxxxxx");
   paths["paths20"] = {
     id: "02",
     edges: ["edge11"],
@@ -218,10 +221,11 @@ watch(
   () => props.callFunction,
   (x, z) => {
     if (isEqual(outPutTree, x)) {
-      console.log("sameXXXXXXXXXXXX sad asdXx");
+      //console.log("sameXXXXXXXXXXXX sad asdXx");
     }
-    console.log("AAAAAAXAXAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    console.log(x, z, "xxxx");
+
+    //console.log("AAAAAAXAXAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    //console.log(x, z, "xxxx");
     outPutTree = firstTry(x, nodes, edges, paths);
     console.log("x", outPutTree);
     emit("treeOut", outPutTree);

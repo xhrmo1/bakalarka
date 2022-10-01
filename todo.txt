@@ -11,7 +11,7 @@ vizualizácia
 - naprogramovať algoritmy
 - animácie pre algoritmy
 - spravne ukazovať štruktury
-
+- treeDataStructure nie ako pole, ale ako struktura
 
 css
 -kruzok v pathComponent upravit 

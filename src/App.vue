@@ -60,13 +60,13 @@ export default {
       edges: Object,
       treeDataStructure: [], // tu mam ulozene info o cestach
       txt: "path1",
-      callingFunction: [],
+      callingFunction: {code: 0},
     };
   },
   methods: {
     callFunction(value) {
       this.callingFunction = value;
-      console.log(this.callingFunction, "emit value callfunction");
+      //console.log(this.callingFunction, "emit value callfunction");
     },
     logChange(node) {
       if (!this.clickedNodes.includes(node)) {
@@ -77,7 +77,7 @@ export default {
       this.clickedNodes.splice(this.clickedNodes.indexOf(node), 1);
     },
     pathsOut(object) {
-      console.log("paths", object);
+      //console.log("paths", object);
       this.paths = object;
     },
     nodesOut(object) {
@@ -92,7 +92,7 @@ export default {
     treeOut(object) {
       this.treeDataStructure = object;
       let x = object;
-      console.log("treeDataStrucute", this.treeDataStructure, object, x);
+      //console.log("treeDataStrucute", this.treeDataStructure, object, x);
       // this.treeDataStructure.filter((x) => x.StructBasic.name == "node1");
     },
     allPathsChange(obj, id) {
