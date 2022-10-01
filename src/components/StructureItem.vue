@@ -1,7 +1,11 @@
 <template>
   <div class="container">
     <header class="header">
-      <button @click="removeNode" class="btn" style="margin: 0px 0px 0px 8px">
+      <button
+        @click="removeNodeFromClicked"
+        class="btn"
+        style="margin: 0px 0px 0px 8px"
+      >
         X
       </button>
       <div class="title">
@@ -100,11 +104,11 @@ export default {
     changeHidden() {
       this.isHidden = !this.isHidden;
     },
-    removeNode() {
-      this.$emit("removeNode", this.node);
+    removeNodeFromClicked() {
+      this.$emit("removeNodeFromClicked", this.node.StructBasic.name);
     },
   },
-  emit: ["removeNode"],
+  emit: ["removeNodeFromClicked"],
 };
 </script>
 

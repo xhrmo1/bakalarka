@@ -13,7 +13,7 @@
           )[0]
         "
         :whichStructure="this.whichStructure"
-        @removeNode="getEmit"
+        @removeNodeFromClicked="removeNodeFromClicked"
       />
     </div>
   </div>
@@ -44,7 +44,7 @@ export default {
     },
     treeDataStructure: Object,
   },
-  emit: ["removeNode"],
+  emit: ["removeNodeFromClicked"],
   methods: {
     clickxx() {
       console.log(this.treeDataStructure, "treeDataStr");
@@ -53,8 +53,8 @@ export default {
       )[0];
       console.log(x.StructBasic.value);
     },
-    getEmit(node) {
-      this.$emit("removeNode", node);
+    removeNodeFromClicked(node) {
+      this.$emit("removeNodeFromClicked", node);
     },
   },
 };

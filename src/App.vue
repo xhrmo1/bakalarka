@@ -1,42 +1,37 @@
 <template>
   <div class="mainWindow">
     <div class="networkWindow">
-      <Header class="grid-item-header">bakalarkska praca</Header>
+      <Header class="grid-item-header" />
       <Paths
         class="grid-item-path"
         v-model="paths"
-        :allPaths="paths"
         :treeOut="treeDataStructure"
-        :treeDataStructure="treeDataStructure"
         @pathsChange="allPathsChange"
-        >cesta</Paths
-      >
+      />
       <HelloWorld
         class="mojeee grid-item-network"
         @customChange="logChange"
         @nodeRemove="nodeRemove"
         @treeOut="treeOut"
-        @removeNode="getEmit"
+        @removeNode="removeNodeFromClicked"
         @nodesOut="nodesOut"
         @pathsOut="pathsOut"
-        :text="txt"
-        :callFunction="callFunctionData"
+        :callFunction="callingFunction"
       />
       <Structure
         class="grid-item-structure"
         :clickedNodes="clickedNodes"
         :treeDataStructure="treeDataStructure"
         :whichStructure="'basic'"
-        @removeNode="getEmit"
-        >vpravo</Structure
-      >
+        @removeNodeFromClicked="removeNodeFromClicked"
+      />
       <Bottom
         class="grid-item-textarea"
         :nodes="nodes"
         :edges="edges"
         :paths="paths"
         @callFunction="callFunction"
-      ></Bottom>
+      />
     </div>
   </div>
 </template>
@@ -47,8 +42,6 @@ import Structure from "./components/StructureForm.vue";
 import Paths from "./components/PathsForm.vue";
 import Header from "./components/HeaderForm.vue";
 import Bottom from "./components/BottomPart.vue";
-
-let xxx = [];
 
 export default {
   name: "App",
@@ -65,28 +58,22 @@ export default {
       paths: Object,
       nodes: Object,
       edges: Object,
-      treeDataStructure: [],
+      treeDataStructure: [], // tu mam ulozene info o cestach
       txt: "path1",
-      callFunctionData: [],
+      callingFunction: [],
     };
   },
   methods: {
     callFunction(value) {
-      console.log(value, "emit value callfunction");
-      this.callFunctionData = value;
-      console.log(this.callFunctionData, "emit value callfunction");
-    },
-    xxxx() {
-      this.paths["path1"].canSee = false;
-      this.txt = "path2";
-      console.log("xxxx", this.txt);
+      this.callingFunction = value;
+      console.log(this.callingFunction, "emit value callfunction");
     },
     logChange(node) {
       if (!this.clickedNodes.includes(node)) {
         this.clickedNodes.push(node);
       }
     },
-    getEmit(node) {
+    removeNodeFromClicked(node) {
       this.clickedNodes.splice(this.clickedNodes.indexOf(node), 1);
     },
     pathsOut(object) {
@@ -98,7 +85,7 @@ export default {
     },
     edgesOut(object) {
       this.edges = object;
-    },
+    }, // deprecated
     nodeRemove(object) {
       this.clickedNodes.splice(this.clickedNodes.indexOf(object), 1);
     },
@@ -110,16 +97,12 @@ export default {
     },
     allPathsChange(obj, id) {
       this.paths[id].canSee = obj;
-      this.paths[id].width = 40;
     },
   },
 };
 </script>
 
 <style>
-/*.mojeee {
-  height: 70vh !important;
-}*/
 .mainWindow {
   background-color: chartreuse;
   height: 100vh;

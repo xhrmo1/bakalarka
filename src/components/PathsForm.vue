@@ -29,9 +29,7 @@
           clickedId = value.id;
         "
         class="btn"
-      >
-        O
-      </button>
+      />
       <label class="switch">
         <input
           type="checkbox"
@@ -53,7 +51,7 @@
       @changePopUpStructure="showPopUpStructure"
       :pathTree="this.treeOut[1].filter((x) => x.name == this.clickedId)"
       :naivePartition="true"
-      :treeDataStructure="treeDataStructure"
+      :treeDataStructure="treeOut"
     ></PopUpStructure>
   </div>
 </template>
@@ -68,7 +66,7 @@ export default {
     Popup,
     PopUpStructure,
   },
-  props: ["modelValue", "allPaths", "treeOut", "treeDataStructure"],
+  props: ["modelValue", "treeOut"],
   data() {
     return {
       isHidden: false,

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-console.log("<-----------------HelloWorld------------------>");
 import { reactive, ref, defineEmits, defineProps, watch } from "vue";
 import { Nodes, Edges, Paths } from "v-network-graph";
 import * as vNG from "v-network-graph";
@@ -39,10 +38,6 @@ const emit = defineEmits([
   "removeNode",
 ]);
 const props = defineProps({
-  text: {
-    type: String,
-    default: "",
-  },
   callFunction: Object,
 });
 console.log("this prop is text", props.callFunction);
@@ -206,6 +201,7 @@ function hidePath(id: string) {
   paths[id].canSee = false;
 }
 
+//maly cudlik, co prida path
 function smrdis() {
   console.log(props.callFunction, "xxxxxxxxxxxxxxxxxxx");
   paths["paths20"] = {
@@ -217,16 +213,6 @@ function smrdis() {
   emit("pathsOut", paths);
 }
 
-/*watch(
-  nodes,
-  (newNodes, oldNodes) => {
-    console.log(newNodes, oldNodes);
-  },
-  {
-    immediate: true,
-    deep: true,
-  }
-);*/
 var outPutTree: any[] | undefined;
 watch(
   () => props.callFunction,

@@ -1,0 +1,18 @@
+text
+
+
+vizualizácia
+- refactor - spravene 
+- poriešiť ako sa budu uzli ukladať (či cez emit posielať alebo jedno uložisko) - všetko bude vychadzať z komponenty helloworld
+- ako sa bude tvoriť/upravovať štruktura 
+--- buď budem vytvarať pri každej zmene uzla novu
+--- budem iba reagovať na zmeny
+- inspect cesty spraviť vizualne krajši
+- naprogramovať algoritmy
+- animácie pre algoritmy
+- spravne ukazovať štruktury
+
+
+css
+-kruzok v pathComponent upravit 
+--- bacha, aktualne berie class ako ostatne buttons, napr hore napoveda
