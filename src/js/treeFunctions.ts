@@ -1,5 +1,5 @@
 import * as nodeClass from "./nodeClass"
-import { Nodes, Edges, Paths } from "v-network-graph";
+import { Nodes, Edges, Paths, Edge } from "v-network-graph";
 
 
 //nodeBasic používam pri výpise štruktúry vpravo
@@ -47,15 +47,28 @@ export function removeNode(treeDataStructure: nodeClass.Node[], name: string) {
     return treeDataStructure.filter(x => x.StructBasic.name != name)
 }
 
-export function addEdge(treeDataStructure: nodeClass.Node[], nodes: Nodes, edges: Edges, edgeID: string) {
+export function addEdge(treeDataStructure: nodeClass.Node[], edges: Edges, edgeID: string) {
+    console.log("~", edges[edgeID])
     treeDataStructure.forEach((node) => {
         if (node.StructBasic.name == edges[edgeID].source) {
-            node.StructBasic.children.push(edges[edgeID].source)
+            node.StructBasic.children.push(edges[edgeID].target)
+        } else if (node.StructBasic.name == edges[edgeID].target) {
             node.StructBasic.value = edges[edgeID].label
+            node.StructBasic.parent == edges[edgeID].source
         }
     })
+    return treeDataStructure
 }
 
-export function removeEdge() {
+export function removeEdge(treeDataStructure: nodeClass.Node[], edgeToRemove: Edge) {
+    treeDataStructure.forEach((node) => {
+        if (node.StructBasic.name == edgeToRemove.source) {
+            node.StructBasic.children.filter(nodeName => nodeName != edgeToRemove.target)
+        } else if (node.StructBasic.name == edgeToRemove.target) {
+            node.StructBasic.parent = null
+            node.StructBasic.value = null
+        }
+    })
+    return treeDataStructure
 
 }

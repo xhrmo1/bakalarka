@@ -62,7 +62,13 @@ function addNode() {
   nodes[nodeId] = { name };
   nextNodeIndex.value++;
   //console.log("addNode name", name);
-  outPutTree = firstTry({ code: 1, name: name }, nodes, edges, paths, outPutTree);
+  outPutTree = firstTry(
+    { code: 1, name: name },
+    nodes,
+    edges,
+    paths,
+    outPutTree
+  );
   emit("treeOut", outPutTree);
   emit("nodesOut", nodes);
 }
@@ -71,7 +77,13 @@ function removeNode() {
   //console.log("edges:", edges, edges.length);
   for (const nodeId of selectedNodes.value) {
     emit("removeNode", nodes[nodeId]);
-    outPutTree = firstTry({ code: 2, name: nodeId }, nodes, edges, paths, outPutTree);
+    outPutTree = firstTry(
+      { code: 2, name: nodeId },
+      nodes,
+      edges,
+      paths,
+      outPutTree
+    );
     delete nodes[nodeId];
     emit("nodeRemove", nodeId);
     for (let p in paths) {
@@ -117,14 +129,13 @@ function removeNode() {
     for (let index in edges) {
       if (edges[index].source == nodeId || edges[index].target == nodeId) {
         delete edges[index];
-
         //console.log("mazeme edge");
       }
     }
   }
   //console.log("edges:", edges, edges.length);
   outPutTree = firstTry({ code: 0 }, nodes, edges, paths); // toto je asi zle
-  
+
   //console.log("x", outPutTree);
 
   emit("edgesOut", nodes);
@@ -136,16 +147,29 @@ function removeNode() {
 function addEdge() {
   if (selectedNodes.value.length !== 2) return;
   const [source, target] = selectedNodes.value;
+  //ošetrenie aby uzol nemal dvoch rodicov
+  for (let index in edges) {
+    if (edges[index].target == target) {
+      return console.error("Nemôže pridať edge, uzol už ma rodiča");
+    }
+  }
+
   const edgeId = `edge${nextEdgeIndex.value}`;
   edges[edgeId] = {
     source,
     target,
     label: Math.floor(Math.random() * 20).toString(),
-    dashed: false,
+    dashed: true,
   };
-  outPutTree = firstTry({code: 3, edgeID: edgeId}, nodes,edges, paths,outPutTree)
-  emit("treeOut", outPutTree)
   nextEdgeIndex.value++;
+  outPutTree = firstTry(
+    { code: 3, edgeID: edgeId },
+    nodes,
+    edges,
+    paths,
+    outPutTree
+  );
+  emit("treeOut", outPutTree);
   emit("edgesOut", nodes);
 }
 
@@ -158,7 +182,9 @@ function removeEdge() {
   edges[selectedEdges.value[0]].label = "88888";
   //console.log(selectedEdges.value[0]);
   for (const edgeId of selectedEdges.value) {
+    var edgeToRemove = edges[edgeId];
     delete edges[edgeId];
+
     for (let p in paths) {
       for (let pe in paths[p].edges) {
         //console.log("paths:", paths[p].edges[pe], edgeId);
@@ -188,6 +214,13 @@ function removeEdge() {
         }
       }
     }
+    outPutTree = firstTry(
+      { code: 4, edgeToRemove: edgeToRemove },
+      nodes,
+      edges,
+      paths,
+      outPutTree
+    );
   }
 
   emit("pathsOut", paths);

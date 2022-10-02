@@ -23,10 +23,13 @@ export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, pa
             console.log('deleteX', treeDataStructure)
             break;
         case 3: // pridanie hrany -> aktualizovat zoznam uzlov (pridat syna a rodica), prebehnut dotknute DS
-            treeDataStructure[0] = treeFunctions.addEdge(treeDataStructure, nodes, edges, callParams)
+            treeDataStructure[0] = treeFunctions.addEdge(treeDataStructure[0], edges, callParams.edgeID)
             break;
         case 4: // odobratie hrany -> aktualizovat zoznam uzlov (odobrat syna a rodica), prebehnut dotknute DS
-            break;
+            treeDataStructure[0] = treeFunctions.removeEdge(treeDataStructure[0], callParams.edgeToRemove)
+            if (!callParams.edgeToRemove.dashed) {
+                treeDataStructure[1] = maintanance.buildPaths(nodes, edges, paths) // premazem z paths
+            }
         /* nad 10 zacnu operacie na cestach a stromoch */
     }
 

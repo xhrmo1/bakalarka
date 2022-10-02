@@ -41,19 +41,20 @@ export class Path {
 
 export class NaivePartition {
     name: string;
-    id: any;
-    reversed: any;
-    bparent: any;
+    bhead: any;
+    btail: any
+    insideNode: boolean;
+    reversed: any; //todo
+    bparent: NaivePartition | null;
     netmin: any;
     netcost: any;
-    bhead: any;
-    bleft: any;
-    bright: any;
-    btail: any
-    constructor(name: any, id = null, reversed = false, bparent = null, netmin = 0, netcost = 0, bhead = null, bleft = null, bright = null, btail = null) {
+    bleft: NaivePartition | null;
+    bright: NaivePartition | null;
+    value: number;
+    constructor(name: string, btail: any = null, bhead: any = null, value: number = 0, insideNode: boolean = false, reversed: any = false, bparent: any = null, netmin: any = 0, netcost: any = 0, bleft: any = null, bright: any = null) {
         this.name = name
-        this.id = id // toto je ak je to list inak null
-
+        this.insideNode = insideNode // toto je ak je to list inak null
+        this.value = value
         //info o vnutornom uzle
         this.reversed = reversed
         this.bparent = bparent

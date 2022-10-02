@@ -23,7 +23,7 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths) {
             nodesList)
         console.log(nodesList)
         newPath.root = createNaiveStruct(nodes, edges, paths[p].edges, nodesList, true, 0, paths[p].edges.length)
-
+        setNetCostMin(newPath.root)
         pathsSets.push(newPath)
     }
     console.log('pathSets == ', pathsSets)
@@ -32,23 +32,18 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths) {
 //pathEdges edges from concretePath
 //newPath link actual nodes
 function createNaiveStruct(nodes: Nodes, edges: Edges, pathsEdges: string[], newPath: any[], createNaive: boolean, left: number, right: number): nodeClass.NaivePartition | null {
+    console.log("XX", newPath)
     if (left == right) {
-        console.log("lnode:!!!", newPath[left])
         return newPath[left]
     }
     var middle = Math.floor((right + left) / 2)
     var node = null
     if (createNaive) { // if false, create SizePartition
-        node = new nodeClass.NaivePartition({ name: pathsEdges[middle], bhead: newPath[left], btail: newPath[right] })
+        console.log("toto ma teary", +edges[pathsEdges[middle]].label)
+        node = new nodeClass.NaivePartition(pathsEdges[middle], newPath[right], newPath[left], +edges[pathsEdges[middle]].label, true)
     } else {
         node = null //TODO
     }
-
-    /*if (left + 1 == right) {
-        node.bleft = newPath[left]
-        node.bright = newPath[right]
-        return node
-    }*/
     var lnode = createNaiveStruct(nodes, edges, pathsEdges, newPath, createNaive, left, middle)
     if (lnode != null && lnode.name != null) {
         lnode.bparent = node
@@ -63,4 +58,39 @@ function createNaiveStruct(nodes: Nodes, edges: Edges, pathsEdges: string[], new
         node.bright = rnode
     }
     return node
+}
+
+function setNetCostMin(naiveStruct: nodeClass.NaivePartition) {
+    naiveStruct.netmin = netMin(naiveStruct)
+    naiveStruct.netcost = netCost(naiveStruct)
+    if (naiveStruct.bleft != null && naiveStruct.bleft.insideNode !== undefined) {
+        setNetCostMin(naiveStruct.bleft)
+    }
+    if (naiveStruct.bright != null && naiveStruct.bright.insideNode !== undefined) {
+        setNetCostMin(naiveStruct.bright)
+    }
+}
+
+function grossMin(naiveStruct: nodeClass.NaivePartition): number {
+    var minArray = [+naiveStruct.value]
+    if (naiveStruct.bleft != null && naiveStruct.bleft.insideNode !== undefined) {
+        minArray.push(grossMin(naiveStruct.bleft))
+    }
+    if (naiveStruct.bright != null && naiveStruct.bright.insideNode !== undefined) {
+        minArray.push(grossMin(naiveStruct.bright))
+    }
+    console.log("minArray", minArray, naiveStruct.name, naiveStruct.insideNode !== undefined)
+    return Math.min(...minArray)
+}
+
+function netCost(naiveStruct: nodeClass.NaivePartition): number {
+    return naiveStruct.value - grossMin(naiveStruct)
+}
+
+function netMin(naiveStruct: nodeClass.NaivePartition): number {
+    if (naiveStruct.bparent == null) {
+        return grossMin(naiveStruct)
+    } else {
+        return grossMin(naiveStruct) - grossMin(naiveStruct.bparent)
+    }
 }
