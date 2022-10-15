@@ -5,6 +5,8 @@ import * as vNG from "v-network-graph";
 import data from "./data";
 import firstTry from "../js/mainFunctions";
 import isEqual from "lodash.isequal";
+import * as nodeClass from "../js/nodeClass";
+import * as treeFunctions from "../js/treeFunctions";
 
 var nodes: Nodes = reactive({ ...data.nodes });
 var edges: Edges = reactive({ ...data.edges });
@@ -15,6 +17,7 @@ var nextPathIndex = ref(Object.keys(paths).length + 1);
 
 var selectedNodes = ref<string[]>([]);
 var selectedEdges = ref<string[]>([]);
+var outPutTree: nodeClass.TreeDataStructures;
 //var selectedPaths = ref<string[]>([]);
 
 /*interface Props {
@@ -28,7 +31,7 @@ const props = withDefaults(defineProps<{paths?: Nodes}>(), {
 //console.log(typeof paths);
 
 const emit = defineEmits([
-  "customChange",
+  "selectNode",
   "nodesOut",
   "edgesOut",
   "pathsOut",
@@ -52,7 +55,9 @@ const eventHandlers: vNG.EventHandlers = {
     if (node == null) {
       //console.log("empssxssssssz");
     }
-    emit("customChange", node);
+    let xx = treeFunctions.findNodeArray(outPutTree.basicRoots, node);
+    console.log("X", node, xx);
+    emit("selectNode", xx);
   },
 };
 
@@ -134,7 +139,7 @@ function removeNode() {
     }
   }
   //console.log("edges:", edges, edges.length);
-  outPutTree = firstTry({ code: 0 }, nodes, edges, paths); // toto je asi zle
+  outPutTree = firstTry({ code: 0 }, nodes, edges, paths, outPutTree); // toto je asi zle
 
   //console.log("x", outPutTree);
 
@@ -225,7 +230,7 @@ function removeEdge() {
 
   emit("pathsOut", paths);
   emit("edgesOut", nodes);
-  outPutTree = firstTry({ code: 0 }, nodes, edges, paths);
+  outPutTree = firstTry({ code: 0 }, nodes, edges, paths, outPutTree);
   //console.log("x", outPutTree);
   emit("treeOut", outPutTree);
 }
@@ -249,7 +254,6 @@ function smrdis() {
   emit("pathsOut", paths);
 }
 
-var outPutTree: any[] | undefined;
 watch(
   () => props.callFunction,
   (x, z) => {
@@ -259,7 +263,7 @@ watch(
 
     //console.log("AAAAAAXAXAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     //console.log(x, z, "xxxx");
-    outPutTree = firstTry(x, nodes, edges, paths);
+    outPutTree = firstTry(x, nodes, edges, paths, outPutTree);
     console.log("x", outPutTree);
     emit("treeOut", outPutTree);
   },

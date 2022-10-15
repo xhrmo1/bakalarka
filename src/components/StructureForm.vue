@@ -7,11 +7,7 @@
     >
       <StructureItem
         class="item1"
-        :node="
-          this.treeDataStructure[0].filter(
-            (x) => x.StructBasic.name == value
-          )[0]
-        "
+        :node="value"
         :whichStructure="this.whichStructure"
         @removeNodeFromClicked="removeNodeFromClicked"
       />
@@ -42,17 +38,9 @@ export default {
       node1: Object,
       node2: Object,
     },
-    treeDataStructure: Object,
   },
   emit: ["removeNodeFromClicked"],
   methods: {
-    clickxx() {
-      //console.log(this.treeDataStructure, "treeDataStr");
-      let x = this.treeDataStructure.filter(
-        (x) => x.StructBasic.name == "N1"
-      )[0];
-      //console.log(x.StructBasic.value);
-    },
     removeNodeFromClicked(node) {
       this.$emit("removeNodeFromClicked", node);
     },

@@ -19,11 +19,15 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths) {
         }
         var newPath = new nodeClass.Path(
             paths[p].id,
+            nodesList,
             createNaiveStruct(nodes, edges, paths[p].edges, nodesList, true, 0, paths[p].edges.length),
-            nodesList)
+            null)
         console.log(nodesList)
-        newPath.root = createNaiveStruct(nodes, edges, paths[p].edges, nodesList, true, 0, paths[p].edges.length)
-        setNetCostMin(newPath.root)
+        //newPath.root = createNaiveStruct(nodes, edges, paths[p].edges, nodesList, true, 0, paths[p].edges.length)
+        if (newPath.rootNaive != null) {
+            newPath.rootNaive.root = newPath
+            setNetCostMin(newPath.rootNaive)
+        }
         pathsSets.push(newPath)
     }
     console.log('pathSets == ', pathsSets)
@@ -32,7 +36,6 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths) {
 //pathEdges edges from concretePath
 //newPath link actual nodes
 function createNaiveStruct(nodes: Nodes, edges: Edges, pathsEdges: string[], newPath: any[], createNaive: boolean, left: number, right: number): nodeClass.NaivePartition | null {
-    console.log("XX", newPath)
     if (left == right) {
         return newPath[left]
     }
@@ -79,7 +82,6 @@ function grossMin(naiveStruct: nodeClass.NaivePartition): number {
     if (naiveStruct.bright != null && naiveStruct.bright.insideNode !== undefined) {
         minArray.push(grossMin(naiveStruct.bright))
     }
-    console.log("minArray", minArray, naiveStruct.name, naiveStruct.insideNode !== undefined)
     return Math.min(...minArray)
 }
 

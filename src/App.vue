@@ -10,7 +10,7 @@
       />
       <HelloWorld
         class="mojeee grid-item-network"
-        @customChange="logChange"
+        @selectNode="selectNode"
         @nodeRemove="nodeRemove"
         @treeOut="treeOut"
         @removeNode="removeNodeFromClicked"
@@ -21,7 +21,6 @@
       <Structure
         class="grid-item-structure"
         :clickedNodes="clickedNodes"
-        :treeDataStructure="treeDataStructure"
         :whichStructure="'basic'"
         @removeNodeFromClicked="removeNodeFromClicked"
       />
@@ -42,6 +41,7 @@ import Structure from "./components/StructureForm.vue";
 import Paths from "./components/PathsForm.vue";
 import Header from "./components/HeaderForm.vue";
 import Bottom from "./components/BottomPart.vue";
+import * as nodeClass from "./js/nodeClass";
 
 export default {
   name: "App",
@@ -60,7 +60,7 @@ export default {
       edges: Object,
       treeDataStructure: [], // tu mam ulozene info o cestach
       txt: "path1",
-      callingFunction: {code: 0},
+      callingFunction: { code: 0 },
     };
   },
   methods: {
@@ -68,12 +68,13 @@ export default {
       this.callingFunction = value;
       //console.log(this.callingFunction, "emit value callfunction");
     },
-    logChange(node) {
+    selectNode(node) {
       if (!this.clickedNodes.includes(node)) {
         this.clickedNodes.push(node);
       }
     },
     removeNodeFromClicked(node) {
+      console.log(node);
       this.clickedNodes.splice(this.clickedNodes.indexOf(node), 1);
     },
     pathsOut(object) {

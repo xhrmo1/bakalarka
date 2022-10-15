@@ -32,25 +32,7 @@ const props = defineProps({
   naivePartition: Boolean,
 });
 
-let treeDataStructure: any = [];
 let tempArr: any = [];
-function createDataStructure(node: any) {
-  let x = { StructBasic: node };
-  tempArr.push(x);
-  if (node.bleft != null) {
-    createDataStructure(node.bleft);
-  }
-  if (node.bright != null) {
-    createDataStructure(node.bright);
-  }
-}
-
-createDataStructure(props.pathTree != null ? props.pathTree[0].root : null);
-treeDataStructure.push(tempArr);
-console.log(
-  "AAAAAXXXXXXXXXXXXXXAAAAAAAAAAAAAAAAXXXXXXXXXXXXXX",
-  treeDataStructure
-);
 
 console.log("this prop is text", props.pathTree);
 var clickedNodes: any[] | undefined = reactive([]);
@@ -67,8 +49,6 @@ const eventHandlers: vNG.EventHandlers = {
   },
 };
 
-
-
 function removeNode() {
   for (const nodeId of selectedNodes.value) {
     delete nodes[nodeId];
@@ -77,7 +57,6 @@ function removeNode() {
   console.log(outPutTree);
   //emit("nodesOut", nodes);
 }
-
 
 let layouts: Layouts = {
   nodes: {},
@@ -101,8 +80,8 @@ watch(
     });*/
 
     var depth = Math.ceil(Math.log2(x[0].allNodes.length));
-    console.log("Length is: ", depth);
-    inside(x[0].root, 0, depth, 0);
+    console.log("Length is: ", depth, x[0]);
+    inside(x[0].rootNaive, 0, depth, 0);
     console.log("Layout", layouts, nodes);
 
     function inside(node: any, baseX: number, axisX: number, axisY: number) {
@@ -161,7 +140,6 @@ var outPutTree: any[] | undefined;
         <Structure
           class="PopGrid--Structure"
           :clickedNodes="clickedNodes"
-          :treeDataStructure="treeDataStructure"
           :whichStructure="props.naivePartition ? 'naive' : 'size'"
           @removeNode="getEmit"
           >XX</Structure

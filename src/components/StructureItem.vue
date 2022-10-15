@@ -9,7 +9,7 @@
         X
       </button>
       <div class="title">
-        {{ node.StructBasic.name }}
+        {{ node.name }}
       </div>
       <button
         v-on:click="isHidden = !isHidden"
@@ -31,32 +31,20 @@
     </div>
 
     <div class="general" v-if="whichStructure == 'basic'">
-      <span class="grid-general-parent"
-        >rodic: {{ node.StructBasic.parent }}</span
+      <span class="grid-general-parent" v-if="node.parent != null"
+        >rodic: {{ node.parent.target.name }}</span
       >
-      <span class="grid-general-value"
-        >hodnota: {{ node.StructBasic.value }}</span
-      >
+      <span class="grid-general-value">hodnota: {{ node.value }}</span>
       <span class="grid-general-path">uzol v ceste: aaaaa</span>
       <span class="grid-general-children">Potomkovia: </span>
-      <span class="grid-general-child1">{{
-        node.StructBasic.children[0]
-      }}</span>
-      <span class="grid-general-child2">{{
-        node.StructBasic.children[1]
-      }}</span>
-      <span class="grid-general-child3">{{
-        node.StructBasic.children[2]
-      }}</span>
-      <span class="grid-general-child4">{{
-        node.StructBasic.children[3]
-      }}</span>
-      <span class="grid-general-child5">{{
-        node.StructBasic.children[4]
-      }}</span>
-      <span class="grid-general-child6">{{
-        node.StructBasic.children[5]
-      }}</span>
+      <template
+        v-for="(children, key) in node.children"
+        :key="children.target.name"
+      >
+        <span :class="'grid-general-child' + key">{{
+          children.target.name
+        }}</span>
+      </template>
     </div>
 
     <div class="stucture-definition" v-if="whichStructure == 'naive'">
@@ -105,7 +93,7 @@ export default {
       this.isHidden = !this.isHidden;
     },
     removeNodeFromClicked() {
-      this.$emit("removeNodeFromClicked", this.node.StructBasic.name);
+      this.$emit("removeNodeFromClicked", this.node);
     },
   },
   emit: ["removeNodeFromClicked"],
