@@ -64,14 +64,15 @@ export class NaivePartition {
     bhead: any;
     btail: any
     insideNode: boolean;
-    reversed: any; //todo
+    reversed: boolean; //todo
     bparent: NaivePartition | null;
     netmin: any;
     netcost: any;
-    bleft: NaivePartition | null;
-    bright: NaivePartition | null;
+    bleft: NaivePartition | StructBasic | null;
+    bright: NaivePartition | StructBasic | null;
     value: number;
     root: Path; //odkaz na path
+    pointerToStructBasic: StructBasic | null;
     constructor(name: string, btail: any = null, bhead: any = null, value: number = 0, insideNode: boolean = false, reversed: any = false, bparent: any = null, netmin: any = 0, netcost: any = 0, bleft: any = null, bright: any = null, root: any = null) {
         this.name = name
         this.insideNode = insideNode // toto je ak je to list inak null
@@ -86,6 +87,7 @@ export class NaivePartition {
         this.bright = bright
         this.btail = btail
         this.root = root
+        this.pointerToStructBasic = null
     }
 }
 

@@ -12,9 +12,10 @@ export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, pa
 
     switch (callParams.code) {
         case 0: //inicializovanie stromu, vytvorenie DS
+            var structBasic: nodeClass.StructBasic[] = treeFunctions.initializeTree(nodes, edges, paths, callParams)
             treeDataStructure = new nodeClass.TreeDataStructures(
-                treeFunctions.initializeTree(nodes, edges, paths, callParams),
-                maintanance.buildPaths(nodes, edges, paths)
+                structBasic,
+                maintanance.buildPaths(nodes, edges, paths, structBasic)
             )
             break;
         case 1: // pridanie uzlu -> do zoznamu uzlov
@@ -31,7 +32,7 @@ export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, pa
         case 4: // odobratie hrany -> aktualizovat zoznam uzlov (odobrat syna a rodica), prebehnut dotknute DS
             treeFunctions.removeEdge(treeDataStructure.basicRoots, callParams.edgeToRemove)
             if (!callParams.edgeToRemove.dashed) {
-                treeDataStructure.pathRoots = maintanance.buildPaths(nodes, edges, paths) // premazem z paths
+                treeDataStructure.pathRoots = maintanance.buildPaths(nodes, edges, paths, treeDataStructure.basicRoots) // premazem z paths
             }
         /* nad 10 zacnu operacie na cestach a stromoch */
     }

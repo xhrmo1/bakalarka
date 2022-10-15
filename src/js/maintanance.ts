@@ -1,8 +1,9 @@
 import * as nodeClass from "./nodeClass"
 import { Nodes, Edges, Paths } from "v-network-graph";
+import { findNodeArray } from "./treeFunctions";
 
 
-export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths) {
+export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic: nodeClass.StructBasic[]) {
     var pathsSets = []
 
     for (var p in paths) {
@@ -11,10 +12,12 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths) {
             console.log(nodesList, nodesList.length == 0, e, "XXX", edges[paths[p].edges[e]])
 
             if (nodesList.length == 0 || !nodesList.some(node => node.name === edges[paths[p].edges[e]].source)) { // 
-                nodesList.push(nodes[edges[paths[p].edges[e]].source])
+                let name = nodes[edges[paths[p].edges[e]].source].name
+                nodesList.push(findNodeArray(structBasic, name != null ? name : ""))
             }
             if (nodesList.length == 0 || !nodesList.some(node => node.name === edges[paths[p].edges[e]].target)) { // 
-                nodesList.push(nodes[edges[paths[p].edges[e]].target])
+                let name = nodes[edges[paths[p].edges[e]].target].name
+                nodesList.push(findNodeArray(structBasic, name != null ? name : ""))
             }
         }
         var newPath = new nodeClass.Path(
@@ -47,12 +50,23 @@ function createNaiveStruct(nodes: Nodes, edges: Edges, pathsEdges: string[], new
     } else {
         node = null //TODO
     }
-    var lnode = createNaiveStruct(nodes, edges, pathsEdges, newPath, createNaive, left, middle)
+    var lnode: any
+    if (left == middle) {
+        lnode = newPath[left]
+    } else {
+        lnode = createNaiveStruct(nodes, edges, pathsEdges, newPath, createNaive, left, middle)
+    }
     if (lnode != null && lnode.name != null) {
         lnode.bparent = node
 
     }
-    var rnode = createNaiveStruct(nodes, edges, pathsEdges, newPath, createNaive, middle + 1, right)
+    let rnode
+    if (rnode == middle) {
+        rnode = newPath[middle]
+    } else {
+        rnode = createNaiveStruct(nodes, edges, pathsEdges, newPath, createNaive, middle + 1, right)
+
+    }
     if (rnode != null && rnode.name != null) {
         rnode.bparent = node
     }
@@ -66,20 +80,20 @@ function createNaiveStruct(nodes: Nodes, edges: Edges, pathsEdges: string[], new
 function setNetCostMin(naiveStruct: nodeClass.NaivePartition) {
     naiveStruct.netmin = netMin(naiveStruct)
     naiveStruct.netcost = netCost(naiveStruct)
-    if (naiveStruct.bleft != null && naiveStruct.bleft.insideNode !== undefined) {
+    if (naiveStruct.bleft != null && !(naiveStruct.bleft instanceof nodeClass.StructBasic)) {
         setNetCostMin(naiveStruct.bleft)
     }
-    if (naiveStruct.bright != null && naiveStruct.bright.insideNode !== undefined) {
+    if (naiveStruct.bright != null && !(naiveStruct.bright instanceof nodeClass.StructBasic)) {
         setNetCostMin(naiveStruct.bright)
     }
 }
 
 function grossMin(naiveStruct: nodeClass.NaivePartition): number {
     var minArray = [+naiveStruct.value]
-    if (naiveStruct.bleft != null && naiveStruct.bleft.insideNode !== undefined) {
+    if (naiveStruct.bleft != null && !(naiveStruct.bleft instanceof nodeClass.StructBasic)) {
         minArray.push(grossMin(naiveStruct.bleft))
     }
-    if (naiveStruct.bright != null && naiveStruct.bright.insideNode !== undefined) {
+    if (naiveStruct.bright != null && !(naiveStruct.bright instanceof nodeClass.StructBasic)) {
         minArray.push(grossMin(naiveStruct.bright))
     }
     return Math.min(...minArray)

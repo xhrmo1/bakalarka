@@ -9,16 +9,29 @@ export function path(vertex: nodeclass.NaivePartition): nodeclass.Path | null {
 }
 
 export function head(p: nodeclass.Path) {
-    return p.rootNaive?.bright
+
+    if (p.rootNaive?.reversed) {
+        return p.rootNaive?.bleft
+    } else {
+        return p.rootNaive?.bright
+    }
 }
 
 export function tail(p: nodeclass.Path) {
-    return p.rootNaive?.bleft
+    if (p.rootNaive?.reversed) {
+        return p.rootNaive?.bright
+    } else {
+        return p.rootNaive?.bleft
+    }
 }
 
-export function before(vertex: nodeclass.NaivePartition) {
-
-}
+/*export function before(vertex: nodeclass.NaivePartition): nodeclass.NaivePartition {
+    if (vertex.bleft != null) {
+        if (!(vertex instanceof nodeclass.StructBasic)) {
+            return before(vertex.bleft)
+        }
+    }
+}*/
 
 export function after(vertex: nodeclass.StructBasic) {
 
