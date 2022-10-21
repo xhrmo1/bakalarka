@@ -26,11 +26,12 @@ export class StructBasic {
     value: any | undefined
     parentNaive: NaivePartition | null
     parentSize: SizePartition | null
+    pathPointer: Path | null
     constructor
         (
             name: string | undefined, parent: EdgeDetail | null = null,
             value: any | undefined = null, children: EdgeDetail[] | null = null,
-            parentNaive: NaivePartition | null = null, parentSize: SizePartition | null = null
+            parentNaive: NaivePartition | null = null, parentSize: SizePartition | null = null, pathPointer: Path | null = null
         ) {
         this.name = name;
         this.parent = parent;
@@ -38,6 +39,7 @@ export class StructBasic {
         this.value = value;
         this.parentNaive = parentNaive //either NaiveStruct or SizeStruct , if struct is null, it is solo path
         this.parentSize = parentSize
+        this.pathPointer = pathPointer
     }
 }
 
@@ -49,13 +51,15 @@ export class Path {
     allNodes: StructBasic[] | null
     rootNaive: NaivePartition | null;
     rootSize: SizePartition | null;
+    pathID: string | null;
     constructor(
         name: string | undefined, allNodes: StructBasic[],
-        rootNaive: NaivePartition | null, rootSize: SizePartition | null) {
+        rootNaive: NaivePartition | null, rootSize: SizePartition | null, pathID: string) {
         this.name = name // id
         this.allNodes = allNodes // list
         this.rootNaive = rootNaive  //pointer
         this.rootSize = rootSize
+        this.pathID = pathID
     }
 }
 
@@ -91,7 +95,37 @@ export class NaivePartition {
     }
 }
 
-export class SizePartition { }
+export class SizePartition { // treba upravit zatial kvoli typovaniu rovnake ako NaivePartition
+    name: string;
+    bhead: any;
+    btail: any
+    insideNode: boolean;
+    reversed: boolean; //todo
+    bparent: NaivePartition | null;
+    netmin: any;
+    netcost: any;
+    bleft: NaivePartition | StructBasic | null;
+    bright: NaivePartition | StructBasic | null;
+    value: number;
+    root: Path; //odkaz na path
+    pointerToStructBasic: StructBasic | null;
+    constructor(name: string, btail: any = null, bhead: any = null, value: number = 0, insideNode: boolean = false, reversed: any = false, bparent: any = null, netmin: any = 0, netcost: any = 0, bleft: any = null, bright: any = null, root: any = null) {
+        this.name = name
+        this.insideNode = insideNode // toto je ak je to list inak null
+        this.value = value
+        //info o vnutornom uzle
+        this.reversed = reversed
+        this.bparent = bparent
+        this.netmin = netmin
+        this.netcost = netcost
+        this.bhead = bhead
+        this.bleft = bleft
+        this.bright = bright
+        this.btail = btail
+        this.root = root
+        this.pointerToStructBasic = null
+    }
+}
 
 export default (
     StructBasic

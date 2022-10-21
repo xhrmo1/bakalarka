@@ -5,7 +5,7 @@ import { findNodeArray } from "./treeFunctions";
 
 export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic: nodeClass.StructBasic[]) {
     var pathsSets = []
-
+    var usedNodes: any[] = []
     for (var p in paths) {
         var nodesList: any[] = []
         for (var e in paths[p].edges) {
@@ -13,18 +13,27 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
 
             if (nodesList.length == 0 || !nodesList.some(node => node.name === edges[paths[p].edges[e]].source)) { // 
                 let name = nodes[edges[paths[p].edges[e]].source].name
+                usedNodes.push(name)
                 nodesList.push(findNodeArray(structBasic, name != null ? name : ""))
             }
             if (nodesList.length == 0 || !nodesList.some(node => node.name === edges[paths[p].edges[e]].target)) { // 
                 let name = nodes[edges[paths[p].edges[e]].target].name
+                usedNodes.push(name)
                 nodesList.push(findNodeArray(structBasic, name != null ? name : ""))
             }
         }
+
+        console.log("-- pouzite nodes --", usedNodes)
+        nodesList = nodesList.reverse() // nodeList ide od korena od listy, path je definovany ze hlava je list a tail je koreň - toto mi prišlo ako najjednoduchší fix problému
         var newPath = new nodeClass.Path(
             paths[p].id,
             nodesList,
             createNaiveStruct(nodes, edges, paths[p].edges, nodesList, true, 0, paths[p].edges.length),
-            null)
+            null,
+            p)
+        nodesList.forEach(element => {
+            element.pathPointer = newPath
+        });
         console.log(nodesList)
         //newPath.root = createNaiveStruct(nodes, edges, paths[p].edges, nodesList, true, 0, paths[p].edges.length)
         if (newPath.rootNaive != null) {
@@ -34,6 +43,23 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
         pathsSets.push(newPath)
     }
     console.log('pathSets == ', pathsSets)
+    //create paths where are nod edges
+    for (var n in nodes) {
+        if (!usedNodes.includes(nodes[n].name)) {
+            let x = nodes[n].name
+            if (x === undefined) { x = "" }
+            let aloneNode = findNodeArray(structBasic, x)
+            if (aloneNode != null) {
+                pathsSets.push(new nodeClass.Path(
+                    "path" + pathsSets.length,
+                    [aloneNode],
+                    null,
+                    null,
+                    ""))
+            }
+        }
+    }
+
     return pathsSets
 }
 //pathEdges edges from concretePath
