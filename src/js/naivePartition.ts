@@ -11,190 +11,180 @@ export function path(vertex: nodeclass.StructBasic): nodeclass.Path | null {
 }
 
 export function head(p: nodeclass.Path) {
-    if (p.rootNaive?.reversed) {
-        return p.rootNaive?.bleft
+    if (p.pathRoot?.reversed) {
+        return p.pathRoot?.pleft
     }
-    return p.rootNaive?.bright
+    return p.pathRoot?.pright
 
 }
 
 export function tail(p: nodeclass.Path) {
-    if (p.rootNaive?.reversed) {
-        return p.rootNaive?.bright
+    if (p.pathRoot?.reversed) {
+        return p.pathRoot?.pright
     }
-    return p.rootNaive?.bleft
+    return p.pathRoot?.pleft
 
 }
 
-function goingRightDown(vertex: nodeclass.NaivePartition | nodeclass.SizePartition): nodeclass.StructBasic | null {
-    if (vertex.bright instanceof nodeclass.StructBasic) {
-        return vertex.bright
+function goingRightDown(vertex: nodeclass.PathStructure): nodeclass.StructBasic | null {
+    if (vertex.pright instanceof nodeclass.StructBasic) {
+        return vertex.pright
     }
-    if (vertex.bright != null) {
-        return goingRightDown(vertex.bright)
+    if (vertex.pright != null) {
+        return goingRightDown(vertex.pright)
     }
     return null
 }
 
 
-function beforeInside(vertex: nodeclass.NaivePartition | nodeclass.SizePartition, previousNode: any): nodeclass.StructBasic | null {
-    if (vertex.bparent == null) {
+function beforeInside(vertex: nodeclass.PathStructure, previousNode: any): nodeclass.StructBasic | null {
+    if (vertex.pParent == null) {
         return null // neexistuje before uzlu
     }
 
-    if (vertex.bleft == previousNode) { // z laveho uzlu sme prišli
-        return beforeInside(vertex.bparent, vertex)
+    if (vertex.pleft == previousNode) { // z laveho uzlu sme prišli
+        return beforeInside(vertex.pParent, vertex)
     }
     // prišli sme z praveho uzlu
-    if (vertex.bparent.bleft == null) {
+    if (vertex.pParent.pleft == null) {
         console.log("Error - beforeInside - left node does not exists")
         return null
     }
-    if (vertex.bparent.bleft instanceof nodeclass.StructBasic) {
-        return vertex.bparent.bleft
+    if (vertex.pParent.pleft instanceof nodeclass.StructBasic) {
+        return vertex.pParent.pleft
     }
-    return goingRightDown(vertex.bparent.bleft)
+    return goingRightDown(vertex.pParent.pleft)
 }
 
 
 export function before(vertex: nodeclass.StructBasic, naiveVersion: boolean): nodeclass.StructBasic | null {
     if (naiveVersion) {
-        if (vertex.parentNaive != null) {
-            console.log("OUTPUT - before: ", beforeInside(vertex.parentNaive, vertex))
-            return beforeInside(vertex.parentNaive, vertex)
+        if (vertex.pParent != null) {
+            console.log("OUTPUT - before: ", beforeInside(vertex.pParent, vertex))
+            return beforeInside(vertex.pParent, vertex)
         }
-        console.log("Error - before - parentNaive == null")
+        console.log("Error - before - pParent == null")
         return null
     }
-    if (vertex.parentSize != null) {
-        return beforeInside(vertex.parentSize, vertex)
-    }
+
     console.log("Error - before - parentSize == null")
     return null
 }
 
-function goingLeftDown(vertex: nodeclass.NaivePartition | nodeclass.SizePartition): nodeclass.StructBasic | null {
-    if (vertex.bleft instanceof nodeclass.StructBasic) {
-        return vertex.bleft
+function goingLeftDown(vertex: nodeclass.PathStructure): nodeclass.StructBasic | null {
+    if (vertex.pleft instanceof nodeclass.StructBasic) {
+        return vertex.pleft
     }
-    if (vertex.bleft != null) {
-        return goingLeftDown(vertex.bleft)
+    if (vertex.pleft != null) {
+        return goingLeftDown(vertex.pleft)
     }
     return null
 }
 
-function afterInside(vertex: nodeclass.NaivePartition | nodeclass.SizePartition, previousNode: any): nodeclass.StructBasic | null {
-    if (vertex.bparent == null) {
+function afterInside(vertex: nodeclass.PathStructure, previousNode: any): nodeclass.StructBasic | null {
+    if (vertex.pParent == null) {
         return null // neexistuje before uzlu
     }
-    if (vertex.bright == previousNode) { // z praveho uzlu sme prišli
-        return afterInside(vertex.bparent, vertex)
+    if (vertex.pright == previousNode) { // z praveho uzlu sme prišli
+        return afterInside(vertex.pParent, vertex)
     }
     // prišli sme z praveho laveho uzlu
-    if (vertex.bparent.bright == null) {
+    if (vertex.pParent.pright == null) {
         console.log("Error - afterInside - left node does not exists")
         return null
     }
-    if (vertex.bparent.bright instanceof nodeclass.StructBasic) {
-        return vertex.bparent.bright
+    if (vertex.pParent.pright instanceof nodeclass.StructBasic) {
+        return vertex.pParent.pright
     }
-    return goingLeftDown(vertex.bparent.bright)
+    return goingLeftDown(vertex.pParent.pright)
 }
 
 export function after(vertex: nodeclass.StructBasic, naiveVersion: boolean) {
     if (naiveVersion) {
-        if (vertex.parentNaive != null) {
-            console.log("OUTPUT - after: ", afterInside(vertex.parentNaive, vertex))
-            return afterInside(vertex.parentNaive, vertex)
+        if (vertex.pParent != null) {
+            console.log("OUTPUT - after: ", afterInside(vertex.pParent, vertex))
+            return afterInside(vertex.pParent, vertex)
         }
-        console.log("Error - after - parentNaive == null")
+        console.log("Error - after - pParent == null")
         return null
     }
-    if (vertex.parentSize != null) {
-        return afterInside(vertex.parentSize, vertex)
-    }
+
     console.log("Error - after - parentSize == null")
     return null
 }
 
 // null is returned node is tail of path
-function pcostInside(vertex: nodeclass.NaivePartition | nodeclass.SizePartition, previousNode: any): number | null {
-    if (vertex.bleft == previousNode) {
+function pcostInside(vertex: nodeclass.PathStructure, previousNode: any): number | null {
+    if (vertex.pleft == previousNode) {
         return vertex.value
     }
-    if (vertex.bparent == null) {
+    if (vertex.pParent == null) {
         return null // node is tail of path
     }
-    return pcostInside(vertex.bparent, vertex)
+    return pcostInside(vertex.pParent, vertex)
 }
 
 export function pcost(vertex: nodeclass.StructBasic, naiveVersion: boolean): number | null {
     if (naiveVersion) {
-        if (vertex.parentNaive != null) {
-            console.log("OUTPUT - after: ", afterInside(vertex.parentNaive, vertex))
-            return pcostInside(vertex.parentNaive, vertex)
+        if (vertex.pParent != null) {
+            console.log("OUTPUT - after: ", afterInside(vertex.pParent, vertex))
+            return pcostInside(vertex.pParent, vertex)
         }
-        console.log("Error - after - parentNaive == null")
+        console.log("Error - after - pParent == null")
         return null
     }
-    if (vertex.parentSize != null) {
-        return pcostInside(vertex.parentSize, vertex)
-    }
+
     console.log("Error - after - parentSize == null")
     return null
 }
 
-function pmincostInside(vertex: nodeclass.NaivePartition | nodeclass.SizePartition): nodeclass.StructBasic | null {
+function pmincostInside(vertex: nodeclass.PathStructure): nodeclass.StructBasic | null {
     if (vertex.netcost == 0 && vertex.netmin == 0) {
-        if (vertex.bleft instanceof nodeclass.StructBasic) {
-            return vertex.bleft
+        if (vertex.pleft instanceof nodeclass.StructBasic) {
+            return vertex.pleft
         }
-        if (vertex.bleft == null) {
-            console.log("Error - pmincostInside - vertex.bleft == null")
+        if (vertex.pleft == null) {
+            console.log("Error - pmincostInside - vertex.pleft == null")
             return null
         }
-        return goingRightDown(vertex.bleft)
+        return goingRightDown(vertex.pleft)
     }
-    let left = vertex.bleft instanceof nodeclass.NaivePartition && vertex.bleft.netcost != null ? vertex.bleft.netcost : Infinity
-    let right = vertex.bright instanceof nodeclass.NaivePartition && vertex.bright.netcost != null ? vertex.bright.netcost : Infinity
+    let left = vertex.pleft instanceof nodeclass.PathStructure && vertex.pleft.netcost != null ? vertex.pleft.netcost : Infinity
+    let right = vertex.pright instanceof nodeclass.PathStructure && vertex.pright.netcost != null ? vertex.pright.netcost : Infinity
     if (right <= left) {
-        if (vertex.bright == null || vertex.bright instanceof nodeclass.StructBasic) {
-            console.log("Error - pmincostInside - vertex.bright == null")
+        if (vertex.pright == null || vertex.pright instanceof nodeclass.StructBasic) {
+            console.log("Error - pmincostInside - vertex.pright == null")
             return null
         }
-        return pmincostInside(vertex.bright)
+        return pmincostInside(vertex.pright)
     } else {
-        if (vertex.bleft == null || vertex.bleft instanceof nodeclass.StructBasic) {
-            console.log("Error - pmincostInside - vertex.bleft2 == null")
+        if (vertex.pleft == null || vertex.pleft instanceof nodeclass.StructBasic) {
+            console.log("Error - pmincostInside - vertex.pleft2 == null")
             return null
         }
-        return pmincostInside(vertex.bleft)
+        return pmincostInside(vertex.pleft)
     }
 }
 
 export function pmincost(p: nodeclass.Path, naiveVersion: boolean) {
     if (naiveVersion) {
-        if (p.rootNaive != null) {
-            return pmincostInside(p.rootNaive)
+        if (p.pathRoot != null) {
+            return pmincostInside(p.pathRoot)
         }
-        console.log("Error - after - parentNaive == null")
+        console.log("Error - after - pParent == null")
         return null
-    }
-    if (p.rootSize != null) {
-        return pmincostInside(p.rootSize)
-
     }
     console.log("Error - after - parentSize == null")
     return null
 }
 
-function pupdateVertex(vertex: nodeclass.NaivePartition | nodeclass.SizePartition, x: number) {
+function pupdateVertex(vertex: nodeclass.PathStructure, x: number) {
     vertex.value += x
-    if (vertex.bleft instanceof nodeclass.NaivePartition || vertex.bleft instanceof nodeclass.SizePartition) {
-        pupdateVertex(vertex.bleft, x)
+    if (vertex.pleft instanceof nodeclass.PathStructure) {
+        pupdateVertex(vertex.pleft, x)
     }
-    if (vertex.bright instanceof nodeclass.NaivePartition || vertex.bright instanceof nodeclass.SizePartition) {
-        pupdateVertex(vertex.bright, x)
+    if (vertex.pright instanceof nodeclass.PathStructure) {
+        pupdateVertex(vertex.pright, x)
     }
 }
 
@@ -206,49 +196,31 @@ export function pupdate(p: nodeclass.Path, x: number, edges: Edges) {
     }
 
     //uprava naive
-    if (p.rootNaive == null) {
-        console.error("p.rootNaive is null")
+    if (p.pathRoot == null) {
+        console.error("p.pathRoot is null")
         return
     }
-    p.rootNaive.netmin += x
-    pupdateVertex(p.rootNaive, x)
-
-    //uprava size
-    if (p.rootSize == null) {
-        console.log("p.rootSize is null")
-        return
-    }
-    p.rootSize.netmin += x
-    pupdateVertex(p.rootSize, x)
-
-
+    p.pathRoot.netmin += x
+    pupdateVertex(p.pathRoot, x)
 }
 
 // robim to pre obe štruktury naive/size
-function reverseInside(vertex: nodeclass.NaivePartition | nodeclass.SizePartition) {
+function reverseInside(vertex: nodeclass.PathStructure) {
     vertex.reversed = !vertex.reversed
-    if (vertex.bleft instanceof nodeclass.NaivePartition || vertex.bleft instanceof nodeclass.SizePartition) {
-        reverseInside(vertex.bleft)
+    if (vertex.pleft instanceof nodeclass.PathStructure) {
+        reverseInside(vertex.pleft)
     }
-    if (vertex.bright instanceof nodeclass.NaivePartition || vertex.bright instanceof nodeclass.SizePartition) {
-        reverseInside(vertex.bright)
+    if (vertex.pright instanceof nodeclass.PathStructure) {
+        reverseInside(vertex.pright)
     }
 }
 
 export function reverse(p: nodeclass.Path) {
-    //uprava naive
-    if (p.rootNaive == null) {
-        console.error("p.rootNaive is null")
+    if (p.pathRoot == null) {
+        console.error("p.pathRoot is null")
         return
     }
-    reverseInside(p.rootNaive)
-
-    //uprava size
-    if (p.rootSize == null) {
-        console.log("p.rootSize is null")
-        return
-    }
-    reverseInside(p.rootSize)
+    reverseInside(p.pathRoot)
 }
 // vyhodim chybu ak p priradim rodiča aj keď existuje už rodič a operáciu zruším
 
@@ -314,8 +286,8 @@ export function concatenate(p: nodeclass.Path, q: nodeclass.Path, x: number, edg
 //funguje iba na path operaciach, cize vrati rodica iba v pripade ze rodic existuje na rovnakej path
 export function split(vertex: nodeclass.StructBasic, paths: Path) {
     var p, q, x, y, vertexIndex
-    if (vertex.parentNaive == null) {
-        console.error("this edge has no parentNaive", vertex)
+    if (vertex.pParent == null) {
+        console.error("this edge has no pParent", vertex)
         return
     }
 

@@ -29,7 +29,7 @@ console.log("type", nodes);
 
 const props = defineProps({
   pathTree: Object,
-  naivePartition: Boolean,
+  pathStructure: Boolean,
 });
 
 let tempArr: any = [];
@@ -81,34 +81,34 @@ watch(
 
     var depth = Math.ceil(Math.log2(x[0].allNodes.length));
     console.log("Length is: ", depth, x[0]);
-    inside(x[0].rootNaive, 0, depth, 0);
+    inside(x[0].pathRoot, 0, depth, 0);
     console.log("Layout", layouts, nodes);
 
     function inside(node: any, baseX: number, axisX: number, axisY: number) {
       console.log(node.name, "inside Name", baseX, axisX, axisY, node);
       layouts.nodes[id] = { x: baseX, y: axisY * 50 };
       nodes[id] = { name: node.name };
-      var bparentId = "a";
-      if (node.bparent != null) {
+      var pParentId = "a";
+      if (node.pParent != null) {
         for (let index in nodes) {
-          if (nodes[index].name == node.bparent.name) {
-            bparentId = index;
+          if (nodes[index].name == node.pParent.name) {
+            pParentId = index;
           }
         }
-        console.log("edge", bparentId, id.toString(), nodes);
+        console.log("edge", pParentId, id.toString(), nodes);
         edges[idEdge] = {
-          source: bparentId,
+          source: pParentId,
           target: id.toString(),
         };
         idEdge++;
       }
       id++;
-      if (node.bleft != null) {
-        inside(node.bleft, baseX - 50 * axisX, axisX - 1, axisY + 1);
+      if (node.pleft != null) {
+        inside(node.pleft, baseX - 50 * axisX, axisX - 1, axisY + 1);
       }
 
-      if (node.bright != null) {
-        inside(node.bright, baseX + 50 * axisX, axisX - 1, axisY + 1);
+      if (node.pright != null) {
+        inside(node.pright, baseX + 50 * axisX, axisX - 1, axisY + 1);
       }
     }
 
@@ -140,7 +140,7 @@ var outPutTree: any[] | undefined;
         <Structure
           class="PopGrid--Structure"
           :clickedNodes="clickedNodes"
-          :whichStructure="props.naivePartition ? 'naive' : 'size'"
+          :whichStructure="props.pathStructure ? 'naive' : 'size'"
           @removeNode="getEmit"
           >XX</Structure
         >

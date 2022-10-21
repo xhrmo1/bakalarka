@@ -50,7 +50,7 @@
       v-if="boolPopUpStructure"
       @changePopUpStructure="showPopUpStructure"
       :pathTree="this.treeOut.pathRoots.filter((x) => x.name == this.clickedId)"
-      :naivePartition="true"
+      :pathStructure="true"
       :treeDataStructure="treeOut"
     ></PopUpStructure>
   </div>

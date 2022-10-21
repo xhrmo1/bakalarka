@@ -52,12 +52,12 @@
     </div>
     <div class="naive" v-if="whichStructure == 'naive'">
       <span class="grid-naive-reversed">reversed: true</span>
-      <span class="grid-naive-bparent">bparent: aaaaa</span>
+      <span class="grid-naive-pparent">pparent: aaaaa</span>
       <span class="grid-naive-netmin">netmin: 10</span>
       <span class="grid-naive-netcost">netcost: 10</span>
       <span class="grid-naive-bhead">bhead: aaaaa</span>
-      <span class="grid-naive-bleft">bleft: aaaaa</span>
-      <span class="grid-naive-bright">bright: aaaaa</span>
+      <span class="grid-naive-pleft">pleft: aaaaa</span>
+      <span class="grid-naive-pright">pright: aaaaa</span>
       <span class="grid-naive-btail">btail: aaaaa</span>
     </div>
 
@@ -191,10 +191,10 @@ span {
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr 1fr;
   grid-template-areas:
-    "reversed reversed bparent bparent"
+    "reversed reversed pparent pparent"
     "netmin netmin netcost netcost"
     "bhead bhead btail btail"
-    "bleft bleft bright bright";
+    "pleft pleft pright pright";
 
   row-gap: 2px;
   column-gap: 2px;
@@ -203,8 +203,8 @@ span {
 .grid-naive-reversed {
   grid-area: reversed;
 }
-.grid-naive-bparent {
-  grid-area: bparent;
+.grid-naive-pparent {
+  grid-area: pparent;
 }
 .grid-naive-netmin {
   grid-area: netmin;
@@ -215,11 +215,11 @@ span {
 .grid-naive-bhead {
   grid-area: bhead;
 }
-.grid-naive-bleft {
-  grid-area: bleft;
+.grid-naive-pleft {
+  grid-area: pleft;
 }
-.grid-naive-bright {
-  grid-area: bright;
+.grid-naive-pright {
+  grid-area: pright;
 }
 .grid-naive-btail {
   grid-area: btail;

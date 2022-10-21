@@ -28,17 +28,16 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
         var newPath = new nodeClass.Path(
             paths[p].id,
             nodesList,
-            createNaiveStruct(nodes, edges, paths[p].edges, nodesList, true, 0, paths[p].edges.length),
-            null,
+            createPathStruct(nodes, edges, paths[p].edges, nodesList, true, 0, paths[p].edges.length),
             p)
         nodesList.forEach(element => {
             element.pathPointer = newPath
         });
         console.log(nodesList)
-        //newPath.root = createNaiveStruct(nodes, edges, paths[p].edges, nodesList, true, 0, paths[p].edges.length)
-        if (newPath.rootNaive != null) {
-            newPath.rootNaive.root = newPath
-            setNetCostMin(newPath.rootNaive)
+        //newPath.root = createPathStruct(nodes, edges, paths[p].edges, nodesList, true, 0, paths[p].edges.length)
+        if (newPath.pathRoot != null) {
+            newPath.pathRoot.root = newPath
+            setNetCostMin(newPath.pathRoot)
         }
         pathsSets.push(newPath)
     }
@@ -54,7 +53,6 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
                     "path" + pathsSets.length,
                     [aloneNode],
                     null,
-                    null,
                     ""))
             }
         }
@@ -64,7 +62,7 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
 }
 //pathEdges edges from concretePath
 //newPath link actual nodes
-function createNaiveStruct(nodes: Nodes, edges: Edges, pathsEdges: string[], newPath: any[], createNaive: boolean, left: number, right: number): nodeClass.NaivePartition | null {
+function createPathStruct(nodes: Nodes, edges: Edges, pathsEdges: string[], newPath: any[], createNaive: boolean, left: number, right: number): nodeClass.PathStructure | null {
     if (left == right) {
         return newPath[left]
     }
@@ -72,7 +70,7 @@ function createNaiveStruct(nodes: Nodes, edges: Edges, pathsEdges: string[], new
     var node = null
     if (createNaive) { // if false, create SizePartition
         console.log("toto ma teary", +edges[pathsEdges[middle]].label)
-        node = new nodeClass.NaivePartition(pathsEdges[middle], newPath[right], newPath[left], +edges[pathsEdges[middle]].label, true)
+        node = new nodeClass.PathStructure(pathsEdges[middle], newPath[right], newPath[left], +edges[pathsEdges[middle]].label, true)
     } else {
         node = null //TODO
     }
@@ -80,59 +78,59 @@ function createNaiveStruct(nodes: Nodes, edges: Edges, pathsEdges: string[], new
     if (left == middle) {
         lnode = newPath[left]
     } else {
-        lnode = createNaiveStruct(nodes, edges, pathsEdges, newPath, createNaive, left, middle)
+        lnode = createPathStruct(nodes, edges, pathsEdges, newPath, createNaive, left, middle)
     }
     if (lnode != null && lnode.name != null) {
-        lnode.bparent = node
+        lnode.pParent = node
 
     }
     let rnode
     if (rnode == middle) {
         rnode = newPath[middle]
     } else {
-        rnode = createNaiveStruct(nodes, edges, pathsEdges, newPath, createNaive, middle + 1, right)
+        rnode = createPathStruct(nodes, edges, pathsEdges, newPath, createNaive, middle + 1, right)
 
     }
     if (rnode != null && rnode.name != null) {
-        rnode.bparent = node
+        rnode.pParent = node
     }
     if (node != null) {
-        node.bleft = lnode
-        node.bright = rnode
+        node.pleft = lnode
+        node.pright = rnode
     }
     return node
 }
 
-function setNetCostMin(naiveStruct: nodeClass.NaivePartition) {
-    naiveStruct.netmin = netMin(naiveStruct)
-    naiveStruct.netcost = netCost(naiveStruct)
-    if (naiveStruct.bleft != null && !(naiveStruct.bleft instanceof nodeClass.StructBasic)) {
-        setNetCostMin(naiveStruct.bleft)
+function setNetCostMin(pathStruct: nodeClass.PathStructure) {
+    pathStruct.netmin = netMin(pathStruct)
+    pathStruct.netcost = netCost(pathStruct)
+    if (pathStruct.pleft != null && !(pathStruct.pleft instanceof nodeClass.StructBasic)) {
+        setNetCostMin(pathStruct.pleft)
     }
-    if (naiveStruct.bright != null && !(naiveStruct.bright instanceof nodeClass.StructBasic)) {
-        setNetCostMin(naiveStruct.bright)
+    if (pathStruct.pright != null && !(pathStruct.pright instanceof nodeClass.StructBasic)) {
+        setNetCostMin(pathStruct.pright)
     }
 }
 
-function grossMin(naiveStruct: nodeClass.NaivePartition): number {
-    var minArray = [+naiveStruct.value]
-    if (naiveStruct.bleft != null && !(naiveStruct.bleft instanceof nodeClass.StructBasic)) {
-        minArray.push(grossMin(naiveStruct.bleft))
+function grossMin(pathStruct: nodeClass.PathStructure): number {
+    var minArray = [+pathStruct.value]
+    if (pathStruct.pleft != null && !(pathStruct.pleft instanceof nodeClass.StructBasic)) {
+        minArray.push(grossMin(pathStruct.pleft))
     }
-    if (naiveStruct.bright != null && !(naiveStruct.bright instanceof nodeClass.StructBasic)) {
-        minArray.push(grossMin(naiveStruct.bright))
+    if (pathStruct.pright != null && !(pathStruct.pright instanceof nodeClass.StructBasic)) {
+        minArray.push(grossMin(pathStruct.pright))
     }
     return Math.min(...minArray)
 }
 
-function netCost(naiveStruct: nodeClass.NaivePartition): number {
-    return naiveStruct.value - grossMin(naiveStruct)
+function netCost(pathStruct: nodeClass.PathStructure): number {
+    return pathStruct.value - grossMin(pathStruct)
 }
 
-function netMin(naiveStruct: nodeClass.NaivePartition): number {
-    if (naiveStruct.bparent == null) {
-        return grossMin(naiveStruct)
+function netMin(pathStruct: nodeClass.PathStructure): number {
+    if (pathStruct.pParent == null) {
+        return grossMin(pathStruct)
     } else {
-        return grossMin(naiveStruct) - grossMin(naiveStruct.bparent)
+        return grossMin(pathStruct) - grossMin(pathStruct.pParent)
     }
 }
