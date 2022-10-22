@@ -66,8 +66,8 @@ export class PathStructure {
     btail: any
     reversed: boolean; //todo
     pParent: PathStructure | null;
-    pleft: PathStructure | null;
-    pright: PathStructure | null;
+    pleft: PathStructure | StructBasic | null;
+    pright: PathStructure | StructBasic | null;
     root: Path; //odkaz na path
 
     //naivePartition

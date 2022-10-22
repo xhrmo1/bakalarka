@@ -24,9 +24,8 @@ let edges: Edges = {
   edge6: { source: "E", target: "G", label: "4", dashed: false },
   edge7: { source: "G", target: "H", label: "2", dashed: false },
   edge8: { source: "G", target: "K", label: "1", dashed: true },
-  edge9: { source: "A", target: "I", label: "26", dashed: true },
   edge10: { source: "I", target: "J", label: "3", dashed: false },
-  edge11: { source: "J", target: "G", label: "5", dashed: true },
+  //edge11: { source: "C", target: "I", label: "16", dashed: true },
 }
 
 let layouts: Layouts = {
@@ -39,8 +38,8 @@ let layouts: Layouts = {
     F: { x: 50, y: -50 },
     G: { x: 150, y: -50 },
     H: { x: 100, y: 50 },
-    I: { x: 200, y: -250 },
-    J: { x: 250, y: -150 },
+    I: { x: 0, y: 0 },
+    J: { x: 0, y: 75 },
     K: { x: 200, y: 50 },
 
   },
@@ -48,7 +47,7 @@ let layouts: Layouts = {
 
 let paths: Paths = {
   path1: {
-    id: "01",
+    id: "path1",
     edges: ["edge2"],
     color: "#ff00ff66", // #rrggbbaa <- with alpha
     canSee: true,
@@ -56,14 +55,14 @@ let paths: Paths = {
     width: 45,
   },
   path2: {
-    id: "02",
+    id: "path2",
     edges: ["edge3", "edge4", "edge6", "edge7"],
     color: "#00aa0066", // #rrggbbaa <- with alpha
     canSee: true,
     mouseOver: false,
   },
   path3: {
-    id: "03",
+    id: "path3",
     edges: ["edge10"],
     color: "#ffc341cc", // #rrggbbaa <- with alpha
     canSee: false,

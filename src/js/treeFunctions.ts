@@ -167,3 +167,10 @@ export function removeEdge(treeDataStructure: nodeClass.StructBasic[], edgeToRem
     }
     source.parent = null
 }
+
+export function findPath(pathRoots: nodeClass.Path[], name: string): nodeClass.Path | undefined {
+    var p = pathRoots.find((path) => {
+        return path.pathID == name
+    })
+    return p
+}

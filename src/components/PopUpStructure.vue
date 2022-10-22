@@ -78,6 +78,7 @@ watch(
       nodes[id] = { name: element.name };
       id++;
     });*/
+    console.log("----", x);
 
     var depth = Math.ceil(Math.log2(x[0].allNodes.length));
     console.log("Length is: ", depth, x[0]);

@@ -49,11 +49,13 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
             if (x === undefined) { x = "" }
             let aloneNode = findNodeArray(structBasic, x)
             if (aloneNode != null) {
-                pathsSets.push(new nodeClass.Path(
+                let oneNodePath: nodeClass.Path = new nodeClass.Path(
                     "path" + pathsSets.length,
                     [aloneNode],
                     null,
-                    ""))
+                    "")
+                pathsSets.push(oneNodePath)
+                aloneNode.pathPointer = oneNodePath
             }
         }
     }
@@ -62,7 +64,7 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
 }
 //pathEdges edges from concretePath
 //newPath link actual nodes
-function createPathStruct(nodes: Nodes, edges: Edges, pathsEdges: string[], newPath: any[], createNaive: boolean, left: number, right: number): nodeClass.PathStructure | null {
+export function createPathStruct(nodes: Nodes, edges: Edges, pathsEdges: string[], newPath: any[], createNaive: boolean, left: number, right: number): nodeClass.PathStructure | null {
     if (left == right) {
         return newPath[left]
     }

@@ -168,6 +168,7 @@ export default {
         );
       }
       this.callFunctionData.code = this.code;
+      console.log("XXX", this.callFunctionData);
       this.$emit("callFunction", this.callFunctionData);
       //console.log("aaa");
       //console.log(this.callFunctionData);
@@ -177,7 +178,9 @@ export default {
       var e = document.getElementById("functionSelector");
       //console.log(e.value, "selector");
       this.currentlySelected = e.value;
-      this.nodesCount = this.functionSet.find((x) => x.name == e.value).nodes;
+      this.nodesCount = this.functionSet.find(
+        (x) => x.name == e.value
+      ).nodesInPath;
       this.pathsCount = this.functionSet.find((x) => x.name == e.value).paths;
       this.valuesCount = this.functionSet.find((x) => x.name == e.value).values;
       this.code = this.functionSet.find((x) => x.name == e.value).code;
