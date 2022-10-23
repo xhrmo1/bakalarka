@@ -211,6 +211,33 @@ let functionSetX = [
         values: 0,
         code: 111,
     },
+    {
+        name: "splice",
+        description: {
+            args: "path p",
+            description: "Reverse the direction of p, making the head the tail and vice versa"
+        },
+        category: "pathOP",
+        nodes: 0,
+        nodesInPath: 0,
+        paths: 1,
+        values: 0,
+        code: 112,
+    },
+    {
+        name: "expose",
+        description: {
+            args: "vertex x",
+            description: "Reverse the direction of p, making the head the tail and vice versa"
+        },
+        category: "pathOP",
+        nodes: 0,
+        nodesInPath: 1,
+        paths: 0,
+        values: 0,
+        code: 113,
+    },
+
 ]
 
 

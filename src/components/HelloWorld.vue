@@ -264,6 +264,7 @@ watch(
     //console.log("AAAAAAXAXAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     //console.log(x, z, "xxxx");
     outPutTree = firstTry(x, nodes, edges, paths, outPutTree);
+    console.log(paths, edges, outPutTree);
     console.log("x", outPutTree);
     emit("treeOut", outPutTree);
   },

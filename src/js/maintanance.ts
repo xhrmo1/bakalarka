@@ -1,6 +1,8 @@
 import * as nodeClass from "./nodeClass"
 import { Nodes, Edges, Paths } from "v-network-graph";
 import { findNodeArray } from "./treeFunctions";
+import * as naiveOP from "./naivePartition"
+
 
 
 export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic: nodeClass.StructBasic[]) {
@@ -49,11 +51,12 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
             if (x === undefined) { x = "" }
             let aloneNode = findNodeArray(structBasic, x)
             if (aloneNode != null) {
+                let pathID = naiveOP.getLastElementFromMap(paths, "path")
                 let oneNodePath: nodeClass.Path = new nodeClass.Path(
-                    "path" + pathsSets.length,
+                    "path" + pathID,
                     [aloneNode],
                     null,
-                    "")
+                    "path" + pathID)
                 pathsSets.push(oneNodePath)
                 aloneNode.pathPointer = oneNodePath
             }

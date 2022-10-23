@@ -9,7 +9,7 @@ export function initializeTree(nodes: Nodes, edges: Edges, paths: Paths, callPar
     for (var n in nodes) {
         if (nodeIsRoot(edges, n)) {
             console.log("--thisNode is root", n)
-            var root: nodeClass.StructBasic = new nodeClass.StructBasic(nodes[n].name)
+            var root: nodeClass.StructBasic = new nodeClass.StructBasic(nodes[n].name ?? "Uzol nema meno")
             root.children = getChildren(edges, root)
             roots.push(root)
         }

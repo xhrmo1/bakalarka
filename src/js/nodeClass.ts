@@ -20,7 +20,7 @@ export class EdgeDetail {
 
 export class StructBasic {
     /* name je povinne, parent a children moze byt null */
-    name: string | undefined
+    name: string
     parent: EdgeDetail | null
     value: number | null
     children: EdgeDetail[] | null
@@ -28,7 +28,7 @@ export class StructBasic {
     pathPointer: Path | null
     constructor
         (
-            name: string | undefined, parent: EdgeDetail | null = null, value: number | null = null,
+            name: string, parent: EdgeDetail | null = null, value: number | null = null,
             children: EdgeDetail[] | null = null, pParent: PathStructure | null = null,
             pathPointer: Path | null = null
         ) {

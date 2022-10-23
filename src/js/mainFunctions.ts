@@ -90,16 +90,8 @@ export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, pa
             foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
             var foundPath2 = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[1])
             if (foundPath !== undefined && foundPath2 !== undefined) {
-                let [pathID, allNodes] = naiveOP.concatenate(foundPath, foundPath2, callParams.values[0], edges, paths, treeDataStructure)
+                let pathID = naiveOP.concatenate(foundPath, foundPath2, callParams.values[0], nodes, edges, paths, treeDataStructure)
                 console.log("po concate, pred spojovanim", pathID, paths)
-                treeDataStructure.pathRoots.map((p) => {
-                    if (p.pathID == pathID) {
-                        allNodes.map((n) => { n.pathPointer = p })
-                        p.allNodes = allNodes
-                        p.pathRoot = maintanance.createPathStruct(nodes, edges, paths[pathID].edges, allNodes, true, 0, paths[pathID].edges.length)
-
-                    }
-                })
             }
 
             break
@@ -108,12 +100,16 @@ export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, pa
             if (foundNode != null) {
                 console.log("Vystup operacie split: ", naiveOP.split(foundNode, paths, nodes, edges, treeDataStructure))
             }
-            for (var p in paths) {
-                if (paths[p].edges.length == 0) {
-                    delete paths[p]
-                }
+            break
+        case 112:
+            console.error("xxxxxx", JSON.parse(JSON.stringify(paths)))
+            foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
+            if (foundPath !== undefined) {
+                console.log("xxxxxx", paths)
+                console.log("Vystup operacie splice", naiveOP.splice(foundPath, paths, nodes, edges, treeDataStructure))
+                console.log(paths, edges, treeDataStructure)
             }
-            treeDataStructure.pathRoots.filter(p => p.allNodes?.length != 0)
+            break
         /* nad 10 zacnu operacie na cestach a stromoch */
     }
 
