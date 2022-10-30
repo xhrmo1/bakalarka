@@ -10,8 +10,9 @@ export function initializeTree(nodes: Nodes, edges: Edges, paths: Paths, callPar
     for (var n in nodes) {
         if (nodeIsRoot(edges, n)) {
             console.log("--thisNode is root", n)
-            var root: nodeClass.StructBasic = new nodeClass.StructBasic(nodes[n].name ?? "Uzol nema meno")
+            var root: nodeClass.StructBasic = new nodeClass.StructBasic(nodes[n].name ?? "Uzol nema meno", 1)
             root.children = getChildren(edges, root)
+            root.size = sumSizeOfChildren(root)
             roots.push(root)
         }
     }
@@ -19,12 +20,25 @@ export function initializeTree(nodes: Nodes, edges: Edges, paths: Paths, callPar
     return roots
 }
 
+//including node size itself (children + 1)
+function sumSizeOfChildren(node: nodeClass.StructBasic) {
+    let sum = 0
+    if (node.children == null) {
+        return 1
+    }
+    for (let c of node.children) {
+        sum = sum + c.target.size
+    }
+    return sum + 1
+}
+
 function getChildren(edges: Edges, node: nodeClass.StructBasic): nodeClass.EdgeDetail[] {
     let children: nodeClass.EdgeDetail[] = []
     for (var e in edges) {
         if (edges[e].source == node.name) {
-            let child: nodeClass.StructBasic = new nodeClass.StructBasic(edges[e].target, new nodeClass.EdgeDetail(node, e), +edges[e].label,)
+            let child: nodeClass.StructBasic = new nodeClass.StructBasic(edges[e].target, 1, new nodeClass.EdgeDetail(node, e), +edges[e].label,)
             child.children = getChildren(edges, child)
+            child.size = sumSizeOfChildren(child)
             children.push(new nodeClass.EdgeDetail(child, e))
         }
     }
@@ -42,7 +56,7 @@ function nodeIsRoot(edges: Edges, nodeName: string): boolean {
 
 export function addNode(treeDataStructure: nodeClass.TreeDataStructures, name: string) {
     console.log('-AddingNode-', treeDataStructure)
-    let newNode: nodeClass.StructBasic = new nodeClass.StructBasic(name)
+    let newNode: nodeClass.StructBasic = new nodeClass.StructBasic(name, 1)
     newNode.pathPointer = new nodeClass.Path(naiveOP.getNextNumberForPath(treeDataStructure), [newNode], null, null)
     treeDataStructure.basicRoots.push(newNode)
     treeDataStructure.pathRoots.push(newNode.pathPointer)
@@ -78,12 +92,38 @@ export function findNode(node: nodeClass.StructBasic, name: string): nodeClass.S
     return null
 }
 
+function substituteSize(node: nodeClass.StructBasic, value: number) {
+    console.log("-subsitute", node.size, value)
+    node.size = node.size - value
+    console.log("-subsitute2", node.size)
+    if (node.parent != null) {
+        substituteSize(node.parent.target, value)
+    }
+}
+
+function addSizeUP(node: nodeClass.StructBasic) {
+    console.log("---", node.size)
+    node.size = node.size + 1
+    console.log("---", node.size)
+    if (node.parent != null) {
+        addSizeUP(node.parent.target)
+    }
+}
+
+
 export function removeNode(treeDataStructure: nodeClass.TreeDataStructures, name: string, nodes: Nodes, edges: Edges, paths: Paths) {
+
     let node = findNodeArray(treeDataStructure.basicRoots, name)
     if (node == null) {
         console.error("Removing node, node not found")
         return
     }
+    if (node.parent != null) {
+        console.log("----------subs---------")
+        substituteSize(node.parent.target, node.size)
+        console.log("----------subs---------")
+    }
+
     naiveOP.split(node, paths, nodes, edges, treeDataStructure)
     if (node.pathPointer != null) {
         let index = treeDataStructure.pathRoots.indexOf(node.pathPointer, 0)
@@ -134,8 +174,9 @@ export function addEdge(treeDataStructure: nodeClass.TreeDataStructures, edges: 
     if (nodeSource.children == null) {
         nodeSource.children = []
     }
+    console.log("---")
     nodeSource.children.push(new nodeClass.EdgeDetail(nodeTarget, edgeID))
-
+    addSizeUP(nodeSource)
     nodeTarget.value = edges[edgeID].label
     nodeTarget.parent = new nodeClass.EdgeDetail(nodeSource, edgeID)
 
@@ -169,6 +210,9 @@ export function removeEdge(treeDataStructure: nodeClass.TreeDataStructures, edge
     if (target == null) {
         console.error("--removeEdge error, source node was not found")
         return
+    }
+    if (target.parent != null) {
+        substituteSize(target.parent.target, target.size)
     }
     target.parent = null
     treeDataStructure.basicRoots.push(target)

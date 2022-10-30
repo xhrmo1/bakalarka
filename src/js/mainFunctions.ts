@@ -29,9 +29,8 @@ export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, pa
             break;
         case 4: // odobratie hrany -> aktualizovat zoznam uzlov (odobrat syna a rodica), prebehnut dotknute DS
             treeFunctions.removeEdge(treeDataStructure, callParams.edgeToRemove)
-            if (!callParams.edgeToRemove.dashed) {
-                treeDataStructure.pathRoots = maintanance.buildPaths(nodes, edges, paths, treeDataStructure.basicRoots) // premazem z paths
-            }
+            treeDataStructure.pathRoots = maintanance.buildPaths(nodes, edges, paths, treeDataStructure.basicRoots) // premazem z paths
+
             break;
         case 101:
             var foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])

@@ -26,9 +26,10 @@ export class StructBasic {
     children: EdgeDetail[] | null
     pParent: PathStructure | null
     pathPointer: Path | null
+    size: number
     constructor
         (
-            name: string, parent: EdgeDetail | null = null, value: number | null = null,
+            name: string, size: number, parent: EdgeDetail | null = null, value: number | null = null,
             children: EdgeDetail[] | null = null, pParent: PathStructure | null = null,
             pathPointer: Path | null = null
         ) {
@@ -38,6 +39,7 @@ export class StructBasic {
         this.pParent = pParent //either PathStruct or SizeStruct , if struct is null, it is solo path
         this.pathPointer = pathPointer
         this.value = value
+        this.size = size
     }
 }
 

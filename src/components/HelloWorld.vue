@@ -183,6 +183,8 @@ function addEdge() {
 }
 
 function removeEdge() {
+  nextPathIndex.value++;
+  nextPathIndex.value++;
   //console.log("test");
   /*console.log(
     edges[selectedEdges.value[0]].source,
