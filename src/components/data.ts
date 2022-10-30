@@ -24,8 +24,8 @@ let edges: Edges = {
   edge6: { source: "E", target: "G", label: "4", dashed: false },
   edge7: { source: "G", target: "H", label: "2", dashed: false },
   edge8: { source: "G", target: "K", label: "1", dashed: true },
-  edge10: { source: "I", target: "J", label: "3", dashed: false },
-  edge11: { source: "F", target: "I", label: "16", dashed: false },
+  edge9: { source: "I", target: "J", label: "3", dashed: false },
+  edge10: { source: "F", target: "I", label: "16", dashed: false },
 }
 
 let layouts: Layouts = {
@@ -63,7 +63,7 @@ let paths: Paths = {
   },
   path3: {
     id: "path3",
-    edges: ["edge11", "edge10"],
+    edges: ["edge10", "edge9"],
     color: "#ffc341cc", // #rrggbbaa <- with alpha
     canSee: false,
     mouseOver: false,

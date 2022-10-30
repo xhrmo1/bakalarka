@@ -87,7 +87,9 @@ export function removeNode(treeDataStructure: nodeClass.TreeDataStructures, name
     naiveOP.split(node, paths, nodes, edges, treeDataStructure)
     if (node.pathPointer != null) {
         let index = treeDataStructure.pathRoots.indexOf(node.pathPointer, 0)
-        treeDataStructure.pathRoots.splice(index, 1)
+        if (index != -1) {
+            treeDataStructure.pathRoots.splice(index, 1)
+        }
     }
 
     if (node.parent != null) {
@@ -117,60 +119,59 @@ export function removeNode(treeDataStructure: nodeClass.TreeDataStructures, name
 
 }
 
-export function addEdge(treeDataStructure: nodeClass.StructBasic[], edges: Edges, edgeID: string) {
+export function addEdge(treeDataStructure: nodeClass.TreeDataStructures, edges: Edges, edgeID: string) {
     console.log("Adding Edge", edges[edgeID])
-    var nodeSource = findNodeArray(treeDataStructure, edges[edgeID].source)
+    var nodeSource = findNodeArray(treeDataStructure.basicRoots, edges[edgeID].source)
     if (nodeSource == null) {
         console.error("--addEdge, node not found")
         return
     }
-    var nodeFound = findNodeArray(treeDataStructure, edges[edgeID].target)
-    if (nodeFound == null) {
-        console.error("--error while adding edge, node not found", treeDataStructure, edges, edgeID)
-    } else {
-        if (nodeSource.children == null) {
-            nodeSource.children = []
-        }
-        nodeSource.children.push(new nodeClass.EdgeDetail(nodeFound, edgeID))
-    }
-    var nodeTarget = findNodeArray(treeDataStructure, edges[edgeID].target)
+    var nodeTarget = findNodeArray(treeDataStructure.basicRoots, edges[edgeID].target)
     if (nodeTarget == null) {
-        console.error("--addEdge, node not found2")
+        console.error("--error while adding edge, node not found", treeDataStructure, edges, edgeID)
         return
     }
+    if (nodeSource.children == null) {
+        nodeSource.children = []
+    }
+    nodeSource.children.push(new nodeClass.EdgeDetail(nodeTarget, edgeID))
+
     nodeTarget.value = edges[edgeID].label
-    var n = findNodeArray(treeDataStructure, edges[edgeID].source)
-    if (n == null) {
-        console.error("--adding edge, found error", treeDataStructure, edges, edgeID)
-        return
+    nodeTarget.parent = new nodeClass.EdgeDetail(nodeSource, edgeID)
+
+    let index = treeDataStructure.basicRoots.indexOf(nodeTarget, 0)
+    if (index != -1) {
+        treeDataStructure.basicRoots.splice(index, 1)
     }
-    nodeTarget.parent == new nodeClass.EdgeDetail(n, edgeID)
 }
 
 
-export function removeEdge(treeDataStructure: nodeClass.StructBasic[], edgeToRemove: Edge) {
-    var target = findNodeArray(treeDataStructure, edgeToRemove.source)
-    if (target == null) {
+export function removeEdge(treeDataStructure: nodeClass.TreeDataStructures, edgeToRemove: Edge) {
+    console.log(" -- edgeToRemove -- ", edgeToRemove)
+    var source = findNodeArray(treeDataStructure.basicRoots, edgeToRemove.source)
+    if (source == null) {
         console.error("--removeEdge error, target node was not found")
         return
     }
-    if (target.children == null) {
+    if (source.children == null) {
         console.error("--removeEdge error, target node has not children")
         return
     }
-    if (target.name == null) {
+    if (source.name == null) {
         console.error("--removeEdge error, target has no name")
         return
     }
-    var name = target.name
-    target.children.filter(e => e.target.name != name)
+    var name = source.name
+    source.children.filter(e => e.target.name != name)
 
-    var source = findNodeArray(treeDataStructure, edgeToRemove.target)
-    if (source == null) {
+
+    var target = findNodeArray(treeDataStructure.basicRoots, edgeToRemove.target)
+    if (target == null) {
         console.error("--removeEdge error, source node was not found")
         return
     }
-    source.parent = null
+    target.parent = null
+    treeDataStructure.basicRoots.push(target)
 }
 
 export function findPath(pathRoots: nodeClass.Path[], name: string): nodeClass.Path | undefined {

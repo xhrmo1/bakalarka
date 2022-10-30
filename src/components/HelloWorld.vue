@@ -154,7 +154,11 @@ function addEdge() {
   const [source, target] = selectedNodes.value;
   //ošetrenie aby uzol nemal dvoch rodicov
   for (let index in edges) {
-    if (edges[index].target == target) {
+    if (
+      edges[index].target == target ||
+      (edges[index].target == source && edges[index].source == target) // alebo dve hrany(rodic--> potomok a potomok--> rodic)
+    ) {
+      alert("Cannot add edge between " + edges[index].source); //spravit peknu notifikaciu
       return console.error("Nemôže pridať edge, uzol už ma rodiča");
     }
   }
@@ -184,7 +188,7 @@ function removeEdge() {
     edges[selectedEdges.value[0]].source,
     edges[selectedEdges.value[0]].label
   );*/
-  edges[selectedEdges.value[0]].label = "88888";
+  //edges[selectedEdges.value[0]].label = "88888";
   //console.log(selectedEdges.value[0]);
   for (const edgeId of selectedEdges.value) {
     var edgeToRemove = edges[edgeId];

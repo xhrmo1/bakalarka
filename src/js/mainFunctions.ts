@@ -25,10 +25,10 @@ export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, pa
             console.log('Node was removed', callParams.name, treeDataStructure)
             break;
         case 3: // pridanie hrany -> aktualizovat zoznam uzlov (pridat syna a rodica), prebehnut dotknute DS
-            treeFunctions.addEdge(treeDataStructure.basicRoots, edges, callParams.edgeID)
+            treeFunctions.addEdge(treeDataStructure, edges, callParams.edgeID)
             break;
         case 4: // odobratie hrany -> aktualizovat zoznam uzlov (odobrat syna a rodica), prebehnut dotknute DS
-            treeFunctions.removeEdge(treeDataStructure.basicRoots, callParams.edgeToRemove)
+            treeFunctions.removeEdge(treeDataStructure, callParams.edgeToRemove)
             if (!callParams.edgeToRemove.dashed) {
                 treeDataStructure.pathRoots = maintanance.buildPaths(nodes, edges, paths, treeDataStructure.basicRoots) // premazem z paths
             }
