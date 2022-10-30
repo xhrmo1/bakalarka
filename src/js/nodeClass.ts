@@ -48,14 +48,14 @@ export class Path {
     name: string | undefined;
     allNodes: StructBasic[] | null
     pathRoot: PathStructure | null;
-    pathID: string | null;
+    pathID: string;
     constructor(
-        name: string | undefined, allNodes: StructBasic[],
+        name: string, allNodes: StructBasic[],
         pathRoot: PathStructure | null, pathID: string | null) {
         this.name = name // id
         this.allNodes = allNodes // list
         this.pathRoot = pathRoot  //pointer
-        this.pathID = pathID
+        this.pathID = pathID != null ? pathID : name
     }
 }
 

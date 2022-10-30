@@ -110,6 +110,12 @@ export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, pa
                 console.log(paths, edges, treeDataStructure)
             }
             break
+        case 113:
+            foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
+            if (foundNode != null) {
+                console.log("Vystup operacie expose: ", naiveOP.expose(foundNode, paths, nodes, edges, treeDataStructure))
+            }
+            break
         /* nad 10 zacnu operacie na cestach a stromoch */
     }
 

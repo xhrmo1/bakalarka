@@ -28,7 +28,7 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
         console.log("-- pouzite nodes --", usedNodes)
         nodesList = nodesList.reverse() // nodeList ide od korena od listy, path je definovany ze hlava je list a tail je koreň - toto mi prišlo ako najjednoduchší fix problému
         var newPath = new nodeClass.Path(
-            paths[p].id,
+            paths[p].id ?? "",
             nodesList,
             createPathStruct(nodes, edges, paths[p].edges, nodesList, true, 0, paths[p].edges.length),
             p)
@@ -51,12 +51,12 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
             if (x === undefined) { x = "" }
             let aloneNode = findNodeArray(structBasic, x)
             if (aloneNode != null) {
-                let pathID = naiveOP.getLastElementFromMap(paths, "path")
+                let pathID = getNextNumberForPat2(pathsSets)
                 let oneNodePath: nodeClass.Path = new nodeClass.Path(
-                    "path" + pathID,
+                    pathID,
                     [aloneNode],
                     null,
-                    "path" + pathID)
+                    pathID)
                 pathsSets.push(oneNodePath)
                 aloneNode.pathPointer = oneNodePath
             }
@@ -64,6 +64,16 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
     }
 
     return pathsSets
+}
+
+function getNextNumberForPat2(pathsRoots: nodeClass.Path[]): string {
+    var xx = pathsRoots[pathsRoots.length - 1].pathID?.replace("path", "")
+    if (xx != undefined) {
+        xx = "path" + (Number(xx) + 2)
+    } else {
+        xx = "path1"
+    }
+    return xx
 }
 //pathEdges edges from concretePath
 //newPath link actual nodes
