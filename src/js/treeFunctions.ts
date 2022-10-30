@@ -1,5 +1,6 @@
 import * as nodeClass from "./nodeClass"
 import { Nodes, Edges, Paths, Edge } from "v-network-graph";
+import * as naiveOP from "./naivePartition"
 
 
 //nodeBasic používam pri výpise štruktúry vpravo
@@ -39,9 +40,13 @@ function nodeIsRoot(edges: Edges, nodeName: string): boolean {
     return true
 }
 
-export function addNode(treeDataStructure: nodeClass.StructBasic[], name: string) {
+export function addNode(treeDataStructure: nodeClass.TreeDataStructures, name: string) {
     console.log('-AddingNode-', treeDataStructure)
-    treeDataStructure.push(new nodeClass.StructBasic(name))
+    let newNode: nodeClass.StructBasic = new nodeClass.StructBasic(name)
+    newNode.pathPointer = new nodeClass.Path(naiveOP.getNextNumberForPath(treeDataStructure), [newNode], null, null)
+    treeDataStructure.basicRoots.push(newNode)
+    treeDataStructure.pathRoots.push(newNode.pathPointer)
+
     return treeDataStructure
 }
 
@@ -73,18 +78,16 @@ export function findNode(node: nodeClass.StructBasic, name: string): nodeClass.S
     return null
 }
 
-export function removeNode(treeDataStructure: nodeClass.StructBasic[], name: string) {
-    var node;
-    for (let i = 0; i < treeDataStructure.length; i++) {
-        node = findNode(treeDataStructure[i], name)
-        if (node != null) {
-            break
-        }
-    }
-
+export function removeNode(treeDataStructure: nodeClass.TreeDataStructures, name: string, nodes: Nodes, edges: Edges, paths: Paths) {
+    let node = findNodeArray(treeDataStructure.basicRoots, name)
     if (node == null) {
-        console.error("Error - node was not found")
+        console.error("Removing node, node not found")
         return
+    }
+    naiveOP.split(node, paths, nodes, edges, treeDataStructure)
+    if (node.pathPointer != null) {
+        let index = treeDataStructure.pathRoots.indexOf(node.pathPointer, 0)
+        treeDataStructure.pathRoots.splice(index, 1)
     }
 
     if (node.parent != null) {
@@ -105,7 +108,9 @@ export function removeNode(treeDataStructure: nodeClass.StructBasic[], name: str
             if (node.children[i].target.parent?.target.name != node.name) {
                 console.error("--zle nastavene--, removeNode 2", node)
             }
+            treeDataStructure.basicRoots.push(node.children[i].target)
             node.children[i].target.parent = null
+
         }
     }
 

@@ -16,12 +16,13 @@ export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, pa
             )
             break;
         case 1: // pridanie uzlu -> do zoznamu uzlov
-            treeDataStructure.basicRoots = treeFunctions.addNode(treeDataStructure.basicRoots, callParams.name)
-            console.log('addX', treeDataStructure)
+            treeFunctions.addNode(treeDataStructure, callParams.name)
+            console.log('Node was added', callParams.name, treeDataStructure)
             break;
         case 2: // odobratie uzlu -> vymazat zo zoznamu uzlov, vymazat hrany, aktualizovat DS
-            treeFunctions.removeNode(treeDataStructure.basicRoots, callParams.name)
-            console.log('deleteX', treeDataStructure)
+
+            treeFunctions.removeNode(treeDataStructure, callParams.name, nodes, edges, paths)
+            console.log('Node was removed', callParams.name, treeDataStructure)
             break;
         case 3: // pridanie hrany -> aktualizovat zoznam uzlov (pridat syna a rodica), prebehnut dotknute DS
             treeFunctions.addEdge(treeDataStructure.basicRoots, edges, callParams.edgeID)

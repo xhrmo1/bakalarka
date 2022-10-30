@@ -19,12 +19,12 @@ let edges: Edges = {
   edge1: { source: "A", target: "B", label: "99", dashed: true },
   edge2: { source: "B", target: "C", label: "1", dashed: false },
   edge3: { source: "A", target: "D", label: "6", dashed: false },
-  edge4: { source: "D", target: "E", label: "3", dashed: true },
+  edge4: { source: "D", target: "E", label: "3", dashed: false },
   edge5: { source: "E", target: "F", label: "1", dashed: true },
-  edge6: { source: "E", target: "G", label: "4", dashed: true },
+  edge6: { source: "E", target: "G", label: "4", dashed: false },
   edge7: { source: "G", target: "H", label: "2", dashed: false },
   edge8: { source: "G", target: "K", label: "1", dashed: true },
-  edge10: { source: "I", target: "J", label: "3", dashed: true },
+  edge10: { source: "I", target: "J", label: "3", dashed: false },
   edge11: { source: "F", target: "I", label: "16", dashed: false },
 }
 
@@ -56,21 +56,14 @@ let paths: Paths = {
   },
   path2: {
     id: "path2",
-    edges: ["edge3"],
+    edges: ["edge3", "edge4", "edge6", "edge7"],
     color: "#00aa0066", // #rrggbbaa <- with alpha
     canSee: true,
     mouseOver: false,
   },
   path3: {
     id: "path3",
-    edges: ["edge11"],
-    color: "#ffc341cc", // #rrggbbaa <- with alpha
-    canSee: false,
-    mouseOver: false,
-  },
-  path4: {
-    id: "path4",
-    edges: ["edge7"],
+    edges: ["edge11", "edge10"],
     color: "#ffc341cc", // #rrggbbaa <- with alpha
     canSee: false,
     mouseOver: false,
