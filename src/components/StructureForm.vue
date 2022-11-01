@@ -8,7 +8,8 @@
       <StructureItem
         class="item1"
         :node="value"
-        :whichStructure="this.whichStructure"
+        :isNode="value.hasOwnProperty('pathPointer')"
+        :isInternalNode="value.hasOwnProperty('pleft')"
         @removeNodeFromClicked="removeNodeFromClicked"
       />
     </div>

@@ -1,6 +1,10 @@
 import { Nodes, Edges, Layouts, Paths, defineConfigs } from "v-network-graph"
 
-let nodes: Nodes = {
+let nodes: Nodes = {}
+let edges: Edges = {}
+let paths: Paths = {}
+
+let nodes1: Nodes = {
   A: { name: "A" },
   B: { name: "B" },
   C: { name: "C" },
@@ -12,10 +16,22 @@ let nodes: Nodes = {
   I: { name: "I" },
   J: { name: "J" },
   K: { name: "K" },
-
 }
 
-let edges: Edges = {
+let nodes2: Nodes = {
+  A: { name: "A" },
+  B: { name: "B" },
+  C: { name: "C" },
+  D: { name: "D" },
+}
+let edges2: Edges = {
+  edge1: { source: "A", target: "B", label: "99", dashed: true },
+  edge2: { source: "B", target: "C", label: "1", dashed: true },
+  edge3: { source: "A", target: "D", label: "6", dashed: true },
+}
+let paths2: Paths = {}
+
+let edges1: Edges = {
   edge1: { source: "A", target: "B", label: "99", dashed: true },
   edge2: { source: "B", target: "C", label: "1", dashed: false },
   edge3: { source: "A", target: "D", label: "6", dashed: false },
@@ -28,7 +44,9 @@ let edges: Edges = {
   edge10: { source: "F", target: "I", label: "16", dashed: false },
 }
 
-let layouts: Layouts = {
+let layouts: Layouts = { nodes: {} }
+
+let layouts1: Layouts = {
   nodes: {
     A: { x: 100, y: -350 },
     B: { x: 0, y: -250 },
@@ -41,11 +59,19 @@ let layouts: Layouts = {
     I: { x: 0, y: 0 },
     J: { x: 0, y: 75 },
     K: { x: 200, y: 50 },
+  },
+}
+let layouts2: Layouts = {
+  nodes: {
+    A: { x: 0, y: -350 },
+    B: { x: 150, y: -250 },
+    C: { x: 100, y: -150 },
+    D: { x: 50, y: -250 },
 
   },
 }
 
-let paths: Paths = {
+let paths1: Paths = {
   path1: {
     id: "path1",
     edges: ["edge2"],
@@ -70,7 +96,22 @@ let paths: Paths = {
   },
 }
 
-
+let defaultLayouts = [
+  {
+    name: "Prvy defaulty layout",
+    nodes: nodes1,
+    edges: edges1,
+    paths: paths1,
+    layouts: layouts1,
+  },
+  {
+    name: "Druhy defaulty layout",
+    nodes: nodes2,
+    edges: edges2,
+    paths: paths2,
+    layouts: layouts2,
+  }
+]
 
 
 
@@ -192,4 +233,5 @@ export default {
   configs,
   configsStructure,
   paths,
+  defaultLayouts,
 }

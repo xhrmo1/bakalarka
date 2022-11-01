@@ -2,7 +2,7 @@
   <div class="mainDivide">
     <div class="main">
       <div class="valuesGrid">
-        <span class="valuesGrid-item-header">Technicke menu</span>
+        <span class="valuesGrid-item-header">Ponuka všetkých funkcií</span>
         <!-- vyber categórii -->
         <span class="valuesGrid-item-value1"> Kategórie funkcii:</span>
         <select
@@ -101,9 +101,7 @@
         </template>
       </div>
     </div>
-    <div class="flexgrowXX" style="justify-self: end">
-      <img src="../functionPics/splice.png" alt="" style="margin-left: auto" />
-    </div>
+
     <div v-if="currentlySelected != ''" class="mainDivide-desc">
       <div>
         <span style="font-weight: bold">Popis Funkcie</span>
@@ -205,7 +203,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .flexgrowXX {
   grid-area: picture;
   display: flex;
@@ -228,8 +226,8 @@ img {
   grid-template-columns: 1fr auto;
   grid-template-rows: 1fr auto;
   grid-template-areas:
-    "tech picture"
-    "desc picture";
+    "tech tech"
+    "desc desc";
 }
 
 .mainDivide-desc {
@@ -252,16 +250,19 @@ img {
     "header header"
     "value1 item1"
     "value2 item2"
-    "value3 item3"
-    "value4 item4"
+    "item3 item3"
     "  .     .  ";
-  margin: 16px 8px 0px 8px;
+  margin: 0px 8px 0px 8px;
+  font-size: 20px;
 }
 
 .valuesGrid-item-header {
   grid-area: header;
   background-color: #c4c4c4;
   text-align: center;
+}
+select {
+  font-size: 20px;
 }
 
 .valuesGrid-item-value1 {

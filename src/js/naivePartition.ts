@@ -225,7 +225,10 @@ export function reverse(p: nodeclass.Path) {
 }
 // vyhodim chybu ak p priradim rodiča aj keď existuje už rodič a operáciu zruším
 
-export function getLastElementFromMap(map: any, whatType: string): string {
+export function getLastElementFromMap(map: Edges, whatType: string): string {
+    if (Object.keys(map).length == 0) {
+        return "1"
+    }
     let lastMapName: string = ""
     for (let i in map) {
         lastMapName = i
@@ -412,6 +415,9 @@ export function split(vertex: nodeclass.StructBasic, paths: Paths, nodes: Nodes,
 }
 
 export function getNextNumberForPath(treeDataStructure: nodeclass.TreeDataStructures): string {
+    if (treeDataStructure.pathRoots.length == 0) {
+        return "path" + 1
+    }
     var xx = treeDataStructure.pathRoots[treeDataStructure.pathRoots.length - 1].pathID?.replace("path", "")
     if (xx != undefined) {
         xx = "path" + (Number(xx) + 2)

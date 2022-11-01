@@ -67,6 +67,9 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
 }
 
 function getNextNumberForPat2(pathsRoots: nodeClass.Path[]): string {
+    if (pathsRoots.length == 0) {
+        return "path" + 1
+    }
     var xx = pathsRoots[pathsRoots.length - 1].pathID?.replace("path", "")
     if (xx != undefined) {
         xx = "path" + (Number(xx) + 2)
@@ -84,6 +87,7 @@ export function createPathStruct(nodes: Nodes, edges: Edges, pathsEdges: string[
     var middle = Math.floor((right + left) / 2)
     var node = null
     if (createNaive) { // if false, create SizePartition
+        console.log(edges[pathsEdges[middle]])
         console.log("toto ma teary", +edges[pathsEdges[middle]].label)
         node = new nodeClass.PathStructure(pathsEdges[middle], newPath[right], newPath[left], +edges[pathsEdges[middle]].label, true)
     } else {

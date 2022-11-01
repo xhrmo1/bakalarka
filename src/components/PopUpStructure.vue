@@ -6,6 +6,7 @@ import * as vNG from "v-network-graph";
 import data from "./data";
 import firstTry from "../js/mainFunctions";
 import Structure from "./StructureForm.vue";
+import * as nodeClass from "../js/nodeClass";
 
 var nodes: Nodes = reactive({ ...data.nodes });
 var edges: Edges = reactive({ ...data.edges });
@@ -42,12 +43,51 @@ const eventHandlers: vNG.EventHandlers = {
     if (node == null || clickedNodes == null) {
       return;
     }
-    if (!clickedNodes.includes(nodes[node].name)) {
-      clickedNodes.push(nodes[node].name);
+    let x = findinPath(props.pathTree, nodes[node].name ?? "");
+    if (x != null && !clickedNodes.includes(x)) {
+      clickedNodes.push(x);
     }
     console.log("CLICKEDNODES", clickedNodes);
   },
 };
+
+function findinPath(pathTree: any, lookingName: string) {
+  for (let p of pathTree) {
+    console.log("XX", p);
+    let x = findProcess(p.pathRoot, lookingName);
+    if (x != null) {
+      return x;
+    }
+  }
+  return null;
+}
+
+function findProcess(
+  p: nodeClass.PathStructure | nodeClass.StructBasic,
+  lookingName: string
+): nodeClass.PathStructure | nodeClass.StructBasic | null {
+  console.log("XXZ", p);
+  if (p.name == lookingName) {
+    return p;
+  }
+  if (p instanceof nodeClass.StructBasic) {
+    return null;
+  }
+  let node: nodeClass.PathStructure | nodeClass.StructBasic | null = null;
+  if (p.pleft != null) {
+    node = findProcess(p.pleft, lookingName);
+  }
+  if (node != null) {
+    return node;
+  }
+  if (p.pright != null) {
+    node = findProcess(p.pright, lookingName);
+  }
+  if (node != null) {
+    return node;
+  }
+  return null;
+}
 
 function removeNode() {
   for (const nodeId of selectedNodes.value) {
@@ -122,9 +162,9 @@ watch(
   }
 );
 
-function getEmit(node: any) {
-  clickedNodes?.splice(clickedNodes.indexOf(node.name), 1);
+function removeNodeFromClicked(node: any) {
   console.log("!!", clickedNodes);
+  clickedNodes?.splice(clickedNodes.indexOf(node.name), 1);
 }
 var outPutTree: any[] | undefined;
 </script>
@@ -137,12 +177,11 @@ var outPutTree: any[] | undefined;
     </transition>
     <transition name="slide" appear>
       <div class="splitPopGrid popup-inner">
-        <div class="PopGrid--Header">Vnutorna struktura cesty</div>
         <Structure
           class="PopGrid--Structure"
           :clickedNodes="clickedNodes"
           :whichStructure="props.pathStructure ? 'naive' : 'size'"
-          @removeNode="getEmit"
+          @removeNodeFromClicked="removeNodeFromClicked"
           >XX</Structure
         >
         <v-network-graph
@@ -201,7 +240,7 @@ var outPutTree: any[] | undefined;
   z-index: 99;
 
   height: 80%;
-  width: 80%;
+  width: 90%;
   background-color: #fff;
 }
 

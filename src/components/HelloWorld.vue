@@ -1,22 +1,42 @@
 <script setup lang="ts">
 import { reactive, ref, defineEmits, defineProps, watch } from "vue";
-import { Nodes, Edges, Paths } from "v-network-graph";
+import { Nodes, Edges, Paths, Layouts } from "v-network-graph";
 import * as vNG from "v-network-graph";
 import data from "./data";
 import firstTry from "../js/mainFunctions";
 import isEqual from "lodash.isequal";
 import * as nodeClass from "../js/nodeClass";
 import * as treeFunctions from "../js/treeFunctions";
+import { path } from "@/js/naivePartition";
 
-var nodes: Nodes = reactive({ ...data.nodes });
-var edges: Edges = reactive({ ...data.edges });
-var paths: Paths = reactive({ ...data.paths });
+const copyNodes = JSON.parse(
+  JSON.stringify(data.defaultLayouts[0].nodes)
+) as typeof nodes;
+const copyEdges = JSON.parse(
+  JSON.stringify(data.defaultLayouts[0].edges)
+) as typeof edges;
+const copyPaths = JSON.parse(
+  JSON.stringify(data.defaultLayouts[0].paths)
+) as typeof paths;
+
+const copyLayouts = JSON.parse(
+  JSON.stringify(data.defaultLayouts[0].layouts)
+) as typeof layouts;
+
+let nodes: Nodes = reactive({ ...copyNodes });
+let edges: Edges = reactive({ ...copyEdges });
+let paths: Paths = reactive({ ...copyPaths });
+let layouts: Layouts = reactive({ ...copyLayouts });
 var nextNodeIndex = ref(Object.keys(nodes).length + 1);
 var nextEdgeIndex = ref(Object.keys(edges).length + 1);
 var nextPathIndex = ref(Object.keys(paths).length + 1);
 
 var selectedNodes = ref<string[]>([]);
 var selectedEdges = ref<string[]>([]);
+
+var nodeName = ref("");
+var selected = ref(data.defaultLayouts[0].name);
+var edgeValue: string;
 var outPutTree: nodeClass.TreeDataStructures;
 //var selectedPaths = ref<string[]>([]);
 
@@ -62,6 +82,7 @@ const eventHandlers: vNG.EventHandlers = {
 };
 
 function addNode() {
+  console.log(nodeName.value);
   var nodeId = `node${nextNodeIndex.value}`;
   var name = `node${nextNodeIndex.value}`;
   nodes[nodeId] = { name };
@@ -260,6 +281,71 @@ function smrdis() {
   emit("pathsOut", paths);
 }
 
+function newLayout(value: any) {
+  console.log(":", selected.value, data.defaultLayouts);
+  console.log(selected.value[0]);
+  let selectedProperties = data.defaultLayouts.find(
+    (l) => l.name == selected.value
+  );
+  if (selectedProperties == undefined) {
+    console.error("selectedProperties not found", selectedProperties);
+    return;
+  }
+  for (const [key, item] of Object.entries(nodes)) {
+    delete nodes[key];
+  }
+  for (const [key, item] of Object.entries(selectedProperties.nodes)) {
+    nodes[key] = item;
+  }
+
+  for (const [key, item] of Object.entries(edges)) {
+    delete edges[key];
+  }
+  for (const [key, item] of Object.entries(selectedProperties.edges)) {
+    edges[key] = item;
+  }
+
+  for (const [key, item] of Object.entries(paths)) {
+    delete paths[key];
+  }
+  for (const [key, item] of Object.entries(selectedProperties.paths)) {
+    paths[key] = item;
+  }
+
+  /* for (const [key, item] of Object.entries(layouts)) {
+    for (const [key2, item2] of Object.entries(item)) {
+      delete layouts["nodes"][key2];
+    }
+  }*/
+  console.log(
+    "coords: ",
+    JSON.stringify(layouts),
+    JSON.stringify(selectedProperties)
+  );
+
+  console.log("xxxx", JSON.stringify(data.defaultLayouts[0].layouts));
+  for (const [key2, item2] of Object.entries(
+    selectedProperties.layouts.nodes
+  )) {
+    layouts["nodes"][key2] = item2;
+    console.log("coords: ", key2, item2);
+  }
+  console.log("coords: ", JSON.stringify(layouts));
+  //layouts = selectedProperties.layouts;
+  console.log(":", nodes, edges, paths);
+  outPutTree = firstTry({ code: 0 }, nodes, edges, paths, outPutTree);
+  emit("treeOut", outPutTree);
+  emit("pathsOut", paths);
+  emit("nodesOut", nodes);
+  emit("edgesOut", edges);
+}
+
+const componentKey = ref(0);
+
+const forceRerender = () => {
+  componentKey.value += 1;
+};
+
 watch(
   () => props.callFunction,
   (x, z) => {
@@ -284,23 +370,35 @@ watch(
 <template>
   <div style="height: 100%">
     <div class="operations">
-      <div>
-        <button @click="smrdis"></button>
-        <label>Node:</label>
-        <button @click="addNode">add</button>
-        <button :disabled="selectedNodes.length == 0" @click="removeNode">
-          remove
-        </button>
-      </div>
-      <div>
-        <label>Edge:</label>
-        <button :disabled="selectedNodes.length != 2" @click="addEdge">
-          add
-        </button>
-        <button :disabled="selectedEdges.length == 0" @click="removeEdge">
-          remove
-        </button>
-      </div>
+      <input type="text" placeholder="node name" v-model="nodeName" />
+      <button @click="addNode">Add Node</button>
+      <button :disabled="selectedNodes.length == 0" @click="removeNode">
+        Remove Node
+      </button>
+
+      <input type="text" placeholder="edge value" v-model="edgeValue" />
+      <button :disabled="selectedNodes.length != 2" @click="addEdge">
+        Add Edge
+      </button>
+      <button :disabled="selectedEdges.length == 0" @click="removeEdge">
+        Remove Edge
+      </button>
+      <div></div>
+      <button @click="newLayout">Reset image</button>
+      <select
+        name="defaultLayouts"
+        id="categorySelector"
+        v-model="selected"
+        @change="newLayout"
+      >
+        <option
+          :key="key"
+          v-for="(value, key) in data.defaultLayouts"
+          :value="value.name"
+        >
+          {{ value.name }}
+        </option>
+      </select>
     </div>
 
     <v-network-graph
@@ -308,11 +406,12 @@ watch(
       v-model:selected-edges="selectedEdges"
       :nodes="nodes"
       :edges="edges"
-      :layouts="data.layouts"
+      :layouts="layouts"
       :configs="data.configs"
       :event-handlers="eventHandlers"
       :paths="paths"
       style="height: 96%"
+      :key="componentKey"
     >
       <template #edge-label="{ edge, ...slotProps }">
         <v-edge-label

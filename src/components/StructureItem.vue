@@ -26,16 +26,19 @@
       :whichPopup="'structure'"
     />
 
-    <div class="stucture-definition" v-if="whichStructure == 'basic'">
-      Zakladna struktura
-    </div>
-
-    <div class="general" v-if="whichStructure == 'basic'">
+    <div class="general" v-if="isNode">
       <span class="grid-general-parent" v-if="node.parent != null"
-        >rodic: {{ node.parent.target.name }}</span
+        >rodic: <b>{{ node.parent.target.name }}</b></span
       >
-      <span class="grid-general-value">hodnota: {{ node.value }}</span>
-      <span class="grid-general-path">uzol v ceste: aaaaa</span>
+      <span class="grid-general-value"
+        >hodnota: <b>{{ node.value }}</b></span
+      >
+      <span class="grid-general-path"
+        >cesta: <b>{{ node.pathPointer.name }} </b></span
+      >
+      <span class="grid-general-size"
+        >size: <b>{{ node.size }}</b></span
+      >
       <span class="grid-general-children">Potomkovia: </span>
       <template
         v-for="(children, key) in node.children"
@@ -47,24 +50,35 @@
       </template>
     </div>
 
-    <div class="stucture-definition" v-if="whichStructure == 'naive'">
-      Naive struktura
-    </div>
-    <div class="naive" v-if="whichStructure == 'naive'">
-      <span class="grid-naive-reversed">reversed: true</span>
-      <span class="grid-naive-pparent">pparent: aaaaa</span>
-      <span class="grid-naive-netmin">netmin: 10</span>
-      <span class="grid-naive-netcost">netcost: 10</span>
-      <span class="grid-naive-bhead">bhead: aaaaa</span>
-      <span class="grid-naive-pleft">pleft: aaaaa</span>
-      <span class="grid-naive-pright">pright: aaaaa</span>
-      <span class="grid-naive-btail">btail: aaaaa</span>
+    <div class="naive" v-if="isInternalNode">
+      <!--<span class="grid-naive-reversed">reversed: true</span>  -->
+      <span class="grid-naive-pparent"
+        >pParent:
+        <b>{{
+          node.pParent != null ? node.pParent.name : "this is root"
+        }}</b></span
+      >
+      <span class="grid-naive-netmin"
+        >netmin: <b>{{ node.netmin }}</b></span
+      >
+      <span class="grid-naive-netcost"
+        >netcost: <b>{{ node.netcost }}</b></span
+      >
+      <span class="grid-naive-bhead"
+        >bhead: <b>{{ node.bhead.name }}</b></span
+      >
+      <span class="grid-naive-pleft"
+        >pleft: <b>{{ node.pleft.name }}</b></span
+      >
+      <span class="grid-naive-pright"
+        >pright: <b>{{ node.pright.name }}</b></span
+      >
+      <span class="grid-naive-btail"
+        >btail: <b>{{ node.btail.name }}</b></span
+      >
     </div>
 
-    <div class="stucture-definition" v-if="whichStructure == 'size'">
-      Size struktura
-    </div>
-    <div class="size" v-if="whichStructure == 'size'">
+    <div class="size" v-if="isNode == 'size'">
       <span class="grid-size-weight">weight</span>
       <span class="grid-size-netleftmin">left</span>
       <span class="grid-size-netrightmin">right</span>
@@ -78,7 +92,8 @@ export default {
   name: "StructureItem",
   props: {
     node: Object,
-    whichStructure: String,
+    isNode: Boolean,
+    isInternalNode: Boolean,
   },
   components: {
     Popup,
@@ -93,6 +108,7 @@ export default {
       this.isHidden = !this.isHidden;
     },
     removeNodeFromClicked() {
+      console.log("structureItem");
       this.$emit("removeNodeFromClicked", this.node);
     },
   },
@@ -141,7 +157,7 @@ span {
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
   grid-template-areas:
     "parent value"
-    "path path"
+    "path size"
     "children children"
     "child1 child2"
     "child3 child4"
@@ -149,6 +165,7 @@ span {
   margin: 0px 0px 12px 0px;
   row-gap: 2px;
   column-gap: 2px;
+  font-size: 20px;
 }
 
 .grid-general-parent {
@@ -159,6 +176,9 @@ span {
 }
 .grid-general-path {
   grid-area: path;
+}
+.grid-general-size {
+  grid-area: size;
 }
 .grid-general-children {
   grid-area: children;
@@ -191,7 +211,7 @@ span {
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr 1fr;
   grid-template-areas:
-    "reversed reversed pparent pparent"
+    "pparent pparent pparent pparent"
     "netmin netmin netcost netcost"
     "bhead bhead btail btail"
     "pleft pleft pright pright";
