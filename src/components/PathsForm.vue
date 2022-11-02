@@ -23,12 +23,12 @@
       <label style="flex-grow: 1">
         {{ key }}
       </label>
-      <button
+      <i
         v-on:click="
           boolPopUpStructure = !boolPopUpStructure;
           clickedId = value.id;
         "
-        class="btn"
+        class="gg-search"
       />
       <label class="switch">
         <input
@@ -116,6 +116,10 @@ export default {
   padding: 4px 8px 2px 8px;
   border-radius: 8px;
   border-bottom: 6px solid;
+  justify-content: center;
+  justify-items: center;
+  align-content: center;
+  align-items: center;
 }
 
 .switch {
@@ -195,5 +199,35 @@ export default {
 *:before,
 *:after {
   box-sizing: inherit;
+}
+.gg-search {
+  box-sizing: border-box;
+  position: relative;
+  transform: scale(var(--ggs, 1));
+  width: 16px;
+  height: 16px;
+  border: 3px solid;
+  border-radius: 100%;
+  margin-left: -4px;
+  margin-top: -4px;
+  justify-content: center;
+  justify-items: center;
+  align-content: center;
+  align-items: center;
+  margin-right: 12px;
+  color: #0d3059;
+}
+.gg-search::after {
+  content: "";
+  display: block;
+  box-sizing: border-box;
+  position: absolute;
+  border-radius: 3px;
+  width: 4px;
+  height: 9px;
+  background: currentColor;
+  transform: rotate(-45deg);
+  top: 11px;
+  left: 13px;
 }
 </style>

@@ -8,9 +8,7 @@
       >
         X
       </button>
-      <div class="title">
-        {{ node.name }}
-      </div>
+      <div class="title">Uzol: {{ node.name }}</div>
       <button
         v-on:click="isHidden = !isHidden"
         class="btn"
@@ -27,11 +25,14 @@
     />
 
     <div class="general" v-if="isNode">
-      <span class="grid-general-parent" v-if="node.parent != null"
-        >rodic: <b>{{ node.parent.target.name }}</b></span
+      <span class="grid-general-parent"
+        >rodic:
+        <b>{{
+          node.parent != null ? node.parent.target.name : "koreň"
+        }}</b></span
       >
       <span class="grid-general-value"
-        >hodnota: <b>{{ node.value }}</b></span
+        >hodnota: <b>{{ node.value != null ? node.value : "null" }}</b></span
       >
       <span class="grid-general-path"
         >cesta: <b>{{ node.pathPointer.name }} </b></span
@@ -39,14 +40,11 @@
       <span class="grid-general-size"
         >size: <b>{{ node.size }}</b></span
       >
-      <span class="grid-general-children">Potomkovia: </span>
-      <template
-        v-for="(children, key) in node.children"
-        :key="children.target.name"
-      >
-        <span :class="'grid-general-child' + key">{{
-          children.target.name
-        }}</span>
+      <span class="grid-general-children">Potomkovia</span>
+    </div>
+    <div class="general2" v-if="isNode">
+      <template v-for="children in node.children" :key="children.target.name">
+        <span>{{ children.target.name }}</span>
       </template>
     </div>
 
@@ -122,7 +120,6 @@ export default {
 .container {
   margin: 8px;
   height: 300px;
-  padding: 0px 0px 16px 0px;
 }
 span {
   background-color: white;
@@ -154,15 +151,23 @@ span {
   display: grid;
   width: 100%;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
   grid-template-areas:
     "parent value"
     "path size"
-    "children children"
-    "child1 child2"
-    "child3 child4"
-    "child5 child6";
-  margin: 0px 0px 12px 0px;
+    "children children";
+  row-gap: 2px;
+  column-gap: 2px;
+  font-size: 20px;
+}
+.general2 {
+  padding: 0px 0px 2px 0px;
+  background-color: #0d3059;
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr 1fr 1fr;
+
+  margin: 0px 0px 0px 0px;
   row-gap: 2px;
   column-gap: 2px;
   font-size: 20px;
@@ -182,6 +187,7 @@ span {
 }
 .grid-general-children {
   grid-area: children;
+  text-align: center;
 }
 .grid-general-child1 {
   grid-area: child1;

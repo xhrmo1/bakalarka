@@ -61,7 +61,8 @@ export default {
   flex: 1;
   background: #c4c4c4;
   width: calc(100% - 16px);
-  border-radius: 16px;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
   border-style: solid;
   border-color: #0d3059;
 }
