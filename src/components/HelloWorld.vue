@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref, defineEmits, defineProps, watch } from "vue";
-import { Nodes, Edges, Paths, Layouts } from "v-network-graph";
+import { Nodes, Edges, Paths, Layouts, NodePositions } from "v-network-graph";
 import * as vNG from "v-network-graph";
 import data from "./data";
 import firstTry from "../js/mainFunctions";
@@ -18,15 +18,14 @@ const copyEdges = JSON.parse(
 const copyPaths = JSON.parse(
   JSON.stringify(data.defaultLayouts[0].paths)
 ) as typeof paths;
-
 const copyLayouts = JSON.parse(
-  JSON.stringify(data.defaultLayouts[0].layouts)
-) as typeof layouts;
-
+  JSON.stringify(data.defaultLayouts[0].layouts["nodes"])
+);
+let layoutsXX: Layouts = { nodes: copyLayouts };
 let nodes: Nodes = reactive({ ...copyNodes });
 let edges: Edges = reactive({ ...copyEdges });
 let paths: Paths = reactive({ ...copyPaths });
-let layouts: Layouts = reactive({ ...copyLayouts });
+let layouts: Layouts = reactive({ ...layoutsXX });
 var nextNodeIndex = ref(Object.keys(nodes).length + 1);
 var nextEdgeIndex = ref(Object.keys(edges).length + 1);
 var nextPathIndex = ref(Object.keys(paths).length + 1);
@@ -36,7 +35,7 @@ var selectedEdges = ref<string[]>([]);
 
 var nodeName = ref("");
 var selected = ref(data.defaultLayouts[0].name);
-var edgeValue: string;
+var edgeValue = ref("");
 var outPutTree: nodeClass.TreeDataStructures;
 //var selectedPaths = ref<string[]>([]);
 
@@ -82,12 +81,26 @@ const eventHandlers: vNG.EventHandlers = {
 };
 
 function addNode() {
-  console.log(nodeName.value);
-  var nodeId = `node${nextNodeIndex.value}`;
-  var name = `node${nextNodeIndex.value}`;
+  var nodeId: string;
+  var name: string;
+  for (var n in nodes) {
+    if (n == nodeName.value) {
+      alert(
+        "Node with selected name already exists, choose another unique name please"
+      );
+      nodeName.value = "";
+      return;
+    }
+  }
+  if (nodeName.value == undefined || nodeName.value == "") {
+    nodeId = `node${nextNodeIndex.value}`;
+    name = `node${nextNodeIndex.value}`;
+  } else {
+    nodeId = nodeName.value;
+    name = nodeName.value;
+  }
   nodes[nodeId] = { name };
   nextNodeIndex.value++;
-  //console.log("addNode name", name);
   outPutTree = firstTry(
     { code: 1, name: name },
     nodes,
@@ -95,6 +108,7 @@ function addNode() {
     paths,
     outPutTree
   );
+  nodeName.value = "";
   emit("treeOut", outPutTree);
   emit("nodesOut", nodes);
 }
@@ -183,12 +197,15 @@ function addEdge() {
       return console.error("Nemôže pridať edge, uzol už ma rodiča");
     }
   }
-
+  console.log(edgeValue.value);
   const edgeId = `edge${nextEdgeIndex.value}`;
   edges[edgeId] = {
     source,
     target,
-    label: Math.floor(Math.random() * 20).toString(),
+    label:
+      edgeValue.value != ""
+        ? edgeValue.value
+        : Math.floor(Math.random() * 20).toString(),
     dashed: true,
   };
   nextEdgeIndex.value++;
@@ -327,7 +344,8 @@ function newLayout(value: any) {
   for (const [key2, item2] of Object.entries(
     selectedProperties.layouts.nodes
   )) {
-    layouts["nodes"][key2] = item2;
+    const positions = JSON.parse(JSON.stringify(item2));
+    layouts["nodes"][key2] = positions;
     console.log("coords: ", key2, item2);
   }
   console.log("coords: ", JSON.stringify(layouts));
@@ -370,20 +388,30 @@ watch(
 <template>
   <div style="height: 100%">
     <div class="operations">
-      <input type="text" placeholder="node name" v-model="nodeName" />
+      <input
+        type="text"
+        placeholder="node name"
+        v-model="nodeName"
+        style="width: 100px"
+      />
       <button @click="addNode">Add Node</button>
       <button :disabled="selectedNodes.length == 0" @click="removeNode">
         Remove Node
       </button>
 
-      <input type="text" placeholder="edge value" v-model="edgeValue" />
+      <input
+        type="text"
+        placeholder="edge value"
+        v-model="edgeValue"
+        style="width: 70px"
+      />
       <button :disabled="selectedNodes.length != 2" @click="addEdge">
         Add Edge
       </button>
       <button :disabled="selectedEdges.length == 0" @click="removeEdge">
         Remove Edge
       </button>
-      <div></div>
+      <div style="flex-grow: 1"></div>
       <button @click="newLayout">Reset image</button>
       <select
         name="defaultLayouts"
