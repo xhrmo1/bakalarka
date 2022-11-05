@@ -7,9 +7,15 @@
       <div class="popup-inner">
         <h2 v-if="whichPopup == 'structure'">Nápoveda o štruktúre</h2>
         <h2 v-if="whichPopup == 'paths'">Nápoveda o ceste</h2>
-        <button class="popup-close" @click="$emit('changeHide')">
-          Zavrieť
-        </button>
+        <h2 v-if="whichPopup == 'functionOutput'">
+          Vystup funkcie: <b>{{ dataAbout.functionName }}</b>
+        </h2>
+        <div v-if="whichPopup == 'functionOutput'" v-html="dataAbout.text" />
+        <div class="popup-close">
+          <button class="popup-closeButton" @click="$emit('changeHide')">
+            Zavrieť
+          </button>
+        </div>
       </div>
     </transition>
   </div>
@@ -19,6 +25,7 @@
 export default {
   props: {
     whichPopup: String,
+    dataAbout: Object, // functionName,  text
   },
 };
 </script>
@@ -60,5 +67,11 @@ export default {
   bottom: 0;
   z-index: 98;
   background-color: rgba(0, 0, 0, 0.3);
+}
+
+.popup-close {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
 }
 </style>

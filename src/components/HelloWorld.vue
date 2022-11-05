@@ -8,6 +8,7 @@ import isEqual from "lodash.isequal";
 import * as nodeClass from "../js/nodeClass";
 import * as treeFunctions from "../js/treeFunctions";
 import { path } from "@/js/naivePartition";
+import Popup from "./PopUpForm.vue";
 
 const copyNodes = JSON.parse(
   JSON.stringify(data.defaultLayouts[0].nodes)
@@ -37,6 +38,8 @@ var nodeName = ref("");
 var selected = ref(data.defaultLayouts[0].name);
 var edgeValue = ref("");
 var outPutTree: nodeClass.TreeDataStructures;
+var printFunctionMessage: any;
+var printFunctionMessageModel = ref(printFunctionMessage);
 //var selectedPaths = ref<string[]>([]);
 
 /*interface Props {
@@ -101,7 +104,7 @@ function addNode() {
   }
   nodes[nodeId] = { name };
   nextNodeIndex.value++;
-  outPutTree = firstTry(
+  [outPutTree, printFunctionMessage] = firstTry(
     { code: 1, name: name },
     nodes,
     edges,
@@ -117,7 +120,7 @@ function removeNode() {
   //console.log("edges:", edges, edges.length);
   for (const nodeId of selectedNodes.value) {
     emit("removeNode", nodes[nodeId]);
-    outPutTree = firstTry(
+    [outPutTree, printFunctionMessage] = firstTry(
       { code: 2, name: nodeId },
       nodes,
       edges,
@@ -174,7 +177,13 @@ function removeNode() {
     }
   }
   //console.log("edges:", edges, edges.length);
-  outPutTree = firstTry({ code: 0 }, nodes, edges, paths, outPutTree); // toto je asi zle
+  [outPutTree, printFunctionMessage] = firstTry(
+    { code: 0 },
+    nodes,
+    edges,
+    paths,
+    outPutTree
+  ); // toto je asi zle
 
   //console.log("x", outPutTree);
 
@@ -209,7 +218,7 @@ function addEdge() {
     dashed: true,
   };
   nextEdgeIndex.value++;
-  outPutTree = firstTry(
+  [outPutTree, printFunctionMessage] = firstTry(
     { code: 3, edgeID: edgeId },
     nodes,
     edges,
@@ -263,7 +272,7 @@ function removeEdge() {
         }
       }
     }
-    outPutTree = firstTry(
+    [outPutTree, printFunctionMessage] = firstTry(
       { code: 4, edgeToRemove: edgeToRemove },
       nodes,
       edges,
@@ -274,7 +283,13 @@ function removeEdge() {
 
   emit("pathsOut", paths);
   emit("edgesOut", nodes);
-  outPutTree = firstTry({ code: 0 }, nodes, edges, paths, outPutTree);
+  [outPutTree, printFunctionMessage] = firstTry(
+    { code: 0 },
+    nodes,
+    edges,
+    paths,
+    outPutTree
+  );
   //console.log("x", outPutTree);
   emit("treeOut", outPutTree);
 }
@@ -351,7 +366,13 @@ function newLayout(value: any) {
   console.log("coords: ", JSON.stringify(layouts));
   //layouts = selectedProperties.layouts;
   console.log(":", nodes, edges, paths);
-  outPutTree = firstTry({ code: 0 }, nodes, edges, paths, outPutTree);
+  [outPutTree, printFunctionMessage] = firstTry(
+    { code: 0 },
+    nodes,
+    edges,
+    paths,
+    outPutTree
+  );
   emit("treeOut", outPutTree);
   emit("pathsOut", paths);
   emit("nodesOut", nodes);
@@ -364,6 +385,8 @@ const forceRerender = () => {
   componentKey.value += 1;
 };
 
+var isHidden = ref(true);
+
 watch(
   () => props.callFunction,
   (x, z) => {
@@ -373,20 +396,41 @@ watch(
 
     //console.log("AAAAAAXAXAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     //console.log(x, z, "xxxx");
-    outPutTree = firstTry(x, nodes, edges, paths, outPutTree);
+    [outPutTree, printFunctionMessage] = firstTry(
+      x,
+      nodes,
+      edges,
+      paths,
+      outPutTree
+    );
+    printFunctionMessageModel.value = printFunctionMessage;
     console.log(paths, edges, outPutTree);
     console.log("x", outPutTree);
     emit("treeOut", outPutTree);
+    changeHidden();
   },
   {
     immediate: true,
     deep: true,
   }
 );
+
+function changeHidden() {
+  console.log(printFunctionMessage);
+  console.log("isHiden", isHidden);
+  isHidden.value = !isHidden.value;
+  console.log("isHiden", isHidden);
+}
 </script>
 
 <template>
   <div style="height: 100%">
+    <Popup
+      v-if="isHidden"
+      @changeHide="changeHidden"
+      :whichPopup="'functionOutput'"
+      :dataAbout="printFunctionMessageModel"
+    />
     <div class="operations">
       <input
         type="text"

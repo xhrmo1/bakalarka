@@ -4,9 +4,19 @@ import { Nodes, Edges, Paths } from "v-network-graph";
 import * as nodeClass from "./nodeClass";
 import * as naiveOP from "./naivePartition"
 
-export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, paths: Paths, treeDataStructure: nodeClass.TreeDataStructures): nodeClass.TreeDataStructures {
-    console.log('imported function', callParams)
+class FunctionMessage {
+    functionName: string
+    text: string
+    constructor(functionName: string, text: string) {
+        this.functionName = functionName
+        this.text = text
+    }
+}
 
+export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, paths: Paths, treeDataStructure: nodeClass.TreeDataStructures): [nodeClass.TreeDataStructures, any] {
+    console.log('imported function', callParams)
+    var functionMessage: FunctionMessage = new FunctionMessage("", "")
+    var output: any // na uchovanie outputu a nasledneho vypisania v sprave
     switch (callParams.code) {
         case 0: //inicializovanie stromu, vytvorenie DS
             var structBasic: nodeClass.StructBasic[] = treeFunctions.initializeTree(nodes, edges, paths, callParams)
@@ -35,44 +45,58 @@ export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, pa
         case 101:
             var foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
             if (foundNode != null) {
-                console.log("Vystup operacie PATH: ", naiveOP.path(foundNode), " uzol: ", callParams.nodes)
+                output = naiveOP.path(foundNode)
             }
+            functionMessage.functionName = "Path"
+            functionMessage.text = 'Operacia bola spustena s uzlom x: <b>' + callParams.nodes[0] + '</b>. Výsledkom operácie je cesta s ID: <b>' + output.pathID + '</b>'
             break
         case 102:
             var foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
             if (foundPath !== undefined) {
-                console.log("Vystup operacie HEAD", naiveOP.head(foundPath))
+                output = naiveOP.head(foundPath)
             }
+            functionMessage.functionName = "Head"
+            functionMessage.text = 'Operacia bola spustena na ceste p: <b>' + callParams.paths[0] + '</b>. Výsledkom operácie je uzol s ID: <b>' + output.name + '</b>'
             break;
         case 103:
             foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
             if (foundPath !== undefined) {
-                console.log("Vystup operacie TAIL", naiveOP.tail(foundPath))
+                output = naiveOP.tail(foundPath)
             }
+            functionMessage.functionName = "Tail"
+            functionMessage.text = 'Operacia bola spustena na ceste p: <b>' + callParams.paths[0] + '</b>. Výsledkom operácie je uzol s ID: <b>' + output.name + '</b>'
             break;
         case 104:
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
             if (foundNode != null) {
-                console.log("Vystup operacie BEFORE: ", naiveOP.before(foundNode))
+                output = naiveOP.before(foundNode)
             }
+            functionMessage.functionName = "Before"
+            functionMessage.text = 'Operacia bola spustena na uzle x: <b>' + callParams.nodes[0] + '</b>. Výsledkom operácie je uzol s ID: <b>' + output.name + '</b>'
             break;
         case 105:
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
             if (foundNode != null) {
-                console.log("Vystup operacie after: ", naiveOP.after(foundNode))
+                output = naiveOP.after(foundNode)
             }
+            functionMessage.functionName = "After"
+            functionMessage.text = 'Operacia bola spustena na uzle x: <b>' + callParams.nodes[0] + '</b>. Výsledkom operácie je uzol s ID: <b>' + output.name + '</b>'
             break;
         case 106:
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
             if (foundNode != null) {
-                console.log("Vystup operacie pcost: ", naiveOP.pcost(foundNode))
+                output = naiveOP.pcost(foundNode)
             }
+            functionMessage.functionName = "PCost"
+            functionMessage.text = 'Operacia bola spustena na uzle x: <b>' + callParams.nodes[0] + '</b>. Výsledkom operácie je hodnota: <b>' + output + '</b>'
             break
         case 107:
             foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
             if (foundPath !== undefined) {
-                console.log("Vystup operacie pmincost", naiveOP.pmincost(foundPath))
+                output = naiveOP.pmincost(foundPath)
             }
+            functionMessage.functionName = "PCost"
+            functionMessage.text = 'Operacia bola spustena na ceste p: <b>' + callParams.paths[0] + '</b>. Výsledkom operácie je hodnota: <b>' + output.value + '</b>' // doplnit ktora hrana
             break
         case 108:
             foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
@@ -119,5 +143,6 @@ export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, pa
         /* nad 10 zacnu operacie na cestach a stromoch */
     }
 
-    return treeDataStructure;
+    return [treeDataStructure, functionMessage];
 }
+
