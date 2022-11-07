@@ -9,6 +9,10 @@ import * as nodeClass from "../js/nodeClass";
 import * as treeFunctions from "../js/treeFunctions";
 import { path } from "@/js/naivePartition";
 import Popup from "./PopUpForm.vue";
+import { useRoute, useRouter } from "vue-router";
+
+const route = useRoute(); // console.log("XXXXXXXXXXXXrouteXXXXXXXX", route.params.type);
+var sizeStruct = route.params.type == "size";
 
 const copyNodes = JSON.parse(
   JSON.stringify(data.defaultLayouts[0].nodes)
@@ -106,6 +110,7 @@ function addNode() {
   nextNodeIndex.value++;
   [outPutTree, printFunctionMessage] = firstTry(
     { code: 1, name: name },
+    sizeStruct,
     nodes,
     edges,
     paths,
@@ -122,6 +127,7 @@ function removeNode() {
     emit("removeNode", nodes[nodeId]);
     [outPutTree, printFunctionMessage] = firstTry(
       { code: 2, name: nodeId },
+      sizeStruct,
       nodes,
       edges,
       paths,
@@ -179,6 +185,7 @@ function removeNode() {
   //console.log("edges:", edges, edges.length);
   [outPutTree, printFunctionMessage] = firstTry(
     { code: 0 },
+    sizeStruct,
     nodes,
     edges,
     paths,
@@ -220,6 +227,7 @@ function addEdge() {
   nextEdgeIndex.value++;
   [outPutTree, printFunctionMessage] = firstTry(
     { code: 3, edgeID: edgeId },
+    sizeStruct,
     nodes,
     edges,
     paths,
@@ -274,6 +282,7 @@ function removeEdge() {
     }
     [outPutTree, printFunctionMessage] = firstTry(
       { code: 4, edgeToRemove: edgeToRemove },
+      sizeStruct,
       nodes,
       edges,
       paths,
@@ -285,6 +294,7 @@ function removeEdge() {
   emit("edgesOut", nodes);
   [outPutTree, printFunctionMessage] = firstTry(
     { code: 0 },
+    sizeStruct,
     nodes,
     edges,
     paths,
@@ -368,6 +378,7 @@ function newLayout(value: any) {
   console.log(":", nodes, edges, paths);
   [outPutTree, printFunctionMessage] = firstTry(
     { code: 0 },
+    sizeStruct,
     nodes,
     edges,
     paths,
@@ -398,6 +409,7 @@ watch(
     //console.log(x, z, "xxxx");
     [outPutTree, printFunctionMessage] = firstTry(
       x,
+      sizeStruct,
       nodes,
       edges,
       paths,

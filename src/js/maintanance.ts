@@ -5,7 +5,7 @@ import * as naiveOP from "./naivePartition"
 
 
 
-export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic: nodeClass.StructBasic[]) {
+export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic: nodeClass.StructBasic[], sizeStruct: boolean) {
     var pathsSets = []
     var usedNodes: any[] = []
     for (var p in paths) {
@@ -44,7 +44,7 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
         pathsSets.push(newPath)
     }
     console.log('pathSets == ', pathsSets)
-    //create paths where are nod edges
+    //create paths where are no edges
     for (var n in nodes) {
         if (!usedNodes.includes(nodes[n].name)) {
             let x = nodes[n].name
@@ -62,8 +62,68 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
             }
         }
     }
-
+    if (sizeStruct) {
+        for (let p of pathsSets) {
+            setUpWeightsPath(p)
+        }
+    }
     return pathsSets
+}
+
+export function setPropertiesForPath(path: nodeClass.Path | null, sizeStruct: boolean) {
+    if (path != null && path.pathRoot != null) {
+        setNetCostMin(path.pathRoot)
+        setUpWeightsPath(path)
+        if (sizeStruct) {
+            netMinSize(path.pathRoot)
+        }
+    }
+}
+
+
+function netMinSize(pathVertex: nodeClass.PathStructure): [number, number] {
+    var llm: number, lrm: number, rlm: number, rrm: number // child - left/right - min
+    llm = lrm = rlm = rrm = Math.pow(10, 1000)
+    if (pathVertex.pleft instanceof nodeClass.StructBasic) {
+        pathVertex.lefttilt = pathVertex.pleft.weight
+    } else if (pathVertex.pleft instanceof nodeClass.PathStructure) {
+        let x = naiveOP.goingRightDown(pathVertex.pleft)
+        if (x != null) {
+            pathVertex.lefttilt = x.weight
+        }
+        [llm, lrm] = netMinSize(pathVertex.pleft)
+    }
+
+    if (pathVertex.pright instanceof nodeClass.StructBasic) {
+        pathVertex.righttilt = pathVertex.pright.weight
+    } else if (pathVertex.pright instanceof nodeClass.PathStructure) {
+        let x = naiveOP.goingLeftDown(pathVertex.pright)
+        if (x != null) {
+            pathVertex.righttilt = x.weight
+        }
+        [rlm, rrm] = netMinSize(pathVertex.pright)
+    }
+
+    return [Math.min(llm, rlm, pathVertex.lefttilt), Math.min(lrm, rrm, pathVertex.righttilt)]
+
+
+}
+
+
+export function setUpWeightsPath(path: nodeClass.Path) {
+    console.log("koniec nacitavania pre path ", path.pathID)
+
+    if (path.pathRoot != null) {
+        let previouseVertex = path.pathRoot.bhead
+        let vertex = naiveOP.after(previouseVertex)
+        while (vertex != null) {
+            console.log("koniec nacitavania pre path ", vertex)
+            vertex.weight = vertex.size - previouseVertex.size
+            previouseVertex = vertex
+            vertex = naiveOP.after(previouseVertex)
+        }
+    }
+    console.log("koniec nacitavania pre path ", path.pathID)
 }
 
 function getNextNumberForPat2(pathsRoots: nodeClass.Path[]): string {

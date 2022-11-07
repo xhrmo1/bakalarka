@@ -13,7 +13,7 @@ class FunctionMessage {
     }
 }
 
-export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, paths: Paths, treeDataStructure: nodeClass.TreeDataStructures): [nodeClass.TreeDataStructures, any] {
+export default function firstTry(callParams: any, sizeStruct: boolean, nodes: Nodes, edges: Edges, paths: Paths, treeDataStructure: nodeClass.TreeDataStructures): [nodeClass.TreeDataStructures, any] {
     console.log('imported function', callParams)
     var functionMessage: FunctionMessage = new FunctionMessage("", "")
     var output: any // na uchovanie outputu a nasledneho vypisania v sprave
@@ -22,7 +22,7 @@ export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, pa
             var structBasic: nodeClass.StructBasic[] = treeFunctions.initializeTree(nodes, edges, paths, callParams)
             treeDataStructure = new nodeClass.TreeDataStructures(
                 structBasic,
-                maintanance.buildPaths(nodes, edges, paths, structBasic)
+                maintanance.buildPaths(nodes, edges, paths, structBasic, sizeStruct)
             )
             break;
         case 1: // pridanie uzlu -> do zoznamu uzlov
@@ -31,7 +31,7 @@ export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, pa
             break;
         case 2: // odobratie uzlu -> vymazat zo zoznamu uzlov, vymazat hrany, aktualizovat DS
 
-            treeFunctions.removeNode(treeDataStructure, callParams.name, nodes, edges, paths)
+            treeFunctions.removeNode(treeDataStructure, callParams.name, sizeStruct, nodes, edges, paths)
             console.log('Node was removed', callParams.name, treeDataStructure)
             break;
         case 3: // pridanie hrany -> aktualizovat zoznam uzlov (pridat syna a rodica), prebehnut dotknute DS
@@ -39,7 +39,7 @@ export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, pa
             break;
         case 4: // odobratie hrany -> aktualizovat zoznam uzlov (odobrat syna a rodica), prebehnut dotknute DS
             treeFunctions.removeEdge(treeDataStructure, callParams.edgeToRemove)
-            treeDataStructure.pathRoots = maintanance.buildPaths(nodes, edges, paths, treeDataStructure.basicRoots) // premazem z paths
+            treeDataStructure.pathRoots = maintanance.buildPaths(nodes, edges, paths, treeDataStructure.basicRoots, sizeStruct) // premazem z paths
 
             break;
         case 101:
@@ -114,7 +114,7 @@ export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, pa
             foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
             var foundPath2 = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[1])
             if (foundPath !== undefined && foundPath2 !== undefined) {
-                let pathID = naiveOP.concatenate(foundPath, foundPath2, callParams.values[0], nodes, edges, paths, treeDataStructure)
+                let pathID = naiveOP.concatenate(foundPath, foundPath2, callParams.values[0], sizeStruct, nodes, edges, paths, treeDataStructure)
                 console.log("po concate, pred spojovanim", pathID, paths)
             }
 
@@ -122,7 +122,7 @@ export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, pa
         case 111:
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
             if (foundNode != null) {
-                console.log("Vystup operacie split: ", naiveOP.split(foundNode, paths, nodes, edges, treeDataStructure))
+                console.log("Vystup operacie split: ", naiveOP.split(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure))
             }
             break
         case 112:
@@ -130,14 +130,14 @@ export default function firstTry(callParams: any, nodes: Nodes, edges: Edges, pa
             foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
             if (foundPath !== undefined) {
                 console.log("xxxxxx", paths)
-                console.log("Vystup operacie splice", naiveOP.splice(foundPath, paths, nodes, edges, treeDataStructure))
+                console.log("Vystup operacie splice", naiveOP.splice(foundPath, sizeStruct, paths, nodes, edges, treeDataStructure))
                 console.log(paths, edges, treeDataStructure)
             }
             break
         case 113:
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
             if (foundNode != null) {
-                console.log("Vystup operacie expose: ", naiveOP.expose(foundNode, paths, nodes, edges, treeDataStructure))
+                console.log("Vystup operacie expose: ", naiveOP.expose(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure))
             }
             break
         /* nad 10 zacnu operacie na cestach a stromoch */

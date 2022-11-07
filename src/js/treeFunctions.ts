@@ -92,26 +92,27 @@ export function findNode(node: nodeClass.StructBasic, name: string): nodeClass.S
     return null
 }
 
-function substituteSize(node: nodeClass.StructBasic, value: number) {
-    console.log("-subsitute", node.size, value)
+//substitute size from nodes, going up
+export function substituteSize(node: nodeClass.StructBasic, value: number) {
     node.size = node.size - value
-    console.log("-subsitute2", node.size)
     if (node.parent != null) {
         substituteSize(node.parent.target, value)
     }
 }
 
-function addSizeUP(node: nodeClass.StructBasic) {
-    console.log("---", node.size)
-    node.size = node.size + 1
-    console.log("---", node.size)
+//adding size to nodes, when edge was connected
+function addSizeUP(node: nodeClass.StructBasic, value: number) {
+    node.size = node.size + value
     if (node.parent != null) {
-        addSizeUP(node.parent.target)
+        addSizeUP(node.parent.target, value)
+    }
+    if (node.pathPointer?.pathRoot == null || naiveOP.before(node) == null) {
+        node.weight = node.weight + value
     }
 }
 
 
-export function removeNode(treeDataStructure: nodeClass.TreeDataStructures, name: string, nodes: Nodes, edges: Edges, paths: Paths) {
+export function removeNode(treeDataStructure: nodeClass.TreeDataStructures, name: string, sizeStruct: boolean, nodes: Nodes, edges: Edges, paths: Paths) {
 
     let node = findNodeArray(treeDataStructure.basicRoots, name)
     if (node == null) {
@@ -124,7 +125,7 @@ export function removeNode(treeDataStructure: nodeClass.TreeDataStructures, name
         console.log("----------subs---------")
     }
 
-    naiveOP.split(node, paths, nodes, edges, treeDataStructure)
+    naiveOP.split(node, sizeStruct, paths, nodes, edges, treeDataStructure)
     if (node.pathPointer != null) {
         let index = treeDataStructure.pathRoots.indexOf(node.pathPointer, 0)
         if (index != -1) {
@@ -176,7 +177,7 @@ export function addEdge(treeDataStructure: nodeClass.TreeDataStructures, edges: 
     }
     console.log("---")
     nodeSource.children.push(new nodeClass.EdgeDetail(nodeTarget, edgeID))
-    addSizeUP(nodeSource)
+    addSizeUP(nodeSource, nodeTarget.size)
     nodeTarget.value = edges[edgeID].label
     nodeTarget.parent = new nodeClass.EdgeDetail(nodeSource, edgeID)
 

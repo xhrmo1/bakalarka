@@ -27,6 +27,7 @@ export class StructBasic {
     pParent: PathStructure | null
     pathPointer: Path | null
     size: number
+    weight: number;
     constructor
         (
             name: string, size: number, parent: EdgeDetail | null = null, value: number | null = null,
@@ -40,6 +41,7 @@ export class StructBasic {
         this.pathPointer = pathPointer
         this.value = value
         this.size = size
+        this.weight = size
     }
 }
 
@@ -71,13 +73,16 @@ export class PathStructure {
     pleft: PathStructure | StructBasic | null;
     pright: PathStructure | StructBasic | null;
     root: Path; //odkaz na path
-
     //naivePartition
     netmin: any;
     netcost: any;
     value: number;
 
     //sizePartition
+    lefttilt: number = 0
+    righttilt: number = 0
+    netleftmin: number = 0
+    netrightmin: number = 0
     //doplnime
     constructor(name: string, btail: any = null, bhead: any = null, value: number = 0, insideNode: boolean = false, reversed: any = false, pparent: any = null, netmin: any = 0, netcost: any = 0, pleft: any = null, pright: any = null, root: any = null) {
         this.name = name
@@ -92,6 +97,10 @@ export class PathStructure {
         this.pright = pright
         this.btail = btail
         this.root = root
+
+        //size
+        //this.netleftmin = netleftmin ?? 0
+        //this.netrightmin = netrightmin ?? 0
     }
 }
 
