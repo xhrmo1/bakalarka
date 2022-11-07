@@ -140,19 +140,19 @@ let functionSetX = [
          values: 0,
          code: 109,
      },*/
-    /*{
-         name: "concatenate",
-         description: {
-             args: "path p, path q, real x",
-             description: "Combine paths p, q. Adding edge (tail(p), head(q)) with value x. Returns combine path"
-         },
-         category: "pathOP",
-         nodes: 0,
-         nodesInPath: 0,
-         paths: 2,
-         values: 1,
-         code: 110,
-     },*/
+    {
+        name: "concatenate",
+        description: {
+            args: "path p, path q, real x",
+            description: "Combine paths p, q. Adding edge (tail(p), head(q)) with value x. Returns combine path"
+        },
+        category: "pathOP",
+        nodes: 0,
+        nodesInPath: 0,
+        paths: 2,
+        values: 1,
+        code: 110,
+    },
     {
         name: "split",
         description: {

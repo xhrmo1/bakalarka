@@ -40,8 +40,8 @@ let edges1: Edges = {
   edge6: { source: "E", target: "G", label: "4", dashed: false },
   edge7: { source: "G", target: "H", label: "2", dashed: false },
   edge8: { source: "G", target: "K", label: "1", dashed: true },
-  edge9: { source: "I", target: "J", label: "3", dashed: false },
-  edge10: { source: "F", target: "I", label: "16", dashed: false },
+  edge9: { source: "F", target: "I", label: "16", dashed: false },
+  edge10: { source: "I", target: "J", label: "3", dashed: false },
 }
 
 let layouts: Layouts = { nodes: {} }
@@ -82,7 +82,7 @@ let paths1: Paths = {
   },
   path2: {
     id: "path2",
-    edges: ["edge3", "edge4", "edge6", "edge7"],
+    edges: ["edge7", "edge6", "edge4", "edge3"],
     color: "#00aa0066", // #rrggbbaa <- with alpha
     canSee: true,
     mouseOver: false,

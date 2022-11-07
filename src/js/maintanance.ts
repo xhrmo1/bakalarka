@@ -12,21 +12,21 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
         var nodesList: any[] = []
         for (var e in paths[p].edges) {
             console.log(nodesList, nodesList.length == 0, e, "XXX", edges[paths[p].edges[e]])
-
-            if (nodesList.length == 0 || !nodesList.some(node => node.name === edges[paths[p].edges[e]].source)) { // 
-                let name = nodes[edges[paths[p].edges[e]].source].name
+            //v all nodes je to od hlavy po tail, preto najprv pridavame target lebo to je head
+            if (nodesList.length == 0 || !nodesList.some(node => node.name === edges[paths[p].edges[e]].target)) { // 
+                let name = nodes[edges[paths[p].edges[e]].target].name
                 usedNodes.push(name)
                 nodesList.push(findNodeArray(structBasic, name != null ? name : ""))
             }
-            if (nodesList.length == 0 || !nodesList.some(node => node.name === edges[paths[p].edges[e]].target)) { // 
-                let name = nodes[edges[paths[p].edges[e]].target].name
+            if (nodesList.length == 0 || !nodesList.some(node => node.name === edges[paths[p].edges[e]].source)) { // 
+                let name = nodes[edges[paths[p].edges[e]].source].name
                 usedNodes.push(name)
                 nodesList.push(findNodeArray(structBasic, name != null ? name : ""))
             }
         }
 
         console.log("-- pouzite nodes --", usedNodes)
-        nodesList = nodesList.reverse() // nodeList ide od korena od listy, path je definovany ze hlava je list a tail je koreň - toto mi prišlo ako najjednoduchší fix problému
+        //nodesList = nodesList.reverse() // nodeList ide od korena od listy, path je definovany ze hlava je list a tail je koreň - toto mi prišlo ako najjednoduchší fix problému
         //paths[p].edges = paths[p].edges.reverse()
         var newPath = new nodeClass.Path(
             paths[p].id ?? "",

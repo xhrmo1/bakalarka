@@ -259,15 +259,15 @@ export function concatenate(p: nodeclass.Path, q: nodeclass.Path, x: number, siz
     }
 
     // tu budeme rebuild cesty
-    let pathDominant = path(headVertex)
-    let pathSubmisive = path(tailVertex)
+    let pathDominant = path(tailVertex)
+    let pathSubmisive = path(headVertex)
     //console.log("--Paths", pathDominant, pathSubmisive, edgeID, edges[edgeID])
     if (pathDominant == null || pathSubmisive == null) {
         console.error("pathDominant or pathSubmisive is null", q, p, pathDominant, pathSubmisive, headVertex, tailVertex)
         return ""
     }
 
-    pathDominant.allNodes?.concat(pathSubmisive.allNodes != null ? pathSubmisive.allNodes : []) // spojenie poli
+    //pathDominant.allNodes?.concat(pathSubmisive.allNodes != null ? pathSubmisive.allNodes : []) // spojenie poli
     var idFinal: string
     var finalColor: string = "#d55040cc"
     var edgesFinal: string[]
@@ -304,7 +304,7 @@ export function concatenate(p: nodeclass.Path, q: nodeclass.Path, x: number, siz
     };
     var allNodes: nodeclass.StructBasic[] = []
     if (pathDominant.allNodes != null && pathSubmisive.allNodes != null) {
-        allNodes = pathSubmisive.allNodes.concat(pathDominant.allNodes)
+        allNodes = pathDominant.allNodes.concat(pathSubmisive.allNodes)
     }
     console.log("allNodes", allNodes)
     treeDataStructure.pathRoots.push(new nodeclass.Path(idFinal, allNodes, null, idFinal))
@@ -349,7 +349,7 @@ export function split(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths:
         }
         paths[pIDPath] = {
             id: pIDPath,
-            edges: paths[vertex.pathPointer.pathID].edges.slice(paths[vertex.pathPointer.pathID].edges.indexOf(parentVertexID) + 2),
+            edges: paths[vertex.pathPointer.pathID].edges.slice(0, paths[vertex.pathPointer.pathID].edges.indexOf(parentVertexID) - 1),
             color: "#d55040cc", // todo doeditovat
             canSee: true,
             mouseOver: false,
@@ -374,7 +374,7 @@ export function split(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths:
         qIDPath = getNextNumberForPath(treeDataStructure)
         paths[qIDPath] = {
             id: qIDPath,
-            edges: paths[vertex.pathPointer.pathID].edges.slice(0, paths[vertex.pathPointer.pathID].edges.indexOf(parentVertexID)),
+            edges: paths[vertex.pathPointer.pathID].edges.slice(paths[vertex.pathPointer.pathID].edges.indexOf(parentVertexID) + 1),
             color: "#d55040cc", // todo doeditovat
             canSee: true,
             mouseOver: false,
