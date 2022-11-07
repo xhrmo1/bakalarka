@@ -83,6 +83,7 @@ export class PathStructure {
     righttilt: number = 0
     netleftmin: number = 0
     netrightmin: number = 0
+    weight: number = 0
     //doplnime
     constructor(name: string, btail: any = null, bhead: any = null, value: number = 0, insideNode: boolean = false, reversed: any = false, pparent: any = null, netmin: any = 0, netcost: any = 0, pleft: any = null, pright: any = null, root: any = null) {
         this.name = name

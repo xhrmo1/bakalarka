@@ -74,6 +74,15 @@
       <span class="grid-naive-btail"
         >btail: <b>{{ node.btail.name }}</b></span
       >
+      <span v-if="sizeStruct" class="grid-naive-weight"
+        >weight: <b>{{ node.weight }}</b></span
+      >
+      <span v-if="sizeStruct" class="grid-naive-netleftmin"
+        >netleftmin: <b>{{ node.netleftmin }}</b></span
+      >
+      <span v-if="sizeStruct" class="grid-naive-netrightmin"
+        >netrightmin: <b>{{ node.netrightmin }}</b></span
+      >
     </div>
 
     <div class="size" v-if="isNode == 'size'">
@@ -92,6 +101,7 @@ export default {
     node: Object,
     isNode: Boolean,
     isInternalNode: Boolean,
+    sizeStruct: Boolean,
   },
   components: {
     Popup,
@@ -215,15 +225,29 @@ span {
   padding: 2px 0px 2px 0px;
   margin: 0px 0px 12px 0px;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
   grid-template-areas:
     "pparent pparent pparent pparent"
     "netmin netmin netcost netcost"
     "bhead bhead btail btail"
-    "pleft pleft pright pright";
+    "pleft pleft pright pright"
+    "weightt weightt weightt weightt"
+    "netleftmin netleftmin netrightmin netrightmin";
 
   row-gap: 2px;
   column-gap: 2px;
+}
+
+.grid-naive-weight {
+  grid-area: weightt;
+}
+
+.grid-naive-netleftmin {
+  grid-area: netleftmin;
+}
+
+.grid-naive-netrightmin {
+  grid-area: netrightmin;
 }
 
 .grid-naive-reversed {

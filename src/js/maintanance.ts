@@ -27,6 +27,7 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
 
         console.log("-- pouzite nodes --", usedNodes)
         nodesList = nodesList.reverse() // nodeList ide od korena od listy, path je definovany ze hlava je list a tail je koreň - toto mi prišlo ako najjednoduchší fix problému
+        //paths[p].edges = paths[p].edges.reverse()
         var newPath = new nodeClass.Path(
             paths[p].id ?? "",
             nodesList,
@@ -76,6 +77,7 @@ export function setPropertiesForPath(path: nodeClass.Path | null, sizeStruct: bo
         setUpWeightsPath(path)
         if (sizeStruct) {
             netMinSize(path.pathRoot)
+            setUpWeightInsideNodes(path.pathRoot)
         }
     }
 }
@@ -109,6 +111,22 @@ function netMinSize(pathVertex: nodeClass.PathStructure): [number, number] {
 
 }
 
+function setUpWeightInsideNodes(path: nodeClass.PathStructure): number {
+    let sum = 0
+    if (path.pleft instanceof nodeClass.StructBasic) {
+        sum = sum + path.pleft.weight
+    } else if (path.pleft instanceof nodeClass.PathStructure) {
+        sum = sum + setUpWeightInsideNodes(path.pleft)
+    }
+
+    if (path.pright instanceof nodeClass.StructBasic) {
+        sum = sum + path.pright.weight
+    } else if (path.pright instanceof nodeClass.PathStructure) {
+        sum = sum + setUpWeightInsideNodes(path.pright)
+    }
+    path.weight = sum
+    return sum
+}
 
 export function setUpWeightsPath(path: nodeClass.Path) {
     console.log("koniec nacitavania pre path ", path.pathID)
