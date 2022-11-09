@@ -1,7 +1,8 @@
 import * as nodeClass from "./nodeClass"
 import { Nodes, Edges, Paths } from "v-network-graph";
-import { findNodeArray } from "./treeFunctions";
+import { findNodeArray, findAncestor, findSuccessor } from "./treeFunctions";
 import * as naiveOP from "./naivePartition"
+import { flatMap } from "lodash";
 
 
 
@@ -40,7 +41,8 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
         //newPath.root = createPathStruct(nodes, edges, paths[p].edges, nodesList, true, 0, paths[p].edges.length)
         if (newPath.pathRoot != null) {
             newPath.pathRoot.root = newPath
-            setNetCostMin(newPath.pathRoot)
+            setPropertiesForPath(newPath, sizeStruct)
+            //setNetCostMin(newPath.pathRoot)
         }
         pathsSets.push(newPath)
     }
@@ -76,37 +78,78 @@ export function setPropertiesForPath(path: nodeClass.Path | null, sizeStruct: bo
         setNetCostMin(path.pathRoot)
         setUpWeightsPath(path)
         if (sizeStruct) {
-            netMinSize(path.pathRoot)
+            netMinSize(path.pathRoot, path.allNodes != null ? path.allNodes : [])
             setUpWeightInsideNodes(path.pathRoot)
         }
     }
 }
 
+function sumLeftTilt(node: nodeClass.StructBasic, allNodes: nodeClass.StructBasic[]): number {
+    let index = allNodes.indexOf(node)
+    let sum = 0
+    for (let i = 0; i <= index; i++) {
+        sum = sum + allNodes[i].weight
+    }
+    console.log("lefttilt", node, sum, allNodes)
+    return sum - allNodes[index + 1].weight
+}
 
-function netMinSize(pathVertex: nodeClass.PathStructure): [number, number] {
+function sumRightTilt(node: nodeClass.StructBasic, allNodes: nodeClass.StructBasic[]): number {
+    let index = allNodes.indexOf(node)
+    let sum = 0
+    for (let i = allNodes.length - 1; i >= index; i--) {
+        sum = sum + allNodes[i].weight
+    }
+    return sum - allNodes[index - 1].weight
+}
+
+function netMinSize(pathVertex: nodeClass.PathStructure, allNodes: nodeClass.StructBasic[]) {
+    netMinSizeTilt(pathVertex, allNodes)
+    if (pathVertex.pleft instanceof nodeClass.PathStructure) {
+        netMinSizeMinimum(pathVertex.pleft)
+    }
+
+    if (pathVertex.pright instanceof nodeClass.PathStructure) {
+        netMinSizeMinimum(pathVertex.pright)
+    }
+}
+
+function netMinSizeMinimum(pathVertex: nodeClass.PathStructure) {
+    if (pathVertex.pParent != null) {
+        pathVertex.netleftmin = pathVertex.netleftmin - pathVertex.pParent.netleftmin
+        pathVertex.netrightmin = pathVertex.netrightmin - pathVertex.pParent.netrightmin
+
+    }
+    if (pathVertex.pleft instanceof nodeClass.PathStructure) {
+        netMinSizeMinimum(pathVertex.pleft)
+    }
+
+    if (pathVertex.pright instanceof nodeClass.PathStructure) {
+        netMinSizeMinimum(pathVertex.pright)
+    }
+}
+
+function netMinSizeTilt(pathVertex: nodeClass.PathStructure, allNodes: nodeClass.StructBasic[]): [number, number] {
+    console.log("-", pathVertex)
     var llm: number, lrm: number, rlm: number, rrm: number // child - left/right - min
     llm = lrm = rlm = rrm = Math.pow(10, 1000)
-    if (pathVertex.pleft instanceof nodeClass.StructBasic) {
-        pathVertex.lefttilt = pathVertex.pleft.weight
-    } else if (pathVertex.pleft instanceof nodeClass.PathStructure) {
-        let x = naiveOP.goingRightDown(pathVertex.pleft)
-        if (x != null) {
-            pathVertex.lefttilt = x.weight
-        }
-        [llm, lrm] = netMinSize(pathVertex.pleft)
+
+
+    pathVertex.lefttilt = sumLeftTilt(findAncestor(pathVertex), allNodes)
+    pathVertex.righttilt = sumRightTilt(findSuccessor(pathVertex), allNodes)
+    console.log("netleftmin", pathVertex.name, pathVertex.lefttilt, pathVertex.righttilt)
+    if (pathVertex.pleft instanceof nodeClass.PathStructure) {
+        [llm, lrm] = netMinSizeTilt(pathVertex.pleft, allNodes)
     }
 
-    if (pathVertex.pright instanceof nodeClass.StructBasic) {
-        pathVertex.righttilt = pathVertex.pright.weight
-    } else if (pathVertex.pright instanceof nodeClass.PathStructure) {
-        let x = naiveOP.goingLeftDown(pathVertex.pright)
-        if (x != null) {
-            pathVertex.righttilt = x.weight
-        }
-        [rlm, rrm] = netMinSize(pathVertex.pright)
+    if (pathVertex.pright instanceof nodeClass.PathStructure) {
+        [rlm, rrm] = netMinSizeTilt(pathVertex.pright, allNodes)
     }
 
-    return [Math.min(llm, rlm, pathVertex.lefttilt), Math.min(lrm, rrm, pathVertex.righttilt)]
+    pathVertex.netleftmin = Math.min(llm, rlm, pathVertex.lefttilt)
+    pathVertex.netrightmin = Math.min(lrm, rrm, pathVertex.righttilt)
+
+    return [pathVertex.netleftmin, pathVertex.netrightmin]
 
 
 }
