@@ -40,15 +40,17 @@
       <span class="grid-general-size"
         >size: <b>{{ node.size }}</b></span
       >
-      <span class="grid-general-children">Potomkovia</span>
+      <span v-if="node.children.length != 0" class="grid-general-children"
+        >Potomkovia</span
+      >
     </div>
-    <div class="general2" v-if="isNode">
+    <div class="general2" v-if="isNode && node.children.length != 0">
       <template v-for="children in node.children" :key="children.target.name">
         <span>{{ children.target.name }}</span>
       </template>
     </div>
 
-    <div class="naive" v-if="isInternalNode">
+    <div :class="sizeStruct ? 'size' : 'naive'" v-if="isInternalNode">
       <!--<span class="grid-naive-reversed">reversed: true</span>  -->
       <span class="grid-naive-pparent"
         >pParent:
@@ -83,12 +85,6 @@
       <span v-if="sizeStruct" class="grid-naive-netrightmin"
         >netrightmin: <b>{{ node.netrightmin }}</b></span
       >
-    </div>
-
-    <div class="size" v-if="isNode == 'size'">
-      <span class="grid-size-weight">weight</span>
-      <span class="grid-size-netleftmin">left</span>
-      <span class="grid-size-netrightmin">right</span>
     </div>
   </div>
 </template>
@@ -225,6 +221,25 @@ span {
   padding: 2px 0px 2px 0px;
   margin: 0px 0px 12px 0px;
   grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-areas:
+    "pparent pparent pparent pparent"
+    "netmin netmin netcost netcost"
+    "bhead bhead btail btail"
+    "pleft pleft pright pright"
+    "weightt weightt weightt weightt";
+
+  row-gap: 2px;
+  column-gap: 2px;
+}
+
+.size {
+  background-color: #0d3059;
+  width: 100%;
+  display: grid;
+  padding: 2px 0px 2px 0px;
+  margin: 0px 0px 12px 0px;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
   grid-template-areas:
     "pparent pparent pparent pparent"
@@ -233,7 +248,6 @@ span {
     "pleft pleft pright pright"
     "weightt weightt weightt weightt"
     "netleftmin netleftmin netrightmin netrightmin";
-
   row-gap: 2px;
   column-gap: 2px;
 }
@@ -273,20 +287,6 @@ span {
 }
 .grid-naive-btail {
   grid-area: btail;
-}
-
-.size {
-  width: 100%;
-  background-color: #0d3059;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  grid-template-areas:
-    "weightt weightt"
-    "netleftmin netrightmin";
-  row-gap: 2px;
-  column-gap: 2px;
-  padding: 2px 0px 2px 0px;
 }
 .grid-size-weight {
   grid-area: weightt;

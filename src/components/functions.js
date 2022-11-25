@@ -6,7 +6,10 @@ let categorySetX = [
     }, {
         name: "Operacie na cestach",
         category: "pathOP"
-    },
+    }, {
+        name: "Operácie na stromoch",
+        category: "treeOP"
+    }
 ]
 
 let functionSetX = [
@@ -192,7 +195,111 @@ let functionSetX = [
         values: 0,
         code: 113,
     },
-
+    //treeoperations
+    {
+        name: "parent",
+        description: {
+            args: "vertex x",
+            description: "Return the parent of x. Returns null if x is root of a tree"
+        },
+        category: "treeOP",
+        nodes: 0,
+        nodesInPath: 1,
+        paths: 0,
+        values: 0,
+        code: 201,
+    },
+    {
+        name: "root",
+        description: {
+            args: "vertex x",
+            description: "Return root of the tree containing x"
+        },
+        category: "treeOP",
+        nodes: 0,
+        nodesInPath: 1,
+        paths: 0,
+        values: 0,
+        code: 202,
+    },
+    {
+        name: "cost",
+        description: {
+            args: "vertex x",
+            description: "Return the cost of the edge (parent(x),x), assuming x is not a tree root"
+        },
+        category: "treeOP",
+        nodes: 0,
+        nodesInPath: 1,
+        paths: 0,
+        values: 0,
+        code: 203,
+    },
+    {
+        name: "mincost",
+        description: {
+            args: "vertex x",
+            description: "Return minimum edge cost closest to root(x), assuming x is not a tree root"
+        },
+        category: "treeOP",
+        nodes: 0,
+        nodesInPath: 1,
+        paths: 0,
+        values: 0,
+        code: 204,
+    },
+    {
+        name: "update",
+        description: {
+            args: "vertex x, real y",
+            description: "Add y to all edges cost on path from x to root(x)"
+        },
+        category: "treeOP",
+        nodes: 0,
+        nodesInPath: 1,
+        paths: 0,
+        values: 1,
+        code: 205,
+    },
+    {
+        name: "link",
+        description: {
+            args: "vertex x, vertex y, real z",
+            description: "Same as ADD EDGE. Combines the trees containing x and y by adding edge(y,x) with cost z. Assuming y and x are in different trees and y is a root of tree"
+        },
+        category: "treeOP",
+        nodes: 0,
+        nodesInPath: 2,
+        paths: 0,
+        values: 1,
+        code: 206,
+    },
+    {
+        name: "cut",
+        description: {
+            args: "vertex x",
+            description: "Same as REMOVE EDGE. Divide the tree containing vertex x into two tree by deleting edge (parent(x),x) returns cost of this edge. Assuming that x is not a tree root"
+        },
+        category: "treeOP",
+        nodes: 0,
+        nodesInPath: 1,
+        paths: 0,
+        values: 0,
+        code: 207,
+    },
+    {
+        name: "evert",
+        description: {
+            args: "vertex x",
+            description: "Modify the tree containing vertex x by making x the root"
+        },
+        category: "treeOP",
+        nodes: 0,
+        nodesInPath: 1,
+        paths: 0,
+        values: 0,
+        code: 208,
+    },
 ]
 
 

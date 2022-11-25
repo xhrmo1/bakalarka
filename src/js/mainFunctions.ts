@@ -48,7 +48,11 @@ export default function firstTry(callParams: any, sizeStruct: boolean, nodes: No
                 output = naiveOP.path(foundNode)
             }
             functionMessage.functionName = "Path"
-            functionMessage.text = 'Operacia bola spustena s uzlom x: <b>' + callParams.nodes[0] + '</b>. Výsledkom operácie je cesta s ID: <b>' + output.pathID + '</b>'
+            if (output == null) {
+                functionMessage.text = 'Operacia bola spustena s uzlom x: <b>' + callParams.nodes[0] + '</b>. Uzol sa nenachádza v žiadnej ceste'
+            } else {
+                functionMessage.text = 'Operacia bola spustena s uzlom x: <b>' + callParams.nodes[0] + '</b>. Výsledkom operácie je cesta s ID: <b>' + output.pathID + '</b>'
+            }
             break
         case 102:
             var foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
@@ -72,7 +76,11 @@ export default function firstTry(callParams: any, sizeStruct: boolean, nodes: No
                 output = naiveOP.before(foundNode)
             }
             functionMessage.functionName = "Before"
-            functionMessage.text = 'Operacia bola spustena na uzle x: <b>' + callParams.nodes[0] + '</b>. Výsledkom operácie je uzol s ID: <b>' + output.name + '</b>'
+            if (output == null) {
+                functionMessage.text = 'Operacia bola spustena s uzlom x: <b>' + callParams.nodes[0] + '</b>. Na ceste neexistuje uzol pred' + callParams.nodes[0]
+            } else {
+                functionMessage.text = 'Operacia bola spustena na uzle x: <b>' + callParams.nodes[0] + '</b>. Výsledkom operácie je uzol s ID: <b>' + output.name + '</b>'
+            }
             break;
         case 105:
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
@@ -80,7 +88,11 @@ export default function firstTry(callParams: any, sizeStruct: boolean, nodes: No
                 output = naiveOP.after(foundNode)
             }
             functionMessage.functionName = "After"
-            functionMessage.text = 'Operacia bola spustena na uzle x: <b>' + callParams.nodes[0] + '</b>. Výsledkom operácie je uzol s ID: <b>' + output.name + '</b>'
+            if (output == null) {
+                functionMessage.text = 'Operacia bola spustena s uzlom x: <b>' + callParams.nodes[0] + '</b>. Na ceste neexistuje uzol za' + callParams.nodes[0]
+            } else {
+                functionMessage.text = 'Operacia bola spustena na uzle x: <b>' + callParams.nodes[0] + '</b>. Výsledkom operácie je uzol s ID: <b>' + output.name + '</b>'
+            }
             break;
         case 106:
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
@@ -88,15 +100,23 @@ export default function firstTry(callParams: any, sizeStruct: boolean, nodes: No
                 output = naiveOP.pcost(foundNode)
             }
             functionMessage.functionName = "PCost"
-            functionMessage.text = 'Operacia bola spustena na uzle x: <b>' + callParams.nodes[0] + '</b>. Výsledkom operácie je hodnota: <b>' + output + '</b>'
+            if (output == null) {
+                functionMessage.text = 'Operacia bola spustena s uzlom x: <b>' + callParams.nodes[0] + '</b>. Z tohoto uzlu nevychádza žiadna hrana'
+            } else {
+                functionMessage.text = 'Operacia bola spustena na uzle x: <b>' + callParams.nodes[0] + '</b>. Výsledkom operácie je hodnota: <b>' + output + '</b>'
+            }
             break
         case 107:
             foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
             if (foundPath !== undefined) {
                 output = naiveOP.pmincost(foundPath)
             }
-            functionMessage.functionName = "PCost"
-            functionMessage.text = 'Operacia bola spustena na ceste p: <b>' + callParams.paths[0] + '</b>. Výsledkom operácie je hodnota: <b>' + output.value + '</b>' // doplnit ktora hrana
+            functionMessage.functionName = "PMinCost"
+            if (output == null) {
+                functionMessage.text = 'Operacia bola spustena s uzlom x: <b>' + callParams.nodes[0] + '</b>. Cesta, do ktorej patri uzol ' + callParams.nodes[0] + ', nemá žiadnu hranu'
+            } else {
+                functionMessage.text = 'Operacia bola spustena na ceste p: <b>' + callParams.paths[0] + '</b>. Výsledkom operácie je hodnota: <b>' + output.value + '</b>' // doplnit ktora hrana
+            }
             break
         case 108:
             foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
@@ -139,6 +159,68 @@ export default function firstTry(callParams: any, sizeStruct: boolean, nodes: No
             if (foundNode != null) {
                 console.log("Vystup operacie expose: ", naiveOP.expose(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure))
             }
+            break
+        case 201: // parent
+            foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
+            if (foundNode != null) {
+                output = naiveOP.parent(foundNode)
+            }
+            functionMessage.functionName = "parent"
+            if (output == null) {
+                functionMessage.text = 'Operacia bola spustena s uzlom x: <b>' + callParams.nodes[0] + '</b>. Uzol <b>' + callParams.nodes[0] + '</b> nemá rodiča'
+            } else {
+                functionMessage.text = 'Operacia bola spustena na uzle: <b>' + callParams.nodes[0] + '</b>. Výsledkom operácie je uzol: <b>' + output.name + '</b>' // doplnit ktora hrana    
+            }
+            break
+        case 202: // root
+            foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
+            if (foundNode != null) {
+                output = naiveOP.root(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure)
+            }
+            functionMessage.functionName = "root"
+            functionMessage.text = 'Operacia bola spustena na uzle: <b>' + callParams.nodes[0] + '</b>. Výsledkom operácie je uzol: <b>' + output.name + '</b>' // doplnit ktora hrana    
+            break
+        case 203: // cost
+            foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
+            if (foundNode != null) {
+                output = naiveOP.cost(foundNode)
+            }
+            functionMessage.functionName = "cost"
+            if (output == null) {
+                functionMessage.text = 'Operacia bola spustena s uzlom x: <b>' + callParams.nodes[0] + '</b>. Z tohoto uzlu nevychádza žiadna hrana'
+            } else {
+                functionMessage.text = 'Operacia bola spustena na uzle: <b>' + callParams.nodes[0] + '</b>. Výsledkom operácie je hodnota: <b>' + output + '</b>' // doplnit ktora hrana    
+            }
+            break
+        case 204: // mincost
+            foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
+            if (foundNode != null) {
+                output = naiveOP.mincost(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure)
+            }
+            functionMessage.functionName = "mincost"
+            functionMessage.text = 'Operacia bola spustena na uzle: <b>' + callParams.nodes[0] + '</b>. Výsledkom operácie je hodnota: <b>' + output + '</b>' // doplnit ktora hrana    
+            break
+        case 205: // update
+            foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
+            if (foundNode != null) {
+                naiveOP.update(foundNode, callParams.values[0], sizeStruct, paths, nodes, edges, treeDataStructure)
+            }
+            break
+        case 206: // link
+            foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
+            var foundSecondNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[1])
+            if (foundNode != null && foundSecondNode != null) {
+                naiveOP.link(foundNode, foundSecondNode, callParams.values[0], sizeStruct, paths, nodes, edges, treeDataStructure)
+            }
+            break
+        case 207: // cut
+            foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
+            if (foundNode != null) {
+                naiveOP.cut(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure)
+            }
+            break
+        case 208: // evert
+            //todo
             break
         /* nad 10 zacnu operacie na cestach a stromoch */
     }

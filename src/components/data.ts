@@ -32,7 +32,7 @@ let edges2: Edges = {
 let paths2: Paths = {}
 
 let edges1: Edges = {
-  edge1: { source: "A", target: "B", label: "99", dashed: true },
+  edge1: { source: "A", target: "B", label: "7", dashed: true },
   edge2: { source: "B", target: "C", label: "1", dashed: false },
   edge3: { source: "A", target: "D", label: "6", dashed: false },
   edge4: { source: "D", target: "E", label: "3", dashed: false },
@@ -43,6 +43,8 @@ let edges1: Edges = {
   edge9: { source: "F", target: "I", label: "16", dashed: false },
   edge10: { source: "I", target: "J", label: "3", dashed: false },
 }
+
+let colors: string[] = ["#0000ff", "#00ff03", "#ff0000"]
 
 let layouts: Layouts = { nodes: {} }
 
@@ -234,4 +236,5 @@ export default {
   configsStructure,
   paths,
   defaultLayouts,
+  colors,
 }

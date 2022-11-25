@@ -153,7 +153,7 @@ function removeNode() {
             paths[pathName] = {
               id: (pathName = `path${nextPathIndex.value}`),
               edges: edgesNew,
-              color: "#d55040cc",
+              color: data.colors.pop(),
               canSee: true,
               mouseOver: false,
               width: 45,
@@ -164,6 +164,7 @@ function removeNode() {
       //console.log("ArrayCopy-length", arraCopy.length, paths[p].edges.length);
 
       if (arraCopy.length == 0 || arraCopyD.length == 0) {
+        data.colors.push(paths[p].color);
         delete paths[p];
       } else {
         /*console.log(
@@ -256,6 +257,7 @@ function removeEdge() {
         //console.log("paths:", paths[p].edges[pe], edgeId);
         if (paths[p].edges[pe] == edgeId) {
           if (paths[p].edges.length == 1) {
+            data.colors.push(paths[p].color);
             delete paths[p];
           } else {
             const index = paths[p].edges.indexOf(paths[p].edges[pe]);
@@ -267,13 +269,14 @@ function removeEdge() {
               paths[pathName] = {
                 id: (pathName = `path${nextPathIndex.value}`),
                 edges: arr2,
-                color: "#d55040cc",
+                color: data.colors.pop(),
                 canSee: true,
                 mouseOver: false,
                 width: 45,
               };
             }
             if (paths[p].edges.length == 0) {
+              data.colors.push(paths[p].color);
               delete paths[p];
             }
           }
@@ -317,7 +320,7 @@ function smrdis() {
   paths["paths20"] = {
     id: "02",
     edges: ["edge11"],
-    color: "#00aa0066", // #rrggbbaa <- with alpha
+    color: data.colors.pop(), // #rrggbbaa <- with alpha
     canSee: true,
   };
   emit("pathsOut", paths);
@@ -348,6 +351,7 @@ function newLayout(value: any) {
   }
 
   for (const [key, item] of Object.entries(paths)) {
+    data.colors.push(paths[key].color);
     delete paths[key];
   }
   for (const [key, item] of Object.entries(selectedProperties.paths)) {
