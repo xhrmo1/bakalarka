@@ -176,7 +176,7 @@ function addEdge() {
     outPutTree
   );
   emit("treeOut", outPutTree);
-  emit("edgesOut", nodes);
+  emit("edgesOut", edges);
 }
 
 function removeEdge() {

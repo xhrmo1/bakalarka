@@ -20,6 +20,7 @@
       />
       <Structure
         class="grid-item-structure"
+        :key="componentKey"
         :clickedNodes="clickedNodes"
         :whichStructure="'basic'"
         @removeNodeFromClicked="removeNodeFromClicked"
@@ -61,6 +62,7 @@ export default {
       treeDataStructure: [], // tu mam ulozene info o cestach
       txt: "path1",
       callingFunction: { code: 0 },
+      componentKey: 0,
     };
   },
   methods: {
@@ -82,15 +84,20 @@ export default {
       this.paths = object;
     },
     nodesOut(object) {
+      this.componentKey += 1;
+      console.log("changing");
       this.nodes = object;
     },
     edgesOut(object) {
+      this.componentKey += 1;
+      console.log("changing");
       this.edges = object;
     }, // deprecated
     nodeRemove(object) {
       this.clickedNodes.splice(this.clickedNodes.indexOf(object), 1);
     },
     treeOut(object) {
+      this.componentKey += 1;
       this.treeDataStructure = object;
       let x = object;
       //console.log("treeDataStrucute", this.treeDataStructure, object, x);
