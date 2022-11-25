@@ -3,7 +3,7 @@ import { reactive, ref, defineEmits, defineProps, watch } from "vue";
 import { Nodes, Edges, Paths, Layouts, NodePositions } from "v-network-graph";
 import * as vNG from "v-network-graph";
 import data from "./data";
-import firstTry from "../js/mainFunctions";
+import functionSwitch from "../js/mainFunctions";
 import isEqual from "lodash.isequal";
 import * as nodeClass from "../js/nodeClass";
 import * as treeFunctions from "../js/treeFunctions";
@@ -102,13 +102,13 @@ function addNode() {
   if (nodeName.value == undefined || nodeName.value == "") {
     nodeId = `node${nextNodeIndex.value}`;
     name = `node${nextNodeIndex.value}`;
+    nextNodeIndex.value++;
   } else {
     nodeId = nodeName.value;
     name = nodeName.value;
   }
   nodes[nodeId] = { name };
-  nextNodeIndex.value++;
-  [outPutTree, printFunctionMessage] = firstTry(
+  [outPutTree, printFunctionMessage] = functionSwitch(
     { code: 1, name: name },
     sizeStruct,
     nodes,
@@ -122,10 +122,9 @@ function addNode() {
 }
 
 function removeNode() {
-  //console.log("edges:", edges, edges.length);
   for (const nodeId of selectedNodes.value) {
     emit("removeNode", nodes[nodeId]);
-    [outPutTree, printFunctionMessage] = firstTry(
+    [outPutTree, printFunctionMessage] = functionSwitch(
       { code: 2, name: nodeId },
       sizeStruct,
       nodes,
@@ -135,65 +134,7 @@ function removeNode() {
     );
     delete nodes[nodeId];
     emit("nodeRemove", nodeId);
-    for (let p in paths) {
-      let arraCopy = [...paths[p].edges];
-      let arraCopyD = [...paths[p].edges];
-      for (let pe in paths[p].edges) {
-        if (edges[paths[p].edges[pe]].source == nodeId) {
-          const index = arraCopy.indexOf(arraCopy[pe]);
-          arraCopy.splice(0, index);
-          arraCopy.splice(0, 1);
-        }
-        if (edges[paths[p].edges[pe]].target == nodeId) {
-          const index = paths[p].edges.indexOf(paths[p].edges[pe]);
-          var edgesNew = arraCopyD.splice(0, index);
-          arraCopyD.splice(0, 1);
-          var pathName = `path${nextPathIndex.value}`;
-          if (edgesNew.length != 0) {
-            paths[pathName] = {
-              id: (pathName = `path${nextPathIndex.value}`),
-              edges: edgesNew,
-              color: data.colors.pop(),
-              canSee: true,
-              mouseOver: false,
-              width: 45,
-            };
-          }
-        }
-      }
-      //console.log("ArrayCopy-length", arraCopy.length, paths[p].edges.length);
-
-      if (arraCopy.length == 0 || arraCopyD.length == 0) {
-        data.colors.push(paths[p].color);
-        delete paths[p];
-      } else {
-        /*console.log(
-          "ArrayCopy-length222",
-          arraCopy.length,
-          paths[p].edges.length
-        );*/
-
-        paths[p].edges = [...arraCopy];
-      }
-    }
-    for (let index in edges) {
-      if (edges[index].source == nodeId || edges[index].target == nodeId) {
-        delete edges[index];
-        //console.log("mazeme edge");
-      }
-    }
   }
-  //console.log("edges:", edges, edges.length);
-  [outPutTree, printFunctionMessage] = firstTry(
-    { code: 0 },
-    sizeStruct,
-    nodes,
-    edges,
-    paths,
-    outPutTree
-  ); // toto je asi zle
-
-  //console.log("x", outPutTree);
 
   emit("edgesOut", nodes);
   emit("pathsOut", paths);
@@ -226,7 +167,7 @@ function addEdge() {
     dashed: true,
   };
   nextEdgeIndex.value++;
-  [outPutTree, printFunctionMessage] = firstTry(
+  [outPutTree, printFunctionMessage] = functionSwitch(
     { code: 3, edgeID: edgeId },
     sizeStruct,
     nodes,
@@ -241,49 +182,12 @@ function addEdge() {
 function removeEdge() {
   nextPathIndex.value++;
   nextPathIndex.value++;
-  //console.log("test");
-  /*console.log(
-    edges[selectedEdges.value[0]].source,
-    edges[selectedEdges.value[0]].label
-  );*/
-  //edges[selectedEdges.value[0]].label = "88888";
-  //console.log(selectedEdges.value[0]);
+
   for (const edgeId of selectedEdges.value) {
     var edgeToRemove = edges[edgeId];
     delete edges[edgeId];
 
-    for (let p in paths) {
-      for (let pe in paths[p].edges) {
-        //console.log("paths:", paths[p].edges[pe], edgeId);
-        if (paths[p].edges[pe] == edgeId) {
-          if (paths[p].edges.length == 1) {
-            data.colors.push(paths[p].color);
-            delete paths[p];
-          } else {
-            const index = paths[p].edges.indexOf(paths[p].edges[pe]);
-            //console.log("INDEXXXXXXXX", index, pe);
-            var arr2 = paths[p].edges.splice(0, index);
-            paths[p].edges.splice(0, 1);
-            var pathName = `path${nextPathIndex.value}`;
-            if (arr2.length != 0) {
-              paths[pathName] = {
-                id: (pathName = `path${nextPathIndex.value}`),
-                edges: arr2,
-                color: data.colors.pop(),
-                canSee: true,
-                mouseOver: false,
-                width: 45,
-              };
-            }
-            if (paths[p].edges.length == 0) {
-              data.colors.push(paths[p].color);
-              delete paths[p];
-            }
-          }
-        }
-      }
-    }
-    [outPutTree, printFunctionMessage] = firstTry(
+    [outPutTree, printFunctionMessage] = functionSwitch(
       { code: 4, edgeToRemove: edgeToRemove },
       sizeStruct,
       nodes,
@@ -293,9 +197,7 @@ function removeEdge() {
     );
   }
 
-  emit("pathsOut", paths);
-  emit("edgesOut", nodes);
-  [outPutTree, printFunctionMessage] = firstTry(
+  [outPutTree, printFunctionMessage] = functionSwitch(
     { code: 0 },
     sizeStruct,
     nodes,
@@ -304,6 +206,8 @@ function removeEdge() {
     outPutTree
   );
   //console.log("x", outPutTree);
+  emit("pathsOut", paths);
+  emit("edgesOut", nodes);
   emit("treeOut", outPutTree);
 }
 
@@ -380,7 +284,7 @@ function newLayout(value: any) {
   console.log("coords: ", JSON.stringify(layouts));
   //layouts = selectedProperties.layouts;
   console.log(":", nodes, edges, paths);
-  [outPutTree, printFunctionMessage] = firstTry(
+  [outPutTree, printFunctionMessage] = functionSwitch(
     { code: 0 },
     sizeStruct,
     nodes,
@@ -411,7 +315,7 @@ watch(
 
     //console.log("AAAAAAXAXAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     //console.log(x, z, "xxxx");
-    [outPutTree, printFunctionMessage] = firstTry(
+    [outPutTree, printFunctionMessage] = functionSwitch(
       x,
       sizeStruct,
       nodes,

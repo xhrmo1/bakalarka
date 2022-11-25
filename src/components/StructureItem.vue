@@ -23,7 +23,7 @@
       @changeHide="changeHidden"
       :whichPopup="'structure'"
     />
-
+    <div class="explanation">Základné informácie o uzli:</div>
     <div class="general" v-if="isNode">
       <span class="grid-general-parent"
         >rodic:
@@ -31,25 +31,77 @@
           node.parent != null ? node.parent.target.name : "koreň"
         }}</b></span
       >
-      <span class="grid-general-value"
-        >hodnota: <b>{{ node.value != null ? node.value : "null" }}</b></span
-      >
-      <span class="grid-general-path"
-        >cesta: <b>{{ node.pathPointer.name }} </b></span
-      >
       <span class="grid-general-size"
         >size: <b>{{ node.size }}</b></span
       >
-      <span v-if="node.children.length != 0" class="grid-general-children"
+      <span
+        v-if="node.children != null && node.children.length != 0"
+        class="grid-general-children"
         >Potomkovia</span
       >
     </div>
-    <div class="general2" v-if="isNode && node.children.length != 0">
+    <div
+      class="general2"
+      v-if="isNode && node.children != null && node.children.length != 0"
+    >
       <template v-for="children in node.children" :key="children.target.name">
         <span>{{ children.target.name }}</span>
       </template>
     </div>
-
+    <div class="explanation">Informacie o vonkajšom uzle:</div>
+    <div class="externalNode" v-if="isNode">
+      <span class="externalNode-weight"><b>weight: </b>{{ node.weight }}</span>
+      <span class="externalNode-externalBit"><b>external: </b>true</span>
+      <span class="externalNode-bpath"
+        ><b>bpath: </b>{{ node.pathPointer.name }}</span
+      >
+      <span class="externalNode-bparent"
+        ><b>bparent: </b
+        >{{ node.pParent != null ? node.pParent.name : "null" }}</span
+      >
+      <span
+        class="externalNode-dparent"
+        v-if="
+          node.parent != null &&
+          node.parent.target.pathPointer.name != node.pathPointer.name
+        "
+        ><b>dparent: </b>{{ node.parent.target.pathPointer.name }}</span
+      >
+      <span
+        class="externalNode-dcost"
+        v-if="
+          node.parent != null &&
+          node.parent.target.pathPointer.name != node.pathPointer.name
+        "
+        ><b>dcost: </b>{{ node.value }}</span
+      >
+      <span
+        class="externalNode-pathset"
+        v-if="
+          isNode &&
+          sizeStruct &&
+          node.children != null &&
+          node.children.length != 0
+        "
+        ><b>Pathset:</b></span
+      >
+    </div>
+    <div
+      class="general2"
+      v-if="
+        isNode &&
+        sizeStruct &&
+        node.children != null &&
+        node.children.length != 0
+      "
+    >
+      <template v-for="children in node.children" :key="children.target.name">
+        <span
+          v-if="children.target.pathPointer.name != node.pathPointer.name"
+          >{{ children.target.name }}</span
+        >
+      </template>
+    </div>
     <div :class="sizeStruct ? 'size' : 'naive'" v-if="isInternalNode">
       <!--<span class="grid-naive-reversed">reversed: true</span>  -->
       <span class="grid-naive-pparent"
@@ -76,7 +128,7 @@
       <span class="grid-naive-btail"
         >btail: <b>{{ node.btail.name }}</b></span
       >
-      <span v-if="sizeStruct" class="grid-naive-weight"
+      <span class="grid-naive-weight"
         >weight: <b>{{ node.weight }}</b></span
       >
       <span v-if="sizeStruct" class="grid-naive-netleftmin"
@@ -125,10 +177,55 @@ export default {
 
 .container {
   margin: 8px;
-  height: 300px;
 }
 span {
   background-color: white;
+}
+
+.explanation {
+  padding: 3px;
+}
+
+.externalNode {
+  padding: 0px 0px 2px 0px;
+  background-color: #0d3059;
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    "weight externalBit"
+    "bparent bpath "
+    "dparent dcost"
+    "pathset pathset";
+  column-gap: 2px;
+  font-size: 20px;
+}
+.externalNode > span {
+  margin-top: 2px;
+}
+.externalNode-weight {
+  grid-area: weight;
+}
+
+.externalNode-externalBit {
+  grid-area: externalBit;
+}
+
+.externalNode-bparent {
+  grid-area: bparent;
+}
+.externalNode-bpath {
+  grid-area: bpath;
+}
+.externalNode-dparent {
+  grid-area: dparent;
+}
+.externalNode-dcost {
+  grid-area: dcost;
+}
+.externalNode-pathset {
+  grid-area: pathset;
 }
 
 .stucture-definition {
@@ -157,10 +254,9 @@ span {
   display: grid;
   width: 100%;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 1fr;
   grid-template-areas:
-    "parent value"
-    "path size"
+    "parent size"
     "children children";
   row-gap: 2px;
   column-gap: 2px;
@@ -171,14 +267,20 @@ span {
   background-color: #0d3059;
   display: grid;
   width: 100%;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
 
-  margin: 0px 0px 0px 0px;
   row-gap: 2px;
   column-gap: 2px;
   font-size: 20px;
+  text-align: center;
 }
 
+.grid-general-dparent {
+  grid-area: dparent;
+}
+.grid-general-dcost {
+  grid-area: dcost;
+}
 .grid-general-parent {
   grid-area: parent;
 }

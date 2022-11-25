@@ -4,7 +4,7 @@ import { reactive, ref, defineEmits, defineProps, watch } from "vue";
 import { Nodes, Edges, Layouts } from "v-network-graph";
 import * as vNG from "v-network-graph";
 import data from "./data";
-import firstTry from "../js/mainFunctions";
+import functionSwitch from "../js/mainFunctions";
 import Structure from "./StructureForm.vue";
 import * as nodeClass from "../js/nodeClass";
 

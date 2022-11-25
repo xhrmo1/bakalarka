@@ -13,7 +13,7 @@ class FunctionMessage {
     }
 }
 
-export default function firstTry(callParams: any, sizeStruct: boolean, nodes: Nodes, edges: Edges, paths: Paths, treeDataStructure: nodeClass.TreeDataStructures): [nodeClass.TreeDataStructures, any] {
+export default function functionSwitch(callParams: any, sizeStruct: boolean, nodes: Nodes, edges: Edges, paths: Paths, treeDataStructure: nodeClass.TreeDataStructures): [nodeClass.TreeDataStructures, any] {
     console.log('imported function', callParams)
     var functionMessage: FunctionMessage = new FunctionMessage("", "")
     var output: any // na uchovanie outputu a nasledneho vypisania v sprave
@@ -30,7 +30,6 @@ export default function firstTry(callParams: any, sizeStruct: boolean, nodes: No
             console.log('Node was added', callParams.name, treeDataStructure)
             break;
         case 2: // odobratie uzlu -> vymazat zo zoznamu uzlov, vymazat hrany, aktualizovat DS
-
             treeFunctions.removeNode(treeDataStructure, callParams.name, sizeStruct, nodes, edges, paths)
             console.log('Node was removed', callParams.name, treeDataStructure)
             break;

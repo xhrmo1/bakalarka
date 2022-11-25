@@ -41,12 +41,9 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
         //newPath.root = createPathStruct(nodes, edges, paths[p].edges, nodesList, true, 0, paths[p].edges.length)
         if (newPath.pathRoot != null) {
             newPath.pathRoot.root = newPath
-            setPropertiesForPath(newPath, sizeStruct)
-            //setNetCostMin(newPath.pathRoot)
         }
         pathsSets.push(newPath)
     }
-    console.log('pathSets == ', pathsSets)
     //create paths where are no edges
     for (var n in nodes) {
         if (!usedNodes.includes(nodes[n].name)) {
@@ -65,10 +62,8 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
             }
         }
     }
-    if (sizeStruct) {
-        for (let p of pathsSets) {
-            setUpWeightsPath(p)
-        }
+    for (let p of pathsSets) {
+        setPropertiesForPath(p, sizeStruct)
     }
     return pathsSets
 }
@@ -77,9 +72,9 @@ export function setPropertiesForPath(path: nodeClass.Path | null, sizeStruct: bo
     if (path != null && path.pathRoot != null) {
         setNetCostMin(path.pathRoot)
         setUpWeightsPath(path)
+        setUpWeightInsideNodes(path.pathRoot)
         if (sizeStruct) {
             netMinSize(path.pathRoot, path.allNodes != null ? path.allNodes : [])
-            setUpWeightInsideNodes(path.pathRoot)
         }
     }
 }
@@ -172,19 +167,15 @@ function setUpWeightInsideNodes(path: nodeClass.PathStructure): number {
 }
 
 export function setUpWeightsPath(path: nodeClass.Path) {
-    console.log("koniec nacitavania pre path ", path.pathID)
-
     if (path.pathRoot != null) {
         let previouseVertex = path.pathRoot.bhead
         let vertex = naiveOP.after(previouseVertex)
         while (vertex != null) {
-            console.log("koniec nacitavania pre path ", vertex)
             vertex.weight = vertex.size - previouseVertex.size
             previouseVertex = vertex
             vertex = naiveOP.after(previouseVertex)
         }
     }
-    console.log("koniec nacitavania pre path ", path.pathID)
 }
 
 function getNextNumberForPat2(pathsRoots: nodeClass.Path[]): string {
