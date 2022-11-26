@@ -244,16 +244,7 @@ export function concatenate(p: nodeclass.Path, q: nodeclass.Path, x: number, siz
     var edgeID = ""
     console.log("--concate ", p, q, tailVertex.pathPointer)
     if (tailVertex.parent == null) {
-        edgeID = "edge" + getLastElementFromMap(edges, "edge")
-        edges[edgeID] = {
-            source: headVertex.name != null ? headVertex.name : "",
-            target: tailVertex.name != null ? tailVertex.name : "",
-            label: x,
-            dashed: false
-        }
-        headVertex.children?.push(new nodeclass.EdgeDetail(tailVertex, edgeID))
-        tailVertex.parent = new nodeclass.EdgeDetail(headVertex, edgeID)
-        treeDataStructure.basicRoots = treeDataStructure.basicRoots.filter(e => e != tailVertex)
+        treeFunctions.addDashedEdge(headVertex, tailVertex, x, edges, treeDataStructure)
     } else {
         edgeID = tailVertex.parent.edgeID
         edges[edgeID].dashed = false
@@ -457,26 +448,14 @@ export function splice(p: nodeclass.Path, sizeStruct: boolean, paths: Paths, nod
     }
     v = v.parent.target
     var [qPath, rPath, x, y] = split(v, sizeStruct, paths, nodes, edges, treeDataStructure)
+
     // console.log("splice po splite", qPath, rPath, x, y, paths, edges, v, treeDataStructure)
+    v.weight = v.weight - treeFunctions.getWeightPath(p)
     console.log(qPath, rPath)
     if (qPath != null) { // spravit z toho novu funkciu
-        var qEdgeID = "edge" + getLastElementFromMap(edges, "edge")
         var qTail = tail(qPath)
-        edges[qEdgeID] = {
-            source: v.name,
-            target: qTail.name,
-            label: x,
-            dashed: true
-        }
-
-        qTail.parent = new nodeclass.EdgeDetail(v, qEdgeID)
-        qTail.value = x
-        if (v.children != null) {
-            v.children.push(new nodeclass.EdgeDetail(qTail, qEdgeID))
-        } else {
-            v.children = [new nodeclass.EdgeDetail(qTail, qEdgeID)]
-        }
-        console.warn("WAR EDGE", edges[qEdgeID])
+        treeFunctions.addDashedEdge(v, qTail, x, edges, treeDataStructure)
+        v.weight = v.weight + treeFunctions.getWeightPath(qPath)
     } else {
         //console.log("qpath is none ", qPath)
     }
@@ -509,22 +488,9 @@ export function expose(v: nodeclass.StructBasic, sizeStruct: boolean, paths: Pat
     var [qPath, rPath, x, y] = split(v, sizeStruct, paths, nodes, edges, treeDataStructure)
 
     if (qPath != null) {
-        var qEdgeID = "edge" + getLastElementFromMap(edges, "edge")
         var qTail = tail(qPath)
-        edges[qEdgeID] = {
-            source: v.name,
-            target: qTail.name,
-            label: x,
-            dashed: true
-        }
-
-        qTail.parent = new nodeclass.EdgeDetail(v, qEdgeID)
-        qTail.value = x
-        if (v.children != null) {
-            v.children.push(new nodeclass.EdgeDetail(qTail, qEdgeID))
-        } else {
-            v.children = [new nodeclass.EdgeDetail(qTail, qEdgeID)]
-        }
+        treeFunctions.addDashedEdge(v, qTail, x, edges, treeDataStructure)
+        v.weight = v.weight + treeFunctions.getWeightPath(qPath)
     }
 
     let pathV = path(v)

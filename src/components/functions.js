@@ -300,6 +300,59 @@ let functionSetX = [
         values: 0,
         code: 208,
     },
+
+    {
+        name: "light",
+        description: {
+            args: "cesta p",
+            description: "Na ceste p vráti light hranu najbližšiu ku tail(p) "
+        },
+        category: "sizeOP",
+        nodes: 0,
+        nodesInPath: 0,
+        paths: 1,
+        values: 0,
+        code: 301,
+    },
+    {
+        name: "maxwt",
+        description: {
+            args: "uzol x",
+            description: "Vráti uzol, ktorý má najväčšiu weight,je synom uzlu x a nepatrí do rovnakej cesty"
+        },
+        category: "sizeOP",
+        nodes: 0,
+        nodesInPath: 1,
+        paths: 0,
+        values: 0,
+        code: 302,
+    },
+    {
+        name: "slice",
+        description: {
+            args: "cesta p",
+            description: "Predpokladá že na ceste p sa nachádza light hrana. Hranu prekonvertuje na dashed a tým cestu rozdelí na dve cesty"
+        },
+        category: "treeOP",
+        nodes: 0,
+        nodesInPath: 0,
+        paths: 1,
+        values: 0,
+        code: 303,
+    },
+    {
+        name: "conceal",
+        description: {
+            args: "cesta p",
+            description: "Na ceste p opraví všetky hrany na dashed"
+        },
+        category: "treeOP",
+        nodes: 0,
+        nodesInPath: 0,
+        paths: 1,
+        values: 0,
+        code: 304,
+    },
 ]
 
 

@@ -3,6 +3,7 @@ import * as treeFunctions from "./treeFunctions"
 import { Nodes, Edges, Paths } from "v-network-graph";
 import * as nodeClass from "./nodeClass";
 import * as naiveOP from "./naivePartition"
+import * as sizeOP from "./sizePartitioning"
 
 class FunctionMessage {
     functionName: string
@@ -220,6 +221,42 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
             break
         case 208: // evert
             //todo
+            break
+        case 301:
+            foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
+            if (foundPath !== undefined) {
+                output = sizeOP.light(foundPath)
+                functionMessage.functionName = "light"
+                if (output == null) {
+                    functionMessage.text = 'Operacia bola spustena na ceste: <b>' + callParams.paths[0] + '</b>. Cesta neobsahuje žiadnu light hranu' // doplnit ktora hrana    
+                } else {
+                    functionMessage.text = 'Operacia bola spustena na ceste: <b>' + callParams.paths[0] + '</b>. Najbližšia light hrana ku tail(p) je solid hrana vychádzajúca z uzlu: <b>' + output.name + '</b>'
+                }
+            }
+            break
+        case 302:
+            foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
+            if (foundNode != null) {
+                let [output, output2] = sizeOP.maxwt(foundNode)
+                functionMessage.functionName = "light"
+                if (output == null) {
+                    functionMessage.text = 'Operacia bola spustena na uzle: <b>' + callParams.nodes[0] + '</b>. Uzol nieje prepojený so žiadnym ponokom pomocou dashed hrany' // doplnit ktora hrana    
+                } else {
+                    functionMessage.text = 'Operacia bola spustena na uzle: <b>' + callParams.nodes[0] + '</b>. Potomok tohoto uzla, prepojený pomocou dashed hrany, je uzol <b>' + output + '</b>, kde weight je: <b>' + output2 + '</b>'
+                }
+            }
+            break
+        case 303:
+            foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
+            if (foundPath !== undefined) {
+                console.log("Vystup operacie pupdate", sizeOP.slice(foundPath, sizeStruct, nodes, edges, paths, treeDataStructure))
+            }
+            break
+        case 304:
+            foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
+            if (foundPath !== undefined) {
+                console.log("Vystup operacie conceal", sizeOP.conceal(foundPath, sizeStruct, nodes, edges, paths, treeDataStructure))
+            }
             break
         /* nad 10 zacnu operacie na cestach a stromoch */
     }

@@ -186,6 +186,26 @@ export function addEdge(treeDataStructure: nodeClass.TreeDataStructures, edges: 
     }
 }
 
+export function addDashedEdge(parent: nodeClass.StructBasic, child: nodeClass.StructBasic, value: number, edges: Edges, treeDataStructure: nodeClass.TreeDataStructures) {
+    var edgeID = "edge" + naiveOP.getLastElementFromMap(edges, "edge")
+    console.log("THIS IS VALUE", value)
+    edges[edgeID] = {
+        source: parent.name,
+        target: child.name,
+        label: value,
+        dashed: true
+    }
+
+    child.parent = new nodeClass.EdgeDetail(parent, edgeID)
+    child.value = value
+    if (parent.children != null) {
+        parent.children.push(new nodeClass.EdgeDetail(child, edgeID))
+    } else {
+        parent.children = [new nodeClass.EdgeDetail(child, edgeID)]
+    }
+    treeDataStructure.basicRoots = treeDataStructure.basicRoots.filter(e => e != child)
+}
+
 
 export function removeEdge(treeDataStructure: nodeClass.TreeDataStructures, edgeToRemove: Edge) {
     console.log(" -- edgeToRemove -- ", edgeToRemove)
@@ -247,4 +267,27 @@ export function findSuccessor(pathRoot: nodeClass.PathStructure): nodeClass.Stru
         nextNode = nextNode.pleft
     }
     return nextNode
+}
+
+export function getWeightPath(path: nodeClass.Path): number {
+    if (path.pathRoot == null) {
+        if (path.allNodes != null && path.allNodes.length != 0) {
+            return path.allNodes[0].weight
+        }
+        console.error("Node has null pointer ", path)
+        return 0
+    }
+    return path.pathRoot.weight
+}
+
+export function getWeightNode(node: nodeClass.StructBasic) {
+    if (node.pathPointer == null) {
+        console.error("Node has null pointer ", node.pathPointer)
+        return -1
+    }
+    if (node.pathPointer.pathRoot == null) {
+        return node.weight
+    }
+    return node.pathPointer.pathRoot.weight
+
 }
