@@ -122,10 +122,16 @@ watch(
 
     var depth = Math.ceil(Math.log2(x[0].allNodes.length));
     console.log("Length is: ", depth, x[0]);
-    inside(x[0].pathRoot, 0, depth, 0);
+    inside(x[0].pathRoot, 0, depth, 0, depth);
     console.log("Layout", layouts, nodes);
 
-    function inside(node: any, baseX: number, axisX: number, axisY: number) {
+    function inside(
+      node: any,
+      baseX: number,
+      axisX: number,
+      axisY: number,
+      distance: number
+    ) {
       console.log(node.name, "inside Name", baseX, axisX, axisY, node);
       layouts.nodes[id] = { x: baseX, y: axisY * 50 };
       nodes[id] = { name: node.name };
@@ -145,11 +151,23 @@ watch(
       }
       id++;
       if (node.pleft != null) {
-        inside(node.pleft, baseX - 50 * axisX, axisX - 1, axisY + 1);
+        inside(
+          node.pleft,
+          baseX - 50 * axisX,
+          axisX - (1 * distance) / 2,
+          axisY + 1,
+          distance / 2
+        );
       }
 
       if (node.pright != null) {
-        inside(node.pright, baseX + 50 * axisX, axisX - 1, axisY + 1);
+        inside(
+          node.pright,
+          baseX + 50 * axisX,
+          axisX - (1 * distance) / 2,
+          axisY + 1,
+          distance / 2
+        );
       }
     }
 
@@ -179,6 +197,7 @@ var outPutTree: any[] | undefined;
       <div class="splitPopGrid popup-inner">
         <Structure
           class="PopGrid--Structure"
+          :basicDisplay="false"
           :clickedNodes="clickedNodes"
           :whichStructure="props.pathStructure ? 'naive' : 'size'"
           @removeNodeFromClicked="removeNodeFromClicked"
@@ -214,8 +233,17 @@ var outPutTree: any[] | undefined;
   grid-template-columns: 10fr 3fr;
   grid-template-rows: 1fr 8fr;
   grid-template-areas:
-    "header structure"
+    "network structure"
     "network structure";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 99;
+  height: 90%;
+  width: 90%;
+
+  background-color: #fff;
 }
 
 .PopGrid--Header {
@@ -230,18 +258,6 @@ var outPutTree: any[] | undefined;
 
 .PopGrid--Network {
   grid-area: network;
-}
-
-.popup-inner {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 99;
-
-  height: 80%;
-  width: 90%;
-  background-color: #fff;
 }
 
 .modal-overlay {

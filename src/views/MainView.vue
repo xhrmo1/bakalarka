@@ -5,6 +5,11 @@
       <Paths
         class="grid-item-path"
         v-model="paths"
+        :count="
+          treeDataStructure.pathRoots != null
+            ? treeDataStructure.pathRoots.length
+            : 0
+        "
         :treeOut="treeDataStructure"
         @pathsChange="allPathsChange"
       />
@@ -20,6 +25,7 @@
       />
       <Structure
         class="grid-item-structure"
+        :basicDisplay="true"
         :key="componentKey"
         :clickedNodes="clickedNodes"
         :whichStructure="'basic'"

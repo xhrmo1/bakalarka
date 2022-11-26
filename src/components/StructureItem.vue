@@ -8,7 +8,10 @@
       >
         X
       </button>
-      <div class="title">Uzol: {{ node.name }}</div>
+      <div class="title" v-if="basicDisplay">Uzol: {{ node.name }}</div>
+      <div class="title" v-if="!basicDisplay">
+        {{ isNode ? "Vonkajší uzol: " : "Vnútorný uzol: " }}{{ node.name }}
+      </div>
       <button
         v-on:click="isHidden = !isHidden"
         class="btn"
@@ -23,8 +26,10 @@
       @changeHide="changeHidden"
       :whichPopup="'structure'"
     />
-    <div class="explanation">Základné informácie o uzli:</div>
-    <div class="general" v-if="isNode">
+    <div class="explanation" v-if="isNode && basicDisplay">
+      Základné informácie o uzli:
+    </div>
+    <div class="general" v-if="isNode && basicDisplay">
       <span class="grid-general-parent"
         >rodic:
         <b>{{
@@ -42,13 +47,20 @@
     </div>
     <div
       class="general2"
-      v-if="isNode && node.children != null && node.children.length != 0"
+      v-if="
+        isNode &&
+        basicDisplay &&
+        node.children != null &&
+        node.children.length != 0
+      "
     >
       <template v-for="children in node.children" :key="children.target.name">
         <span>{{ children.target.name }}</span>
       </template>
     </div>
-    <div class="explanation">Informacie o vonkajšom uzle:</div>
+    <div class="explanation" v-if="isNode && basicDisplay">
+      Informacie o vonkajšom uzle:
+    </div>
     <div class="externalNode" v-if="isNode">
       <span class="externalNode-weight"><b>weight: </b>{{ node.weight }}</span>
       <span class="externalNode-externalBit"><b>external: </b>true</span>
@@ -77,29 +89,16 @@
       >
       <span
         class="externalNode-pathset"
-        v-if="
-          isNode &&
-          sizeStruct &&
-          node.children != null &&
-          node.children.length != 0
-        "
+        v-if="isNode && sizeStruct && pathSetList.length != 0"
         ><b>Pathset:</b></span
       >
     </div>
     <div
       class="general2"
-      v-if="
-        isNode &&
-        sizeStruct &&
-        node.children != null &&
-        node.children.length != 0
-      "
+      v-if="isNode && sizeStruct && pathSetList.length != 0"
     >
-      <template v-for="children in node.children" :key="children.target.name">
-        <span
-          v-if="children.target.pathPointer.name != node.pathPointer.name"
-          >{{ children.target.name }}</span
-        >
+      <template v-for="children in pathSetList" :key="children.target.name">
+        <span>{{ children.target.name }}</span>
       </template>
     </div>
     <div :class="sizeStruct ? 'size' : 'naive'" v-if="isInternalNode">
@@ -150,9 +149,22 @@ export default {
     isNode: Boolean,
     isInternalNode: Boolean,
     sizeStruct: Boolean,
+    basicDisplay: Boolean,
   },
   components: {
     Popup,
+  },
+  computed: {
+    pathSetList() {
+      console.log("XXXXXXXXX", this.node);
+      if (this.node.children != null) {
+        return this.node.children.filter(
+          (c) => c.target.pathPointer.name != this.node.pathPointer.name
+        );
+      }
+      console.log("XXXXXXXXX2", this.node);
+      return [];
+    },
   },
   data() {
     return {
@@ -246,6 +258,7 @@ span {
   flex-grow: 1;
   display: flex;
   justify-content: center;
+  font-size: 24px;
 }
 
 .general {

@@ -13,46 +13,64 @@
         Ukázať všetky
       </button>
     </div>
-
-    <div
-      :key="key"
-      v-for="(value, key) in modelValue"
-      class="pathComponent"
-      :style="'border-color: ' + value.color"
-    >
-      <label style="flex-grow: 1">
-        {{ key }}
-      </label>
-      <i
-        v-on:click="
-          boolPopUpStructure = !boolPopUpStructure;
-          clickedId = value.id;
-        "
-        class="gg-search"
-      />
-      <label class="switch">
-        <input
-          type="checkbox"
-          id="key"
-          name="path"
-          value="Bike"
-          v-model="value['canSee']"
+    <div class="overflowing">
+      <div
+        :key="key"
+        v-for="(value, key) in modelValue"
+        class="pathComponent underlinePathComponent"
+        :style="'border-color: ' + value.color"
+      >
+        <label style="flex-grow: 1">
+          {{ key }}
+        </label>
+        <i
+          v-on:click="
+            boolPopUpStructure = !boolPopUpStructure;
+            clickedId = value.id;
+          "
+          class="gg-search"
         />
+        <label class="switch">
+          <input
+            type="checkbox"
+            id="key"
+            name="path"
+            value="Bike"
+            v-model="value['canSee']"
+          />
 
-        <div>
-          <span></span>
-        </div>
-      </label>
+          <div>
+            <span></span>
+          </div>
+        </label>
+      </div>
+      <span class="title" style="border-top: 6px solid #0d3059; font-size: 14px"
+        >Cesty s jednym uzlom</span
+      >
+      <div
+        :key="key"
+        v-for="(value, key) in onePathStructureFunction()"
+        class="pathComponent"
+      >
+        <label style="flex-grow: 1">
+          {{ value.name }}
+        </label>
+        <label>
+          {{ value.allNodes[0].name }}
+        </label>
+      </div>
+
+      <Popup v-if="isHidden" @changeHide="changeHidden" :whichPopup="'paths'" />
+      <PopUpStructure
+        v-if="boolPopUpStructure"
+        @changePopUpStructure="showPopUpStructure"
+        :pathTree="
+          this.treeOut.pathRoots.filter((x) => x.name == this.clickedId)
+        "
+        :pathStructure="true"
+        :treeDataStructure="treeOut"
+      ></PopUpStructure>
     </div>
-
-    <Popup v-if="isHidden" @changeHide="changeHidden" :whichPopup="'paths'" />
-    <PopUpStructure
-      v-if="boolPopUpStructure"
-      @changePopUpStructure="showPopUpStructure"
-      :pathTree="this.treeOut.pathRoots.filter((x) => x.name == this.clickedId)"
-      :pathStructure="true"
-      :treeDataStructure="treeOut"
-    ></PopUpStructure>
   </div>
 </template>
 
@@ -66,7 +84,7 @@ export default {
     Popup,
     PopUpStructure,
   },
-  props: ["modelValue", "treeOut"],
+  props: ["modelValue", "treeOut", "count"],
   data() {
     return {
       isHidden: false,
@@ -76,7 +94,24 @@ export default {
       nodesss: data.edges,
     };
   },
+  setup() {},
+  computed: {
+    onePathStructure: function () {
+      if (this.treeOut.pathRoots != null) {
+        return this.treeOut.pathRoots.filter((i) => i.allNodes.length == 1);
+      }
+      return [{ name: "aaa", allNodes: [{ name: "a" }] }];
+    },
+  },
   methods: {
+    onePathStructureFunction() {
+      console.log(this.treeOut.pathRoots);
+      if (this.treeOut.pathRoots != null) {
+        let xx = this.treeOut.pathRoots.filter((i) => i.allNodes.length == 1);
+        console.log(xx[0].allNodes[0].name);
+        return xx;
+      }
+    },
     changeHidden() {
       this.isHidden = !this.isHidden;
     },
@@ -103,10 +138,20 @@ export default {
 
 <style scoped>
 @import "../assets/generalstyles.css";
+.overflowing {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  height: 80%;
+}
 .title {
   display: flex;
   padding: 8px 8px 0px 8px;
   margin: 0px 0px 8px 0px;
+}
+
+.underlinePathComponent {
+  border-bottom: 6px solid;
 }
 
 .pathComponent {
@@ -115,7 +160,6 @@ export default {
   margin: 0px 8px 8px 8px;
   padding: 4px 8px 2px 8px;
   border-radius: 8px;
-  border-bottom: 6px solid;
   justify-content: center;
   justify-items: center;
   align-content: center;

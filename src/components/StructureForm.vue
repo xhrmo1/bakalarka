@@ -7,6 +7,7 @@
     >
       <StructureItem
         class="item1"
+        :basicDisplay="basicDisplay"
         :node="value"
         :isNode="value.hasOwnProperty('pathPointer')"
         :isInternalNode="value.hasOwnProperty('pleft')"
@@ -35,6 +36,7 @@ export default {
     };
   },
   props: {
+    basicDisplay: Boolean,
     whichStructure: String,
     clickedNodes: {
       node1: Object,

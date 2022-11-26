@@ -113,7 +113,6 @@ function addSizeUP(node: nodeClass.StructBasic, value: number) {
 
 
 export function removeNode(treeDataStructure: nodeClass.TreeDataStructures, name: string, sizeStruct: boolean, nodes: Nodes, edges: Edges, paths: Paths) {
-
     let node = findNodeArray(treeDataStructure.basicRoots, name)
     if (node == null) {
         console.error("Removing node, node not found")
