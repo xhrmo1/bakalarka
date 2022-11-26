@@ -41,6 +41,13 @@
         <button class="valuesGrid-item-item3" @click="runFunction">
           Spustiť funkciu
         </button>
+        <button
+          class="valuesGrid-item-item4"
+          @click="undoLastOperation"
+          :disabled="stepBackDisable"
+        >
+          Vrátiť späť
+        </button>
       </div>
 
       <!-- možnosti pre nodes -->
@@ -136,6 +143,7 @@ export default {
       valuesDefault: ["", "a", "b", "c", "d"],
       description: "",
       code: 0,
+      stepBackDisable: true,
       callFunctionData: {
         code: 0,
         nodes: [],
@@ -148,6 +156,7 @@ export default {
   methods: {
     runFunction() {
       this.callFunctionData.nodes = [];
+      this.stepBackDisable = false;
       for (let i = 1; i <= this.nodesCount; i++) {
         this.callFunctionData.nodes.push(
           document.getElementById("node" + i).value
@@ -171,6 +180,12 @@ export default {
       //console.log("aaa");
       //console.log(this.callFunctionData);
       //console.log("aaa");
+    },
+    undoLastOperation() {
+      console.log("Krok späť");
+      this.stepBackDisable = true;
+      this.callFunctionData.code = 5;
+      this.$emit("callFunction", this.callFunctionData);
     },
     functionDetails() {
       var e = document.getElementById("functionSelector");
@@ -250,12 +265,11 @@ img {
     "header header"
     "value1 item1"
     "value2 item2"
-    "item3 item3"
+    "item3 item4"
     "  .     .  ";
   margin: 0px 8px 0px 8px;
   font-size: 20px;
 }
-
 .valuesGrid-item-header {
   grid-area: header;
   background-color: #c4c4c4;
@@ -280,11 +294,7 @@ select {
   background-color: white;
   padding: 0px 8px 0px 0px;
 }
-.valuesGrid-item-value4 {
-  grid-area: value4;
-  background-color: white;
-  padding: 0px 8px 0px 0px;
-}
+
 .valuesGrid-item-item1 {
   grid-area: item1;
 }
@@ -294,7 +304,7 @@ select {
 .valuesGrid-item-item3 {
   grid-area: item3;
 }
-.valuesGrid-item-item4 {
+.valuesGrid-item-value4 {
   grid-area: item4;
 }
 </style>

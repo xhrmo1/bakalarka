@@ -240,33 +240,10 @@ function newLayout(value: any) {
     console.error("selectedProperties not found", selectedProperties);
     return;
   }
-  for (const [key, item] of Object.entries(nodes)) {
-    delete nodes[key];
-  }
-  for (const [key, item] of Object.entries(selectedProperties.nodes)) {
-    nodes[key] = item;
-  }
+  replaceObjects(nodes, selectedProperties.nodes);
+  replaceObjects(edges, selectedProperties.edges);
+  replaceObjects(paths, selectedProperties.paths);
 
-  for (const [key, item] of Object.entries(edges)) {
-    delete edges[key];
-  }
-  for (const [key, item] of Object.entries(selectedProperties.edges)) {
-    edges[key] = item;
-  }
-
-  for (const [key, item] of Object.entries(paths)) {
-    data.colors.push(paths[key].color);
-    delete paths[key];
-  }
-  for (const [key, item] of Object.entries(selectedProperties.paths)) {
-    paths[key] = item;
-  }
-
-  /* for (const [key, item] of Object.entries(layouts)) {
-    for (const [key2, item2] of Object.entries(item)) {
-      delete layouts["nodes"][key2];
-    }
-  }*/
   console.log(
     "coords: ",
     JSON.stringify(layouts),
@@ -315,17 +292,24 @@ watch(
 
     //console.log("AAAAAAXAXAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     //console.log(x, z, "xxxx");
-    [outPutTree, printFunctionMessage] = functionSwitch(
-      x,
-      sizeStruct,
-      nodes,
-      edges,
-      paths,
-      outPutTree
-    );
-    printFunctionMessageModel.value = printFunctionMessage;
-    console.log(paths, edges, outPutTree);
-    console.log("x", outPutTree);
+    console.log(x != undefined && x.code == 5);
+    if (x != undefined && x.code == 5) {
+      console.log("backingUP");
+      loadBackUP();
+    } else {
+      createBackUP();
+      [outPutTree, printFunctionMessage] = functionSwitch(
+        x,
+        sizeStruct,
+        nodes,
+        edges,
+        paths,
+        outPutTree
+      );
+      printFunctionMessageModel.value = printFunctionMessage;
+      console.log(paths, edges, outPutTree);
+      console.log("x", outPutTree);
+    }
     emit("treeOut", outPutTree);
     changeHidden();
   },
@@ -340,6 +324,45 @@ function changeHidden() {
   console.log("isHiden", isHidden);
   isHidden.value = !isHidden.value;
   console.log("isHiden", isHidden);
+}
+
+let nodesBackUp: Nodes;
+let edgesBackUp: Edges;
+let pathsBackUp: Paths;
+function createBackUP() {
+  console.log("backinUP");
+  nodesBackUp = JSON.parse(JSON.stringify(nodes));
+  edgesBackUp = JSON.parse(JSON.stringify(edges));
+  pathsBackUp = JSON.parse(JSON.stringify(paths));
+}
+
+function loadBackUP() {
+  console.log("backinUP2");
+  replaceObjects(nodes, nodesBackUp);
+  replaceObjects(edges, edgesBackUp);
+  replaceObjects(paths, pathsBackUp);
+
+  [outPutTree, printFunctionMessage] = functionSwitch(
+    { code: 0 },
+    sizeStruct,
+    nodes,
+    edges,
+    paths,
+    outPutTree
+  );
+  emit("treeOut", outPutTree);
+  emit("pathsOut", paths);
+  emit("nodesOut", nodes);
+  emit("edgesOut", edges);
+}
+
+function replaceObjects(oldObjects: Nodes, newObjects: Nodes) {
+  for (const [key, item] of Object.entries(oldObjects)) {
+    delete oldObjects[key];
+  }
+  for (const [key, item] of Object.entries(newObjects)) {
+    oldObjects[key] = item;
+  }
 }
 </script>
 

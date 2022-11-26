@@ -4,6 +4,7 @@ import { Nodes, Edges, Paths } from "v-network-graph";
 import * as nodeClass from "./nodeClass";
 import * as naiveOP from "./naivePartition"
 import * as sizeOP from "./sizePartitioning"
+import data from "../components/data";
 
 class FunctionMessage {
     functionName: string
@@ -18,6 +19,14 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
     console.log('imported function', callParams)
     var functionMessage: FunctionMessage = new FunctionMessage("", "")
     var output: any // na uchovanie outputu a nasledneho vypisania v sprave
+
+    let selectedProperties = data.defaultLayouts.find(
+        (l: any) => l.name == "backUP"
+    );
+    if (selectedProperties != undefined) {
+        console.log("som tu")
+        selectedProperties.nodes = structuredClone(nodes)
+    }
     switch (callParams.code) {
         case 0: //inicializovanie stromu, vytvorenie DS
             var structBasic: nodeClass.StructBasic[] = treeFunctions.initializeTree(nodes, edges, paths, callParams)
@@ -40,8 +49,16 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
         case 4: // odobratie hrany -> aktualizovat zoznam uzlov (odobrat syna a rodica), prebehnut dotknute DS
             treeFunctions.removeEdge(treeDataStructure, callParams.edgeToRemove)
             treeDataStructure.pathRoots = maintanance.buildPaths(nodes, edges, paths, treeDataStructure.basicRoots, sizeStruct) // premazem z paths
-
             break;
+        case 5:
+            console.log("starting backUP")
+            selectedProperties = data.defaultLayouts.find(
+                (l: any) => l.name == "backUP"
+            );
+            if (selectedProperties != undefined) {
+                nodes = selectedProperties.nodes
+            }
+            break
         case 101:
             var foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
             if (foundNode != null) {
