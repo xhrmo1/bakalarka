@@ -204,6 +204,7 @@ export function addDashedEdge(parent: nodeClass.StructBasic, child: nodeClass.St
         parent.children = [new nodeClass.EdgeDetail(child, edgeID)]
     }
     treeDataStructure.basicRoots = treeDataStructure.basicRoots.filter(e => e != child)
+    return edgeID
 }
 
 

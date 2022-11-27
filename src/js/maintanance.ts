@@ -169,6 +169,8 @@ function setUpWeightInsideNodes(path: nodeClass.PathStructure): number {
 export function setUpWeightsPath(path: nodeClass.Path) {
     if (path.pathRoot != null) {
         let previouseVertex = path.pathRoot.bhead
+        console.log("previouseVertex", previouseVertex)
+
         let vertex = naiveOP.after(previouseVertex)
         while (vertex != null) {
             vertex.weight = vertex.size - previouseVertex.size
@@ -198,9 +200,9 @@ export function createPathStruct(nodes: Nodes, edges: Edges, pathsEdges: string[
     }
     var middle = Math.floor((right + left) / 2)
     var node = null
+    console.log("toto ma teary", pathsEdges)
     if (createNaive) { // if false, create SizePartition
         console.log(edges[pathsEdges[middle]])
-        console.log("toto ma teary", +edges[pathsEdges[middle]].label)
         node = new nodeClass.PathStructure(pathsEdges[middle], newPath[right], newPath[left], +edges[pathsEdges[middle]].label, true)
     } else {
         node = null //TODO

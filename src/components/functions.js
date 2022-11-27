@@ -24,8 +24,21 @@ let functionSetX = [
         code: "zatial nepouzivat",
     },
 
-    //category - pathOP.
+    {
+        name: "test",
+        description: {
+            args: "Vertex x",
+            description: "Returns the path containing x"
+        },
+        category: "pathOP",
+        nodes: 0,
+        nodesInPath: 0,
+        paths: 0,
+        values: 0,
+        code: -1,
+    },
 
+    //category - pathOP.
     {
         name: "path",
         description: {

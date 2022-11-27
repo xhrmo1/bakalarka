@@ -244,7 +244,7 @@ export function concatenate(p: nodeclass.Path, q: nodeclass.Path, x: number, siz
     var edgeID = ""
     console.log("--concate ", p, q, tailVertex.pathPointer)
     if (tailVertex.parent == null) {
-        treeFunctions.addDashedEdge(headVertex, tailVertex, x, edges, treeDataStructure)
+        edgeID = treeFunctions.addDashedEdge(headVertex, tailVertex, x, edges, treeDataStructure)
     } else {
         edgeID = tailVertex.parent.edgeID
         edges[edgeID].dashed = false
@@ -308,6 +308,7 @@ export function concatenate(p: nodeclass.Path, q: nodeclass.Path, x: number, siz
             console.warn("xx")
             allNodes.map((n) => { n.pathPointer = p })
             p.allNodes = allNodes
+            console.log("!!!", paths[idFinal].edges)
             p.pathRoot = maintanance.createPathStruct(nodes, edges, paths[idFinal].edges, allNodes, true, 0, paths[idFinal].edges.length)
             maintanance.setPropertiesForPath(p, sizeStruct)
         }
@@ -343,8 +344,10 @@ export function split(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths:
             }
         }
         var xxx: string[] = []
+        console.log("compare", vertex.pathPointer.pathID, pIDPath, xxx.length)
         if (parentVertexID != "") {
-            xxx = paths[vertex.pathPointer.pathID].edges.slice(0, paths[vertex.pathPointer.pathID].edges.indexOf(parentVertexID) - 1)
+            let index = paths[vertex.pathPointer.pathID].edges.indexOf(parentVertexID)
+            xxx = paths[vertex.pathPointer.pathID].edges.slice(0, index == -1 ? paths[vertex.pathPointer.pathID].edges.length - 1 : index - 1)
         } else {
             xxx = paths[vertex.pathPointer.pathID].edges.slice(0, paths[vertex.pathPointer.pathID].edges.length - 1)
         }
@@ -357,11 +360,16 @@ export function split(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths:
             width: 45,
         }
         var allNodesBefore = vertex.pathPointer.allNodes?.slice(0, vertex.pathPointer.allNodes.indexOf(beforeVertex) + 1) ?? []
-        console.log("nodes--", allNodesBefore)
+        if (allNodesBefore.length == 1) {
+            beforeVertex.pParent = null
+        }
+        console.log("nodes--", allNodesBefore.length)
         pPathPointer = new nodeclass.Path(pIDPath, allNodesBefore, maintanance.createPathStruct(nodes, edges, paths[pIDPath].edges, allNodesBefore, true, 0, paths[pIDPath].edges.length), pIDPath)
         allNodesBefore.forEach(n => {
             n.pathPointer = pPathPointer
         })
+
+        console.log("XXXA", allNodesBefore)
         treeDataStructure.pathRoots.push(pPathPointer)
         treeDataStructure.basicRoots.push(beforeVertex)
         vertex.children = vertex.children.filter(e => e.target != beforeVertex)
@@ -374,6 +382,8 @@ export function split(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths:
 
     if (afterVertex != null) {
         qIDPath = getNextNumberForPath(treeDataStructure)
+        console.log("::", paths[vertex.pathPointer.pathID])
+        console.log(paths[vertex.pathPointer.pathID].edges.indexOf(parentVertexID))
         paths[qIDPath] = {
             id: qIDPath,
             edges: paths[vertex.pathPointer.pathID].edges.slice(paths[vertex.pathPointer.pathID].edges.indexOf(parentVertexID) + 1),
@@ -385,6 +395,9 @@ export function split(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths:
         x = edges[vertex.parent?.edgeID != null ? vertex.parent.edgeID : ""].label
         delete edges[vertex.parent?.edgeID != null ? vertex.parent.edgeID : ""]
         var allNodesAfter = vertex.pathPointer.allNodes?.slice(vertex.pathPointer.allNodes.indexOf(afterVertex)) ?? []
+        if (allNodesAfter.length == 1) {
+            afterVertex.pParent == null
+        }
         qPathPointer = new nodeclass.Path(qIDPath, allNodesAfter, maintanance.createPathStruct(nodes, edges, paths[qIDPath].edges, allNodesAfter, true, 0, paths[qIDPath].edges.length), qIDPath)
         treeDataStructure.pathRoots.push(qPathPointer)
         allNodesAfter.forEach(n => {
@@ -394,11 +407,12 @@ export function split(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths:
         afterVertex.children = afterVertex.children?.filter(e => e.target != vertex) ?? null
         treeFunctions.substituteSize(afterVertex, vertex.size + (beforeVertex?.size ?? 0))
     } else {
-        console.log("som tu2")
+        console.log("easter egg")
     }
     if (paths[vertex.pathPointer.pathID] != undefined) {
         data.colors.push(paths[vertex.pathPointer.pathID].color)
     }
+    console.log("compare", vertex.pathPointer.pathID, pIDPath)
     delete paths[vertex.pathPointer.pathID]
     vertex.pathPointer.allNodes = [vertex]
     vertex.pParent = null // ak aspon jeden bol
@@ -422,10 +436,10 @@ export function split(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths:
         }
     })
     console.log("XXXXXXXXX", pPathPointer, qPathPointer)
-    maintanance.setPropertiesForPath(pPathPointer, sizeStruct)
-    maintanance.setPropertiesForPath(qPathPointer, sizeStruct)
-    maintanance.setPropertiesForPath(vertex.pathPointer, sizeStruct)
-    return [pPathPointer, qPathPointer, x, y]
+    /* maintanance.setPropertiesForPath(pPathPointer, sizeStruct)
+     maintanance.setPropertiesForPath(qPathPointer, sizeStruct)
+     maintanance.setPropertiesForPath(vertex.pathPointer, sizeStruct)*/
+    return [pPathPointer, qPathPointer, y, x]
 }
 
 export function getNextNumberForPath(treeDataStructure: nodeclass.TreeDataStructures): string {

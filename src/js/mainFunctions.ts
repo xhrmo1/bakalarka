@@ -5,6 +5,7 @@ import * as nodeClass from "./nodeClass";
 import * as naiveOP from "./naivePartition"
 import * as sizeOP from "./sizePartitioning"
 import data from "../components/data";
+import { runTests } from "./pathTests";
 
 class FunctionMessage {
     functionName: string
@@ -20,6 +21,9 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
     var functionMessage: FunctionMessage = new FunctionMessage("", "")
     var output: any // na uchovanie outputu a nasledneho vypisania v sprave
     switch (callParams.code) {
+        case -1:
+            runTests()
+            break;
         case 0: //inicializovanie stromu, vytvorenie DS
             var structBasic: nodeClass.StructBasic[] = treeFunctions.initializeTree(nodes, edges, paths, callParams)
             treeDataStructure = new nodeClass.TreeDataStructures(
