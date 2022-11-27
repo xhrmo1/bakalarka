@@ -66,8 +66,15 @@ function goingUpLeft(vertex: nodeclass.PathStructure, previousNode: any): nodecl
     return goingRightDown(vertex.pleft)
 }
 
+export function before(vertex: nodeclass.StructBasic) {
+    if (vertex.pParent != null && !vertex.pParent.reversed) {
+        return beforeHelp(vertex)
+    }
+    return afterHelp(vertex)
+}
 
-export function before(vertex: nodeclass.StructBasic): nodeclass.StructBasic | null {
+
+export function beforeHelp(vertex: nodeclass.StructBasic): nodeclass.StructBasic | null {
     if (vertex.pParent != null) {
         if (vertex.pParent.pleft instanceof nodeclass.StructBasic && vertex.pParent.pleft != vertex) {
             return vertex.pParent.pleft
@@ -108,6 +115,13 @@ function goingUpRight(vertex: nodeclass.PathStructure, previousNode: any): nodec
 }
 
 export function after(vertex: nodeclass.StructBasic) {
+    if (vertex.pParent != null && !vertex.pParent.reversed) {
+        return afterHelp(vertex)
+    }
+    return beforeHelp(vertex)
+}
+
+export function afterHelp(vertex: nodeclass.StructBasic) {
     if (vertex.pParent != null) {
         if (vertex.pParent.pright instanceof nodeclass.StructBasic && vertex.pParent.pright != vertex) {
             return vertex.pParent.pright
@@ -222,6 +236,9 @@ export function reverse(p: nodeclass.Path) {
         console.error("p.pathRoot is null")
         return
     }
+    if (p.allNodes != null) {
+        p.allNodes = p.allNodes.reverse()
+    }
     reverseInside(p.pathRoot)
 }
 // vyhodim chybu ak p priradim rodiča aj keď existuje už rodič a operáciu zruším
@@ -245,6 +262,7 @@ export function concatenate(p: nodeclass.Path, q: nodeclass.Path, x: number, siz
     console.log("--concate ", p, q, tailVertex.pathPointer)
     if (tailVertex.parent == null) {
         edgeID = treeFunctions.addDashedEdge(headVertex, tailVertex, x, edges, treeDataStructure)
+        edges[edgeID].dashed = false
     } else {
         edgeID = tailVertex.parent.edgeID
         edges[edgeID].dashed = false
@@ -600,7 +618,57 @@ export function cut(v: nodeclass.StructBasic, sizeStruct: boolean, paths: Paths,
     let [a, b, c, d] = split(v, sizeStruct, paths, nodes, edges, treeDataStructure)
     return d
 }
+function findSolidEdge(vertex: nodeclass.StructBasic, edges: Edges): number {
+    if (vertex.children == null) {
+        return -1
+    }
+    /*for (let i = 0; i < vertex.children.length; i++) {
+        if (!(edges[vertex.children[i].edgeID].dashed)) {
+            return i
+        }
+    }*/
 
-//doeditovat
-export function evert() {
+    return vertex.children.findIndex((c) => {
+        return edges[c.edgeID].dashed == false
+    })
+}
+function flipParentChild(vertex: nodeclass.StructBasic, edges: Edges, treeDataStructure: nodeclass.TreeDataStructures) {
+    let beforeVertex: nodeclass.StructBasic | null = vertex
+    treeDataStructure.basicRoots.push(vertex)
+    while (beforeVertex != null) {
+        console.log("apapa", beforeVertex.name)
+        if (beforeVertex.children == null) {
+            beforeVertex.children = []
+        }
+        let solidIndex = findSolidEdge(beforeVertex, edges)
+        let solidChildren = solidIndex != -1 ? beforeVertex.children[solidIndex] : null
+        console.log(solidIndex, edges)
+        if (solidIndex == -1) {
+            beforeVertex.value = 0
+        } else {
+            beforeVertex.value = edges[beforeVertex.children[solidIndex].edgeID].label
+        }
+        console.log("apapa", beforeVertex.children)
+        beforeVertex.children.splice(solidIndex, 1)
+        solidChildren = [beforeVertex.parent, beforeVertex.parent = solidChildren][0];
+        if (solidChildren != null) {
+            beforeVertex.children.push(solidChildren)
+        }
+        beforeVertex = before(beforeVertex)
+        console.log("XXX", beforeVertex)
+    }
+}
+export function evert(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths: Paths, nodes: Nodes, edges: Edges, treeDataStructure: nodeclass.TreeDataStructures) {
+    let p = expose(vertex, sizeStruct, paths, nodes, edges, treeDataStructure)
+    if (vertex.pathPointer == undefined) {
+        return
+    }
+    console.log("XXX", p)
+    reverse(vertex.pathPointer)
+    //console.log("XXX", vertex, before(vertex))
+    flipParentChild(vertex, edges, treeDataStructure)
+
+    /*if (sizeStruct) {
+        sizeOP.conceal()
+    }*/
 }

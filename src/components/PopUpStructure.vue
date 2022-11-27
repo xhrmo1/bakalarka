@@ -132,6 +132,7 @@ watch(
       axisY: number,
       distance: number
     ) {
+      console.log("ID", id);
       console.log(node.name, "inside Name", baseX, axisX, axisY, node);
       layouts.nodes[id] = { x: baseX, y: axisY * 50 };
       nodes[id] = { name: node.name };
@@ -150,24 +151,45 @@ watch(
         idEdge++;
       }
       id++;
-      if (node.pleft != null) {
-        inside(
-          node.pleft,
-          baseX - 50 * axisX,
-          axisX - (1 * distance) / 2,
-          axisY + 1,
-          distance / 2
-        );
-      }
-
-      if (node.pright != null) {
-        inside(
-          node.pright,
-          baseX + 50 * axisX,
-          axisX - (1 * distance) / 2,
-          axisY + 1,
-          distance / 2
-        );
+      if (!node.reversed) {
+        if (node.pleft != null) {
+          inside(
+            node.pleft,
+            baseX - 50 * axisX,
+            axisX - (1 * distance) / 2,
+            axisY + 1,
+            distance / 2
+          );
+        }
+        if (node.pright != null) {
+          inside(
+            node.pright,
+            baseX + 50 * axisX,
+            axisX - (1 * distance) / 2,
+            axisY + 1,
+            distance / 2
+          );
+        }
+      } else {
+        if (node.pright != null) {
+          inside(
+            node.pright,
+            baseX - 50 * axisX,
+            axisX - (1 * distance) / 2,
+            axisY + 1,
+            distance / 2
+          );
+        }
+        id++;
+        if (node.pleft != null) {
+          inside(
+            node.pleft,
+            baseX + 50 * axisX,
+            axisX - (1 * distance) / 2,
+            axisY + 1,
+            distance / 2
+          );
+        }
       }
     }
 

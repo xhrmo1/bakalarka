@@ -82,7 +82,6 @@ const eventHandlers: vNG.EventHandlers = {
       //console.log("empssxssssssz");
     }
     let xx = treeFunctions.findNodeArray(outPutTree.basicRoots, node);
-    console.log("X", node, xx);
     emit("selectNode", xx);
   },
 };

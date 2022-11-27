@@ -103,6 +103,8 @@ export default {
       this.clickedNodes.splice(this.clickedNodes.indexOf(object), 1);
     },
     treeOut(object) {
+      console.log("TREEE OUT");
+      this.clickedNodes;
       this.componentKey += 1;
       this.treeDataStructure = object;
       let x = object;

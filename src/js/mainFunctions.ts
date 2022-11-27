@@ -224,7 +224,10 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
             }
             break
         case 208: // evert
-            //todo
+            foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
+            if (foundNode != null) {
+                output = naiveOP.evert(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure)
+            }
             break
         case 301:
             foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])

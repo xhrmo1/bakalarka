@@ -143,19 +143,19 @@ let functionSetX = [
         values: 1,
         code: 108,
     },
-    /* {
-         name: "reverse",
-         description: {
-             args: "path p",
-             description: "Reverse the direction of p, making the head the tail and vice versa"
-         },
-         category: "pathOP",
-         nodes: 0,
-         nodesInPath: 0,
-         paths: 1,
-         values: 0,
-         code: 109,
-     },*/
+    {
+        name: "reverse",
+        description: {
+            args: "path p",
+            description: "Reverse the direction of p, making the head the tail and vice versa"
+        },
+        category: "pathOP",
+        nodes: 0,
+        nodesInPath: 0,
+        paths: 1,
+        values: 0,
+        code: 109,
+    },
     {
         name: "concatenate",
         description: {

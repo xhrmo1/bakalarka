@@ -116,7 +116,8 @@
         >netcost: <b>{{ node.netcost }}</b></span
       >
       <span class="grid-naive-bhead"
-        >bhead: <b>{{ node.bhead.name }}</b></span
+        >bhead:
+        <b>{{ node.reversed ? node.btail.name : node.bhead.name }}</b></span
       >
       <span class="grid-naive-pleft"
         >pleft: <b>{{ node.pleft.name }}</b></span
@@ -125,16 +126,22 @@
         >pright: <b>{{ node.pright.name }}</b></span
       >
       <span class="grid-naive-btail"
-        >btail: <b>{{ node.btail.name }}</b></span
+        >btail:
+        <b>{{ node.reversed ? node.bhead.name : node.btail.name }}</b></span
       >
       <span class="grid-naive-weight"
         >weight: <b>{{ node.weight }}</b></span
       >
-      <span v-if="sizeStruct" class="grid-naive-netleftmin"
-        >netleftmin: <b>{{ node.netleftmin }}</b></span
+      <span class="grid-naive-reversed"
+        >reversed: <b>{{ node.reversed }}</b></span
       >
-      <span v-if="sizeStruct" class="grid-naive-netrightmin"
-        >netrightmin: <b>{{ node.netrightmin }}</b></span
+      <span v-if="sizeStruct" class="grid-naive-leftmin"
+        >leftmin:
+        <b>{{ node.reversed ? node.rightmin : node.leftmin }}</b></span
+      >
+      <span v-if="sizeStruct" class="grid-naive-rightmin"
+        >rightmin:
+        <b>{{ node.reversed ? node.leftmin : node.rightmin }}</b></span
       >
     </div>
   </div>
@@ -342,7 +349,7 @@ span {
     "netmin netmin netcost netcost"
     "bhead bhead btail btail"
     "pleft pleft pright pright"
-    "weightt weightt weightt weightt";
+    "weightt weightt reversed reversed";
 
   row-gap: 2px;
   column-gap: 2px;
@@ -361,8 +368,8 @@ span {
     "netmin netmin netcost netcost"
     "bhead bhead btail btail"
     "pleft pleft pright pright"
-    "weightt weightt weightt weightt"
-    "netleftmin netleftmin netrightmin netrightmin";
+    "weightt weightt reversed reversed"
+    "leftmin leftmin rightmin rightmin";
   row-gap: 2px;
   column-gap: 2px;
 }
@@ -371,12 +378,12 @@ span {
   grid-area: weightt;
 }
 
-.grid-naive-netleftmin {
-  grid-area: netleftmin;
+.grid-naive-leftmin {
+  grid-area: leftmin;
 }
 
-.grid-naive-netrightmin {
-  grid-area: netrightmin;
+.grid-naive-rightmin {
+  grid-area: rightmin;
 }
 
 .grid-naive-reversed {
@@ -406,10 +413,10 @@ span {
 .grid-size-weight {
   grid-area: weightt;
 }
-.grid-size-netleftmin {
-  grid-area: netleftmin;
+.grid-size-leftmin {
+  grid-area: leftmin;
 }
-.grid-size-netrightmin {
-  grid-area: netrightmin;
+.grid-size-rightmin {
+  grid-area: rightmin;
 }
 </style>
