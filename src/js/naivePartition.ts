@@ -642,20 +642,22 @@ function flipParentChild(vertex: nodeclass.StructBasic, edges: Edges, treeDataSt
         }
         let solidIndex = findSolidEdge(beforeVertex, edges)
         let solidChildren = solidIndex != -1 ? beforeVertex.children[solidIndex] : null
-        console.log(solidIndex, edges)
+        console.log("apapa", solidIndex, edges)
         if (solidIndex == -1) {
             beforeVertex.value = 0
         } else {
             beforeVertex.value = edges[beforeVertex.children[solidIndex].edgeID].label
         }
         console.log("apapa", beforeVertex.children)
-        beforeVertex.children.splice(solidIndex, 1)
+        if (solidIndex != -1) {
+            beforeVertex.children.splice(solidIndex, 1)
+        }
         solidChildren = [beforeVertex.parent, beforeVertex.parent = solidChildren][0];
         if (solidChildren != null) {
             beforeVertex.children.push(solidChildren)
         }
         beforeVertex = before(beforeVertex)
-        console.log("XXX", beforeVertex)
+        console.log("apapa", beforeVertex)
     }
 }
 export function evert(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths: Paths, nodes: Nodes, edges: Edges, treeDataStructure: nodeclass.TreeDataStructures) {
@@ -665,6 +667,7 @@ export function evert(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths:
     }
     console.log("XXX", p)
     reverse(vertex.pathPointer)
+    paths[vertex.pathPointer.pathID].edges = paths[vertex.pathPointer.pathID].edges.reverse()
     //console.log("XXX", vertex, before(vertex))
     flipParentChild(vertex, edges, treeDataStructure)
 
