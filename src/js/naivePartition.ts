@@ -648,6 +648,10 @@ function flipParentChild(vertex: nodeclass.StructBasic, edges: Edges, treeDataSt
         } else {
             beforeVertex.value = edges[beforeVertex.children[solidIndex].edgeID].label
         }
+        if (beforeVertex.parent != null) {
+            edges[beforeVertex.parent.edgeID].target = [edges[beforeVertex.parent.edgeID].source, edges[beforeVertex.parent.edgeID].source = edges[beforeVertex.parent.edgeID].target][0]
+        }
+
         console.log("apapa", beforeVertex.children)
         if (solidIndex != -1) {
             beforeVertex.children.splice(solidIndex, 1)

@@ -21,6 +21,7 @@
         @removeNode="removeNodeFromClicked"
         @nodesOut="nodesOut"
         @pathsOut="pathsOut"
+        @replaceSelectedNodes="replaceSelectedNodes"
         :callFunction="callingFunction"
       />
       <Structure
@@ -49,6 +50,7 @@ import Paths from "../components/PathsForm.vue";
 import Header from "../components/HeaderForm.vue";
 import Bottom from "../components/BottomPart.vue";
 import * as nodeClass from "../js/nodeClass";
+import { findNodeArray } from "../js/treeFunctions";
 
 export default {
   name: "App",
@@ -113,6 +115,17 @@ export default {
     },
     allPathsChange(obj, id) {
       this.paths[id].canSee = obj;
+    },
+    replaceSelectedNodes() {
+      let clickedNodesNew = [];
+      for (let s of this.clickedNodes) {
+        let node = findNodeArray(this.treeDataStructure.basicRoots, s.name);
+        if (node != null) {
+          clickedNodesNew.push(node);
+        }
+      }
+      this.clickedNodes.splice(0, this.clickedNodes.length);
+      this.clickedNodes = this.clickedNodes.concat(clickedNodesNew);
     },
   },
 };

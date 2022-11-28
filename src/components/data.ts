@@ -44,7 +44,7 @@ let edges1: Edges = {
   edge10: { source: "I", target: "J", label: "3", dashed: false },
 }
 
-let colors: string[] = ["#0000ff", "#00ff03", "#ff0000"]
+let colors: string[] = ["#ff000066", "#00000066", "#0000ff66", "#00ffff66", "#00ff0066"]
 
 let layouts: Layouts = { nodes: {} }
 

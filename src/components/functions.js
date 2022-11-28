@@ -9,6 +9,9 @@ let categorySetX = [
     }, {
         name: "Operácie na stromoch",
         category: "treeOP"
+    }, {
+        name: "Size operácie",
+        category: "sizeOP"
     }
 ]
 
@@ -23,7 +26,6 @@ let functionSetX = [
         values: 0,
         code: "zatial nepouzivat",
     },
-
     {
         name: "test",
         description: {
@@ -313,7 +315,6 @@ let functionSetX = [
         values: 0,
         code: 208,
     },
-
     {
         name: "light",
         description: {
@@ -346,7 +347,7 @@ let functionSetX = [
             args: "cesta p",
             description: "Predpokladá že na ceste p sa nachádza light hrana. Hranu prekonvertuje na dashed a tým cestu rozdelí na dve cesty"
         },
-        category: "treeOP",
+        category: "sizeOP",
         nodes: 0,
         nodesInPath: 0,
         paths: 1,
@@ -359,7 +360,7 @@ let functionSetX = [
             args: "cesta p",
             description: "Na ceste p opraví všetky hrany na dashed"
         },
-        category: "treeOP",
+        category: "sizeOP",
         nodes: 0,
         nodesInPath: 0,
         paths: 1,

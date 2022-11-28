@@ -100,28 +100,6 @@ function sumRightTilt(node: nodeClass.StructBasic, allNodes: nodeClass.StructBas
 
 function netMinSize(pathVertex: nodeClass.PathStructure, allNodes: nodeClass.StructBasic[]) {
     netMinSizeTilt(pathVertex, allNodes)
-    if (pathVertex.pleft instanceof nodeClass.PathStructure) {
-        netMinSizeMinimum(pathVertex.pleft)
-    }
-
-    if (pathVertex.pright instanceof nodeClass.PathStructure) {
-        netMinSizeMinimum(pathVertex.pright)
-    }
-}
-
-function netMinSizeMinimum(pathVertex: nodeClass.PathStructure) {
-    if (pathVertex.pParent != null) {
-        pathVertex.netleftmin = pathVertex.netleftmin - pathVertex.pParent.netleftmin
-        pathVertex.netrightmin = pathVertex.netrightmin - pathVertex.pParent.netrightmin
-
-    }
-    if (pathVertex.pleft instanceof nodeClass.PathStructure) {
-        netMinSizeMinimum(pathVertex.pleft)
-    }
-
-    if (pathVertex.pright instanceof nodeClass.PathStructure) {
-        netMinSizeMinimum(pathVertex.pright)
-    }
 }
 
 function netMinSizeTilt(pathVertex: nodeClass.PathStructure, allNodes: nodeClass.StructBasic[]): [number, number] {

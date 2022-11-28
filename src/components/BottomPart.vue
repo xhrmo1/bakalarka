@@ -30,7 +30,9 @@
         >
           <option
             :key="key"
-            v-for="(index, key) in functionSet"
+            v-for="(index, key) in functionSet.sort((a, b) =>
+              a.name.localeCompare(b.name)
+            )"
             :value="index.name"
             :v-if="false"
           >
@@ -38,11 +40,11 @@
           </option>
         </select>
 
-        <button class="valuesGrid-item-item3" @click="runFunction">
+        <button class="valuesGrid-item-item4" @click="runFunction">
           Spustiť funkciu
         </button>
         <button
-          class="valuesGrid-item-item4"
+          class="valuesGrid-item-item3"
           @click="undoLastOperation"
           :disabled="stepBackDisable"
         >
@@ -203,7 +205,7 @@ export default {
     },
     functionCategory() {
       var e = document.getElementById("categorySelector");
-      //console.log(e.value, "selector2", this.paths);
+      console.log(e.value, "selector2", this.paths);
 
       this.functionSet = functionData.functionSetX.filter(
         (fnc) => fnc.category == e.value || e.value == "all" || fnc.name == ""

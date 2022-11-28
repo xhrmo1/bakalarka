@@ -137,11 +137,11 @@
       >
       <span v-if="sizeStruct" class="grid-naive-leftmin"
         >leftmin:
-        <b>{{ node.reversed ? node.rightmin : node.leftmin }}</b></span
+        <b>{{ node.reversed ? node.netrightmin : node.netleftmin }}</b></span
       >
       <span v-if="sizeStruct" class="grid-naive-rightmin"
         >rightmin:
-        <b>{{ node.reversed ? node.leftmin : node.rightmin }}</b></span
+        <b>{{ node.reversed ? node.netleftmin : node.netrightmin }}</b></span
       >
     </div>
   </div>

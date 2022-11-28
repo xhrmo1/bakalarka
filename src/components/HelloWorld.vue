@@ -10,6 +10,10 @@ import * as treeFunctions from "../js/treeFunctions";
 import { path } from "@/js/naivePartition";
 import Popup from "./PopUpForm.vue";
 import { useRoute, useRouter } from "vue-router";
+// dagre: Directed graph layout for JavaScript
+// https://github.com/dagrejs/dagre
+//@ts-ignore
+import dagre from "dagre/dist/dagre.min.js";
 
 const route = useRoute(); // console.log("XXXXXXXXXXXXrouteXXXXXXXX", route.params.type);
 var sizeStruct = route.params.type == "size";
@@ -65,6 +69,7 @@ const emit = defineEmits([
   "nodeRemove",
   "buildPaths",
   "removeNode",
+  "replaceSelectedNodes",
 ]);
 const props = defineProps({
   callFunction: Object,
@@ -308,6 +313,10 @@ watch(
       printFunctionMessageModel.value = printFunctionMessage;
       console.log(paths, edges, outPutTree);
       console.log("x", outPutTree);
+      if (x != undefined && x.code == 208) {
+        console.log("som tu ppppppppppppppppppppppppppp");
+        layout("TB");
+      }
     }
     emit("treeOut", outPutTree);
     changeHidden();
@@ -317,6 +326,66 @@ watch(
     deep: true,
   }
 );
+const nodeSize = 30;
+const graph = ref<vNG.VNetworkGraphInstance>();
+
+graph.value?.setViewBox;
+function layout(direction: "TB" | "LR") {
+  if (Object.keys(nodes).length <= 1 || Object.keys(edges).length == 0) {
+    return;
+  }
+
+  // convert graph
+  // ref: https://github.com/dagrejs/dagre/wiki
+  const g = new dagre.graphlib.Graph();
+  // Set an object for the graph label
+  g.setGraph({
+    rankdir: direction,
+    nodesep: nodeSize * 2,
+    edgesep: nodeSize,
+    ranksep: nodeSize * 2,
+  });
+  // Default to assigning a new object as a label for each new edge.
+  g.setDefaultEdgeLabel(() => ({}));
+
+  // Add nodes to the graph. The first argument is the node id. The second is
+  // metadata about the node. In this case we're going to add labels to each of
+  // our nodes.
+  Object.entries(nodes).forEach(([nodeId, node]) => {
+    g.setNode(nodeId, { label: node.name, width: nodeSize, height: nodeSize });
+  });
+
+  // Add edges to the graph.
+  Object.values(edges).forEach((edge) => {
+    g.setEdge(edge.source, edge.target);
+  });
+
+  dagre.layout(g);
+
+  const box: Record<string, number | undefined> = {};
+  g.nodes().forEach((nodeId: string) => {
+    // update node position
+    const x = g.node(nodeId).x;
+    const y = g.node(nodeId).y;
+    console.log("nodesssSSSS--", nodeId, x, y);
+    layouts["nodes"][nodeId] = { x, y };
+
+    // calculate bounding box size
+    box.top = box.top ? Math.min(box.top, y) : y;
+    box.bottom = box.bottom ? Math.max(box.bottom, y) : y;
+    box.left = box.left ? Math.min(box.left, x) : x;
+    box.right = box.right ? Math.max(box.right, x) : x;
+  });
+
+  const graphMargin = nodeSize * 2;
+  const viewBox = {
+    top: (box.top ?? 0) - graphMargin, // ak tieto veci nefixnes, vyhod
+    bottom: (box.bottom ?? 0) + graphMargin,
+    left: (box.left ?? 0) - graphMargin,
+    right: (box.right ?? 0) + graphMargin,
+  };
+  graph.value?.setViewBox(viewBox);
+}
 
 function changeHidden() {
   console.log(printFunctionMessage);
@@ -353,6 +422,7 @@ function loadBackUP() {
   emit("pathsOut", paths);
   emit("nodesOut", nodes);
   emit("edgesOut", edges);
+  emit("replaceSelectedNodes");
 }
 
 function replaceObjects(oldObjects: Nodes, newObjects: Nodes) {
@@ -399,12 +469,7 @@ function replaceObjects(oldObjects: Nodes, newObjects: Nodes) {
       </button>
       <div style="flex-grow: 1"></div>
       <button @click="newLayout">Reset image</button>
-      <select
-        name="defaultLayouts"
-        id="categorySelector"
-        v-model="selected"
-        @change="newLayout"
-      >
+      <select name="defaultLayouts" v-model="selected" @change="newLayout">
         <option
           :key="key"
           v-for="(value, key) in data.defaultLayouts"
@@ -426,6 +491,7 @@ function replaceObjects(oldObjects: Nodes, newObjects: Nodes) {
       :paths="paths"
       style="height: 96%"
       :key="componentKey"
+      ref="graph"
     >
       <template #edge-label="{ edge, ...slotProps }">
         <v-edge-label
