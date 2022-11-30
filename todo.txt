@@ -3,7 +3,7 @@ text
 
 vizualizácia
 - refactor - spravene 
-- poriešiť ako sa budu uzli ukladať (či cez emit posielať alebo jedno uložisko) - všetko bude vychadzať z komponenty helloworld
+- poriešiť ako sa budu uzli ukladať (či cez emit posielať alebo jedno uložisko) - všetko bude vychadzať z komponenty GraphForm
 - ako sa bude tvoriť/upravovať štruktura 
 --- buď budem vytvarať pri každej zmene uzla novu
 --- budem iba reagovať na zmeny

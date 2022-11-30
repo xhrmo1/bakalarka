@@ -13,7 +13,7 @@
         :treeOut="treeDataStructure"
         @pathsChange="allPathsChange"
       />
-      <HelloWorld
+      <GraphForm
         class="mojeee grid-item-network"
         @selectNode="selectNode"
         @nodeRemove="nodeRemove"
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import HelloWorld from "../components/HelloWorld.vue";
+import GraphForm from "../components/GraphForm.vue";
 import Structure from "../components/StructureForm.vue";
 import Paths from "../components/PathsForm.vue";
 import Header from "../components/HeaderForm.vue";
@@ -55,7 +55,7 @@ import { findNodeArray } from "../implementation/treeFunctions";
 export default {
   name: "App",
   components: {
-    HelloWorld,
+    GraphForm,
     Structure,
     Paths,
     Header,
