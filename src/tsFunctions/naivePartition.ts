@@ -1,14 +1,9 @@
-import { AssignCustomizer } from "lodash"
 import { Edges, Nodes, Path, Paths } from "v-network-graph"
-import { version } from "vue"
 import * as nodeclass from "./nodeClass"
 import * as treeFunctions from "./treeFunctions"
 import * as maintanance from "./maintanance"
 import data from "../components/data";
 
-
-
-//naiveVersion: boolean - means we are requesting naive; otherwise size version is requested
 
 export function path(vertex: nodeclass.StructBasic): nodeclass.Path | null {
     return vertex.pathPointer
@@ -57,7 +52,6 @@ function goingUpLeft(vertex: nodeclass.PathStructure, previousNode: any): nodecl
     }
     // prišli sme z praveho uzlu
     if (vertex.pleft == null) {
-        //console.log("Error - goingUpLeft - left node does not exists")
         return null
     }
     if (vertex.pleft instanceof nodeclass.StructBasic) {
@@ -68,13 +62,13 @@ function goingUpLeft(vertex: nodeclass.PathStructure, previousNode: any): nodecl
 
 export function before(vertex: nodeclass.StructBasic) {
     if (vertex.pParent != null && !vertex.pParent.reversed) {
-        return beforeHelp(vertex)
+        return beforeSearch(vertex)
     }
-    return afterHelp(vertex)
+    return afterSearch(vertex)
 }
 
 
-export function beforeHelp(vertex: nodeclass.StructBasic): nodeclass.StructBasic | null {
+export function beforeSearch(vertex: nodeclass.StructBasic): nodeclass.StructBasic | null {
     if (vertex.pParent != null) {
         if (vertex.pParent.pleft instanceof nodeclass.StructBasic && vertex.pParent.pleft != vertex) {
             return vertex.pParent.pleft
@@ -96,16 +90,13 @@ export function goingLeftDown(vertex: nodeclass.PathStructure): nodeclass.Struct
 }
 
 function goingUpRight(vertex: nodeclass.PathStructure, previousNode: any): nodeclass.StructBasic | null {
-
-    if (vertex.pright == previousNode) { // z praveho uzlu sme prišli
+    if (vertex.pright == previousNode) {
         if (vertex.pParent == null) {
             return null
         }
         return goingUpRight(vertex.pParent, vertex)
     }
-    // prišli sme z praveho laveho uzlu
     if (vertex.pright == null) {
-        //console.log("Error - goingUpRight - left node does not exists")
         return null
     }
     if (vertex.pright instanceof nodeclass.StructBasic) {
@@ -116,12 +107,12 @@ function goingUpRight(vertex: nodeclass.PathStructure, previousNode: any): nodec
 
 export function after(vertex: nodeclass.StructBasic) {
     if (vertex.pParent != null && !vertex.pParent.reversed) {
-        return afterHelp(vertex)
+        return afterSearch(vertex)
     }
-    return beforeHelp(vertex)
+    return beforeSearch(vertex)
 }
 
-export function afterHelp(vertex: nodeclass.StructBasic) {
+export function afterSearch(vertex: nodeclass.StructBasic) {
     if (vertex.pParent != null) {
         if (vertex.pParent.pright instanceof nodeclass.StructBasic && vertex.pParent.pright != vertex) {
             return vertex.pParent.pright
@@ -147,7 +138,6 @@ export function pcost(vertex: nodeclass.StructBasic): number | null {
     if (vertex.pParent != null) {
         return pcostInside(vertex.pParent, vertex)
     }
-    //console.log("Error - after - pParent == null")
     return null
 }
 
@@ -157,7 +147,7 @@ function pmincostInside(vertex: nodeclass.PathStructure): nodeclass.StructBasic 
             return vertex.pleft
         }
         if (vertex.pleft == null) {
-            //console.log("Error - pmincostInside - vertex.pleft == null")
+            console.log("Error - pmincostInside - vertex.pleft == null")
             return null
         }
         return goingRightDown(vertex.pleft)
@@ -166,24 +156,22 @@ function pmincostInside(vertex: nodeclass.PathStructure): nodeclass.StructBasic 
     let right = vertex.pright instanceof nodeclass.PathStructure && vertex.pright.netcost != null ? vertex.pright.netcost : Infinity
     if (right <= left) {
         if (vertex.pright == null || vertex.pright instanceof nodeclass.StructBasic) {
-            //console.log("Error - pmincostInside - vertex.pright == null")
+            console.log("Error - pmincostInside - vertex.pright == null")
             return null
         }
         return pmincostInside(vertex.pright)
     } else {
         if (vertex.pleft == null || vertex.pleft instanceof nodeclass.StructBasic) {
-            //console.log("Error - pmincostInside - vertex.pleft2 == null")
+            console.log("Error - pmincostInside - vertex.pleft2 == null")
             return null
         }
         return pmincostInside(vertex.pleft)
     }
 }
-//neskontrolovane - kvoli neprehladnemu vypisu - treba dokontrolovat
 export function pmincost(p: nodeclass.Path) {
     if (p.pathRoot != null) {
         return pmincostInside(p.pathRoot)
     }
-    //console.log("Error - after - pParent == null")
     return null
 }
 
@@ -197,12 +185,10 @@ function pupdateVertex(vertex: nodeclass.PathStructure, x: number) {
     }
 }
 
-// robim to pre obe štruktury naive/size
 export function pupdate(p: nodeclass.Path, x: number, edges: Edges) {
     var tailVertex = tail(p)
     var currentNode = head(p)
 
-    //uprava naive
     if (p.pathRoot == null) {
         console.error("p.pathRoot is null")
         return
@@ -217,10 +203,8 @@ export function pupdate(p: nodeclass.Path, x: number, edges: Edges) {
         }
     }
     pupdateVertex(p.pathRoot, x)
-    //console.log("Edges: ", edges, p)
 }
 
-// robim to pre obe štruktury naive/size
 function reverseInside(vertex: nodeclass.PathStructure) {
     vertex.reversed = !vertex.reversed
     if (vertex.pleft instanceof nodeclass.PathStructure) {
@@ -241,25 +225,11 @@ export function reverse(p: nodeclass.Path) {
     }
     reverseInside(p.pathRoot)
 }
-// vyhodim chybu ak p priradim rodiča aj keď existuje už rodič a operáciu zruším
-
-export function getLastElementFromMap(map: Edges, whatType: string): string {
-    if (Object.keys(map).length == 0) {
-        return "1"
-    }
-    let lastMapName: string = ""
-    for (let i in map) {
-        lastMapName = i
-    }
-    lastMapName = String(Number(lastMapName.replace(whatType, "")) + 2)
-    return lastMapName
-}
 
 export function concatenate(p: nodeclass.Path, q: nodeclass.Path, x: number, sizeStruct: boolean, nodes: Nodes, edges: Edges, paths: Paths, treeDataStructure: nodeclass.TreeDataStructures): string {
     let tailVertex = tail(p)
     let headVertex = head(q)
     var edgeID = ""
-    console.log("--concate ", p, q, tailVertex.pathPointer)
     if (tailVertex.parent == null) {
         edgeID = treeFunctions.addDashedEdge(headVertex, tailVertex, x, edges, treeDataStructure)
         edges[edgeID].dashed = false
@@ -271,8 +241,6 @@ export function concatenate(p: nodeclass.Path, q: nodeclass.Path, x: number, siz
     // tu budeme rebuild cesty
     let pathDominant = path(tailVertex)
     let pathSubmisive = path(headVertex)
-    console.log("X!@", pathDominant, pathSubmisive)
-    //console.log("--Paths", pathDominant, pathSubmisive, edgeID, edges[edgeID])
     if (pathDominant == null || pathSubmisive == null) {
         console.error("pathDominant or pathSubmisive is null", q, p, pathDominant, pathSubmisive, headVertex, tailVertex)
         return ""
@@ -280,37 +248,29 @@ export function concatenate(p: nodeclass.Path, q: nodeclass.Path, x: number, siz
 
     //pathDominant.allNodes?.concat(pathSubmisive.allNodes != null ? pathSubmisive.allNodes : []) // spojenie poli
     var idFinal: string
-    var finalColor: string = "#d55040cc"
     var edgesFinal: string[]
     edgesFinal = []
     var submisiveID = pathSubmisive.pathID != null ? pathSubmisive.pathID : ""
     idFinal = pathDominant.pathID  // nikdy by to nemalo byt ""
     if (paths[idFinal] != null) {
         edgesFinal = edgesFinal.concat(paths[idFinal].edges)
-        finalColor = paths[idFinal].color
         data.colors.push(paths[idFinal].color)
         delete paths[idFinal]
-        //console.log("XXXXXX", edgesFinal)
     }
     treeDataStructure.pathRoots = treeDataStructure.pathRoots.filter(p => p.pathID != idFinal)
 
     edgesFinal.push(edgeID)
-    //console.log("edges + idFinal: ", edgesFinal)
     if (paths[submisiveID] != null) {
         edgesFinal = edgesFinal.concat(paths[submisiveID].edges)
-        finalColor = paths[submisiveID].color
         data.colors.push(paths[submisiveID].color)
         delete paths[submisiveID]
     }
     treeDataStructure.pathRoots = treeDataStructure.pathRoots.filter(p => p.pathID != submisiveID)
-    //
-    //console.log("edges: XXXXXXXXX", edgesFinal, submisiveID)
     idFinal = getNextNumberForPath(treeDataStructure)
-    console.log("edges: ", edgesFinal, idFinal)
     paths[idFinal] = {
         id: idFinal,
         edges: edgesFinal,
-        color: data.colors.pop(), // todo doeditovat
+        color: data.colors.pop(),
         canSee: true,
         mouseOver: false,
         width: 45,
@@ -319,19 +279,15 @@ export function concatenate(p: nodeclass.Path, q: nodeclass.Path, x: number, siz
     if (pathDominant.allNodes != null && pathSubmisive.allNodes != null) {
         allNodes = pathDominant.allNodes.concat(pathSubmisive.allNodes)
     }
-    console.log("allNodes", allNodes)
     treeDataStructure.pathRoots.push(new nodeclass.Path(idFinal, allNodes, null, idFinal))
     treeDataStructure.pathRoots.forEach((p) => {
         if (p.pathID == idFinal) {
-            console.warn("xx")
             allNodes.map((n) => { n.pathPointer = p })
             p.allNodes = allNodes
-            console.log("!!!", paths[idFinal].edges)
             p.pathRoot = maintanance.createPathStruct(nodes, edges, paths[idFinal].edges, allNodes, true, 0, paths[idFinal].edges.length)
             maintanance.setPropertiesForPath(p, sizeStruct)
         }
     })
-    console.log("XXX", treeDataStructure.pathRoots.length)
 
     return idFinal
 }
@@ -351,7 +307,6 @@ export function split(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths:
     }
     let beforeVertex = before(vertex) // q
     let afterVertex = after(vertex) // p
-    console.log("before-after--vertex", beforeVertex, afterVertex)
 
     if (beforeVertex != null) {
         pIDPath = getNextNumberForPath(treeDataStructure)
@@ -361,17 +316,16 @@ export function split(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths:
                 delete edges[i.edgeID]
             }
         }
-        var xxx: string[] = []
-        console.log("compare", vertex.pathPointer.pathID, pIDPath, xxx.length)
+        var nodesBefore: string[] = []
         if (parentVertexID != "") {
             let index = paths[vertex.pathPointer.pathID].edges.indexOf(parentVertexID)
-            xxx = paths[vertex.pathPointer.pathID].edges.slice(0, index == -1 ? paths[vertex.pathPointer.pathID].edges.length - 1 : index - 1)
+            nodesBefore = paths[vertex.pathPointer.pathID].edges.slice(0, index == -1 ? paths[vertex.pathPointer.pathID].edges.length - 1 : index - 1)
         } else {
-            xxx = paths[vertex.pathPointer.pathID].edges.slice(0, paths[vertex.pathPointer.pathID].edges.length - 1)
+            nodesBefore = paths[vertex.pathPointer.pathID].edges.slice(0, paths[vertex.pathPointer.pathID].edges.length - 1)
         }
         paths[pIDPath] = {
             id: pIDPath,
-            edges: xxx,
+            edges: nodesBefore,
             color: data.colors.pop(),
             canSee: true,
             mouseOver: false,
@@ -381,27 +335,20 @@ export function split(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths:
         if (allNodesBefore.length == 1) {
             beforeVertex.pParent = null
         }
-        console.log("nodes--", allNodesBefore.length)
         pPathPointer = new nodeclass.Path(pIDPath, allNodesBefore, maintanance.createPathStruct(nodes, edges, paths[pIDPath].edges, allNodesBefore, true, 0, paths[pIDPath].edges.length), pIDPath)
         allNodesBefore.forEach(n => {
             n.pathPointer = pPathPointer
         })
-
-        console.log("XXXA", allNodesBefore)
         treeDataStructure.pathRoots.push(pPathPointer)
         treeDataStructure.basicRoots.push(beforeVertex)
         vertex.children = vertex.children.filter(e => e.target != beforeVertex)
         beforeVertex.parent = null
 
         vertex.size = vertex.size - beforeVertex.size
-    } else {
-        console.log("som tu1")
     }
 
     if (afterVertex != null) {
         qIDPath = getNextNumberForPath(treeDataStructure)
-        console.log("::", paths[vertex.pathPointer.pathID])
-        console.log(paths[vertex.pathPointer.pathID].edges.indexOf(parentVertexID))
         paths[qIDPath] = {
             id: qIDPath,
             edges: paths[vertex.pathPointer.pathID].edges.slice(paths[vertex.pathPointer.pathID].edges.indexOf(parentVertexID) + 1),
@@ -424,9 +371,8 @@ export function split(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths:
         vertex.parent = null
         afterVertex.children = afterVertex.children?.filter(e => e.target != vertex) ?? null
         treeFunctions.substituteSize(afterVertex, vertex.size + (beforeVertex?.size ?? 0))
-    } else {
-        console.log("easter egg")
     }
+
     if (paths[vertex.pathPointer.pathID] != undefined) {
         data.colors.push(paths[vertex.pathPointer.pathID].color)
     }
@@ -440,8 +386,6 @@ export function split(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths:
     console.log("SPLIT", treeDataStructure.pathRoots)
 
     //nastavovanie size
-
-
     for (var pathID in paths) {
         if (paths[pathID].edges.length == 0) {
             data.colors.push(paths[pathID].color)
@@ -453,10 +397,9 @@ export function split(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths:
             p.pathRoot = null
         }
     })
-    console.log("XXXXXXXXX", pPathPointer, qPathPointer)
-    /* maintanance.setPropertiesForPath(pPathPointer, sizeStruct)
-     maintanance.setPropertiesForPath(qPathPointer, sizeStruct)
-     maintanance.setPropertiesForPath(vertex.pathPointer, sizeStruct)*/
+    maintanance.setPropertiesForPath(pPathPointer, sizeStruct)
+    maintanance.setPropertiesForPath(qPathPointer, sizeStruct)
+    maintanance.setPropertiesForPath(vertex.pathPointer, sizeStruct)
     return [pPathPointer, qPathPointer, y, x]
 }
 
@@ -481,7 +424,6 @@ export function splice(p: nodeclass.Path, sizeStruct: boolean, paths: Paths, nod
     v = v.parent.target
     var [qPath, rPath, x, y] = split(v, sizeStruct, paths, nodes, edges, treeDataStructure)
 
-    // console.log("splice po splite", qPath, rPath, x, y, paths, edges, v, treeDataStructure)
     v.weight = v.weight - treeFunctions.getWeightPath(p)
     console.log(qPath, rPath)
     if (qPath != null) { // spravit z toho novu funkciu
@@ -493,7 +435,6 @@ export function splice(p: nodeclass.Path, sizeStruct: boolean, paths: Paths, nod
     }
     let vvv = path(v)
     if (vvv == null) {
-        console.error("!!! 1")
         return ""
     }
     let tailPValue = tail(p).value
@@ -502,12 +443,10 @@ export function splice(p: nodeclass.Path, sizeStruct: boolean, paths: Paths, nod
     }
 
     let pa = concatenate(p, vvv, tailPValue, sizeStruct, nodes, edges, paths, treeDataStructure)
-    console.log("po concate - pa", pa)
     let paPath = treeFunctions.findPath(treeDataStructure.pathRoots, pa)
     if (paPath == undefined) {
         return ""
     }
-    console.log("po concate - pathaa", pa)
     if (rPath == null) {
         maintanance.setPropertiesForPath(paPath, sizeStruct)
         return paPath
@@ -527,7 +466,6 @@ export function expose(v: nodeclass.StructBasic, sizeStruct: boolean, paths: Pat
 
     let pathV = path(v)
     if (pathV == null) {
-        console.warn("mame chybicku")
         return
     }
     console.log(pathV, rPath)
@@ -541,141 +479,18 @@ export function expose(v: nodeclass.StructBasic, sizeStruct: boolean, paths: Pat
         console.warn("mame chybicku")
         return
     }
-    console.log("po step 2", p)
 
     while (tail(p).parent != null) {
-        console.log("start loop:", p)
         let xx = splice(p, sizeStruct, paths, nodes, edges, treeDataStructure)
-        console.warn("vystup z splice 1 ", xx)
         if (xx instanceof nodeclass.Path) {
             p = xx
         } else {
             p = treeFunctions.findPath(treeDataStructure.pathRoots, xx) ?? null
             if (p == null) {
-                console.warn("error")
                 return
             }
         }
-        console.warn("vystup z splice 2 ", p)
     }
     maintanance.setPropertiesForPath(p, sizeStruct)
     return p
-}
-
-//treeOperations
-export function parent(vertex: nodeclass.StructBasic): nodeclass.StructBasic | null {
-    return vertex.parent?.target ?? null
-}
-
-export function root(v: nodeclass.StructBasic, sizeStruct: boolean, paths: Paths, nodes: Nodes, edges: Edges, treeDataStructure: nodeclass.TreeDataStructures): nodeclass.StructBasic | null {
-    let x = expose(v, sizeStruct, paths, nodes, edges, treeDataStructure)
-    if (x === undefined) {
-        return null
-    }
-    return tail(x)
-}
-
-export function cost(vertex: nodeclass.StructBasic) {
-    return vertex.value
-}
-
-export function mincost(v: nodeclass.StructBasic, sizeStruct: boolean, paths: Paths, nodes: Nodes, edges: Edges, treeDataStructure: nodeclass.TreeDataStructures) {
-    let x = expose(v, sizeStruct, paths, nodes, edges, treeDataStructure)
-    if (x === undefined) {
-        return null
-    }
-    return pmincost(x)
-}
-
-export function update(v: nodeclass.StructBasic, r: number, sizeStruct: boolean, paths: Paths, nodes: Nodes, edges: Edges, treeDataStructure: nodeclass.TreeDataStructures) {
-    let x = expose(v, sizeStruct, paths, nodes, edges, treeDataStructure)
-    if (x === undefined) {
-        return null
-    }
-    return pupdate(x, r, edges)
-}
-
-export function link(x: nodeclass.StructBasic, y: nodeclass.StructBasic, r: number, sizeStruct: boolean, paths: Paths, nodes: Nodes, edges: Edges, treeDataStructure: nodeclass.TreeDataStructures) {
-    let p = path(x)
-    if (p == null) {
-        console.error("link path(x) is null")
-        return
-    }
-    let e = expose(y, sizeStruct, paths, nodes, edges, treeDataStructure)
-    if (e === undefined) {
-        console.error("link expose(y) is null")
-        return
-    }
-    concatenate(p, e, r, sizeStruct, nodes, edges, paths, treeDataStructure)
-}
-
-export function cut(v: nodeclass.StructBasic, sizeStruct: boolean, paths: Paths, nodes: Nodes, edges: Edges, treeDataStructure: nodeclass.TreeDataStructures): number {
-    let e = expose(v, sizeStruct, paths, nodes, edges, treeDataStructure)
-    if (e === undefined) {
-        console.error("link expose(y) is null")
-        return 0
-    }
-    let [a, b, c, d] = split(v, sizeStruct, paths, nodes, edges, treeDataStructure)
-    return d
-}
-function findSolidEdge(vertex: nodeclass.StructBasic, edges: Edges): number {
-    if (vertex.children == null) {
-        return -1
-    }
-    /*for (let i = 0; i < vertex.children.length; i++) {
-        if (!(edges[vertex.children[i].edgeID].dashed)) {
-            return i
-        }
-    }*/
-
-    return vertex.children.findIndex((c) => {
-        return edges[c.edgeID].dashed == false
-    })
-}
-function flipParentChild(vertex: nodeclass.StructBasic, edges: Edges, treeDataStructure: nodeclass.TreeDataStructures) {
-    let beforeVertex: nodeclass.StructBasic | null = vertex
-    treeDataStructure.basicRoots.push(vertex)
-    while (beforeVertex != null) {
-        console.log("apapa", beforeVertex.name)
-        if (beforeVertex.children == null) {
-            beforeVertex.children = []
-        }
-        let solidIndex = findSolidEdge(beforeVertex, edges)
-        let solidChildren = solidIndex != -1 ? beforeVertex.children[solidIndex] : null
-        console.log("apapa", solidIndex, edges)
-        if (solidIndex == -1) {
-            beforeVertex.value = 0
-        } else {
-            beforeVertex.value = edges[beforeVertex.children[solidIndex].edgeID].label
-        }
-        if (beforeVertex.parent != null) {
-            edges[beforeVertex.parent.edgeID].target = [edges[beforeVertex.parent.edgeID].source, edges[beforeVertex.parent.edgeID].source = edges[beforeVertex.parent.edgeID].target][0]
-        }
-
-        console.log("apapa", beforeVertex.children)
-        if (solidIndex != -1) {
-            beforeVertex.children.splice(solidIndex, 1)
-        }
-        solidChildren = [beforeVertex.parent, beforeVertex.parent = solidChildren][0];
-        if (solidChildren != null) {
-            beforeVertex.children.push(solidChildren)
-        }
-        beforeVertex = before(beforeVertex)
-        console.log("apapa", beforeVertex)
-    }
-}
-export function evert(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths: Paths, nodes: Nodes, edges: Edges, treeDataStructure: nodeclass.TreeDataStructures) {
-    let p = expose(vertex, sizeStruct, paths, nodes, edges, treeDataStructure)
-    if (vertex.pathPointer == undefined) {
-        return
-    }
-    console.log("XXX", p)
-    reverse(vertex.pathPointer)
-    paths[vertex.pathPointer.pathID].edges = paths[vertex.pathPointer.pathID].edges.reverse()
-    //console.log("XXX", vertex, before(vertex))
-    flipParentChild(vertex, edges, treeDataStructure)
-
-    /*if (sizeStruct) {
-        sizeOP.conceal()
-    }*/
 }

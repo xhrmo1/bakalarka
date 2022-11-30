@@ -2,7 +2,6 @@ import * as nodeClass from "./nodeClass"
 import { Nodes, Edges, Paths } from "v-network-graph";
 import { findNodeArray, findAncestor, findSuccessor } from "./treeFunctions";
 import * as naiveOP from "./naivePartition"
-import { flatMap } from "lodash";
 
 
 
@@ -12,8 +11,6 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
     for (var p in paths) {
         var nodesList: any[] = []
         for (var e in paths[p].edges) {
-            console.log(nodesList, nodesList.length == 0, e, "XXX", edges[paths[p].edges[e]])
-            //v all nodes je to od hlavy po tail, preto najprv pridavame target lebo to je head
             if (nodesList.length == 0 || !nodesList.some(node => node.name === edges[paths[p].edges[e]].target)) { // 
                 let name = nodes[edges[paths[p].edges[e]].target].name
                 usedNodes.push(name)
@@ -26,9 +23,6 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
             }
         }
 
-        console.log("-- pouzite nodes --", usedNodes)
-        //nodesList = nodesList.reverse() // nodeList ide od korena od listy, path je definovany ze hlava je list a tail je koreň - toto mi prišlo ako najjednoduchší fix problému
-        //paths[p].edges = paths[p].edges.reverse()
         var newPath = new nodeClass.Path(
             paths[p].id ?? "",
             nodesList,
@@ -37,7 +31,6 @@ export function buildPaths(nodes: Nodes, edges: Edges, paths: Paths, structBasic
         nodesList.forEach(element => {
             element.pathPointer = newPath
         });
-        console.log(nodesList)
         //newPath.root = createPathStruct(nodes, edges, paths[p].edges, nodesList, true, 0, paths[p].edges.length)
         if (newPath.pathRoot != null) {
             newPath.pathRoot.root = newPath
@@ -85,7 +78,6 @@ function sumLeftTilt(node: nodeClass.StructBasic, allNodes: nodeClass.StructBasi
     for (let i = 0; i <= index; i++) {
         sum = sum + allNodes[i].weight
     }
-    console.log("lefttilt", node, sum, allNodes)
     return sum - allNodes[index + 1].weight
 }
 
@@ -103,14 +95,10 @@ function netMinSize(pathVertex: nodeClass.PathStructure, allNodes: nodeClass.Str
 }
 
 function netMinSizeTilt(pathVertex: nodeClass.PathStructure, allNodes: nodeClass.StructBasic[]): [number, number] {
-    console.log("-", pathVertex)
     var llm: number, lrm: number, rlm: number, rrm: number // child - left/right - min
-    llm = lrm = rlm = rrm = Math.pow(10, 1000)
-
-
+    llm = lrm = rlm = rrm = Math.pow(10, 1000) // positive infinum
     pathVertex.lefttilt = sumLeftTilt(findAncestor(pathVertex), allNodes)
     pathVertex.righttilt = sumRightTilt(findSuccessor(pathVertex), allNodes)
-    console.log("netleftmin", pathVertex.name, pathVertex.lefttilt, pathVertex.righttilt)
     if (pathVertex.pleft instanceof nodeClass.PathStructure) {
         [llm, lrm] = netMinSizeTilt(pathVertex.pleft, allNodes)
     }
@@ -147,8 +135,6 @@ function setUpWeightInsideNodes(path: nodeClass.PathStructure): number {
 export function setUpWeightsPath(path: nodeClass.Path) {
     if (path.pathRoot != null) {
         let previouseVertex = path.pathRoot.bhead
-        console.log("previouseVertex", previouseVertex)
-
         let vertex = naiveOP.after(previouseVertex)
         while (vertex != null) {
             vertex.weight = vertex.size - previouseVertex.size
@@ -178,9 +164,7 @@ export function createPathStruct(nodes: Nodes, edges: Edges, pathsEdges: string[
     }
     var middle = Math.floor((right + left) / 2)
     var node = null
-    console.log("toto ma teary", pathsEdges)
     if (createNaive) { // if false, create SizePartition
-        console.log(edges[pathsEdges[middle]])
         node = new nodeClass.PathStructure(pathsEdges[middle], newPath[right], newPath[left], +edges[pathsEdges[middle]].label, true)
     } else {
         node = null //TODO

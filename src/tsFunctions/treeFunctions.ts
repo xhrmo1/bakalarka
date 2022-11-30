@@ -55,7 +55,6 @@ function nodeIsRoot(edges: Edges, nodeName: string): boolean {
 }
 
 export function addNode(treeDataStructure: nodeClass.TreeDataStructures, name: string) {
-    console.log('-AddingNode-', treeDataStructure)
     let newNode: nodeClass.StructBasic = new nodeClass.StructBasic(name, 1)
     newNode.pathPointer = new nodeClass.Path(naiveOP.getNextNumberForPath(treeDataStructure), [newNode], null, null)
     treeDataStructure.basicRoots.push(newNode)
@@ -87,7 +86,6 @@ export function findNode(node: nodeClass.StructBasic, name: string): nodeClass.S
                 return nodeX
             }
         }
-
     }
     return null
 }
@@ -119,9 +117,7 @@ export function removeNode(treeDataStructure: nodeClass.TreeDataStructures, name
         return
     }
     if (node.parent != null) {
-        console.log("----------subs---------")
         substituteSize(node.parent.target, node.size)
-        console.log("----------subs---------")
     }
 
     naiveOP.split(node, sizeStruct, paths, nodes, edges, treeDataStructure)
@@ -152,15 +148,11 @@ export function removeNode(treeDataStructure: nodeClass.TreeDataStructures, name
             }
             treeDataStructure.basicRoots.push(node.children[i].target)
             node.children[i].target.parent = null
-
         }
     }
-
-
 }
 
 export function addEdge(treeDataStructure: nodeClass.TreeDataStructures, edges: Edges, edgeID: string) {
-    console.log("Adding Edge", edges[edgeID])
     var nodeSource = findNodeArray(treeDataStructure.basicRoots, edges[edgeID].source)
     if (nodeSource == null) {
         console.error("--addEdge, node not found")
@@ -174,7 +166,6 @@ export function addEdge(treeDataStructure: nodeClass.TreeDataStructures, edges: 
     if (nodeSource.children == null) {
         nodeSource.children = []
     }
-    console.log("---")
     nodeSource.children.push(new nodeClass.EdgeDetail(nodeTarget, edgeID))
     addSizeUP(nodeSource, nodeTarget.size)
     nodeTarget.value = edges[edgeID].label
@@ -186,16 +177,26 @@ export function addEdge(treeDataStructure: nodeClass.TreeDataStructures, edges: 
     }
 }
 
+function getLastElementFromMap(map: Edges, whatType: string): string {
+    if (Object.keys(map).length == 0) {
+        return "1"
+    }
+    let lastMapName: string = ""
+    for (let i in map) {
+        lastMapName = i
+    }
+    lastMapName = String(Number(lastMapName.replace(whatType, "")) + 2)
+    return lastMapName
+}
+
 export function addDashedEdge(parent: nodeClass.StructBasic, child: nodeClass.StructBasic, value: number, edges: Edges, treeDataStructure: nodeClass.TreeDataStructures) {
-    var edgeID = "edge" + naiveOP.getLastElementFromMap(edges, "edge")
-    console.log("THIS IS VALUE", value)
+    var edgeID = "edge" + getLastElementFromMap(edges, "edge")
     edges[edgeID] = {
         source: parent.name,
         target: child.name,
         label: value,
         dashed: true
     }
-
     child.parent = new nodeClass.EdgeDetail(parent, edgeID)
     child.value = value
     if (parent.children != null) {
@@ -209,7 +210,6 @@ export function addDashedEdge(parent: nodeClass.StructBasic, child: nodeClass.St
 
 
 export function removeEdge(treeDataStructure: nodeClass.TreeDataStructures, edgeToRemove: Edge) {
-    console.log(" -- edgeToRemove -- ", edgeToRemove)
     var source = findNodeArray(treeDataStructure.basicRoots, edgeToRemove.source)
     if (source == null) {
         console.error("--removeEdge error, target node was not found")
@@ -250,7 +250,7 @@ export function findAncestor(pathRoot: nodeClass.PathStructure): nodeClass.Struc
     let nextNode = pathRoot.pleft
     while (!(nextNode instanceof nodeClass.StructBasic)) {
         if (nextNode == null) {
-            console.log("null was found")
+            console.error("Null ancestor was found")
             return new nodeClass.StructBasic("errorNode", 42069420)
         }
         nextNode = nextNode.pright
@@ -262,7 +262,7 @@ export function findSuccessor(pathRoot: nodeClass.PathStructure): nodeClass.Stru
     let nextNode = pathRoot.pright
     while (!(nextNode instanceof nodeClass.StructBasic)) {
         if (nextNode == null) {
-            console.log("null was found")
+            console.error("Null successor was found")
             return new nodeClass.StructBasic("errorNode", 42069420)
         }
         nextNode = nextNode.pleft
@@ -275,7 +275,7 @@ export function getWeightPath(path: nodeClass.Path): number {
         if (path.allNodes != null && path.allNodes.length != 0) {
             return path.allNodes[0].weight
         }
-        console.error("Node has null pointer ", path)
+        console.warn("Node has null pointer ", path)
         return 0
     }
     return path.pathRoot.weight
@@ -283,7 +283,7 @@ export function getWeightPath(path: nodeClass.Path): number {
 
 export function getWeightNode(node: nodeClass.StructBasic) {
     if (node.pathPointer == null) {
-        console.error("Node has null pointer ", node.pathPointer)
+        console.warn("Node has null pointer ", node.pathPointer)
         return -1
     }
     if (node.pathPointer.pathRoot == null) {

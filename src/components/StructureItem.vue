@@ -163,13 +163,11 @@ export default {
   },
   computed: {
     pathSetList() {
-      console.log("XXXXXXXXX", this.node);
       if (this.node.children != null) {
         return this.node.children.filter(
           (c) => c.target.pathPointer.name != this.node.pathPointer.name
         );
       }
-      console.log("XXXXXXXXX2", this.node);
       return [];
     },
   },
@@ -183,7 +181,6 @@ export default {
       this.isHidden = !this.isHidden;
     },
     removeNodeFromClicked() {
-      console.log("structureItem");
       this.$emit("removeNodeFromClicked", this.node);
     },
   },

@@ -1,6 +1,6 @@
 import { Edges, Nodes, Paths } from "v-network-graph";
 import data from "../components/data";
-import * as nodeClass from "../js/nodeClass";
+import * as nodeClass from "./nodeClass";
 import * as maintanance from "./maintanance"
 import * as treeFunctions from "./treeFunctions"
 import * as naiveOP from "./naivePartition"

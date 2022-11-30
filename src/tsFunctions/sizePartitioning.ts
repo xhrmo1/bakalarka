@@ -3,7 +3,6 @@ import * as naiveOP from "./naivePartition"
 import * as nodeClass from "./nodeClass"
 import { findSuccessor, findAncestor, findPath, addDashedEdge, getWeightPath } from "./treeFunctions"
 
-// aktualne pomocou post-order. V pripade ze budem otacat cesty treba prerobit na preorder
 export function light(path: nodeClass.Path): nodeClass.StructBasic | null {
     if (path.pathRoot == null) {
         return null
@@ -65,7 +64,6 @@ export function slice(p: nodeClass.Path | null, sizeStruct: boolean, nodes: Node
         return null
     }
     v = light(p)
-    console.log("light result", v?.name)
     if (v == null) {
         console.warn("Slice, p.pathRoot is null")
         return null
@@ -76,7 +74,6 @@ export function slice(p: nodeClass.Path | null, sizeStruct: boolean, nodes: Node
         console.warn("p is null")
         return null
     }
-    console.log(p.allNodes, r?.allNodes, x, y)
 
     let pathP = naiveOP.path(v)
     if (pathP == null) {
@@ -92,7 +89,6 @@ export function slice(p: nodeClass.Path | null, sizeStruct: boolean, nodes: Node
             return null
         }
     }
-    console.log("pridanie dashed hrany", p.name, naiveOP.tail(p))
     addDashedEdge(v, naiveOP.tail(p), x, edges, treeDataStructure)
     v.weight = v.weight + getWeightPath(p)
     var [q, qValue] = maxwt(v)

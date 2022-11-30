@@ -4,6 +4,7 @@ import { Nodes, Edges, Paths } from "v-network-graph";
 import * as nodeClass from "./nodeClass";
 import * as naiveOP from "./naivePartition"
 import * as sizeOP from "./sizePartitioning"
+import * as treeOP from "./treeOperations"
 import data from "../components/data";
 import { runTests } from "./pathTests";
 
@@ -19,7 +20,7 @@ class FunctionMessage {
 export default function functionSwitch(callParams: any, sizeStruct: boolean, nodes: Nodes, edges: Edges, paths: Paths, treeDataStructure: nodeClass.TreeDataStructures): [nodeClass.TreeDataStructures, any] {
     console.log('imported function', callParams)
     var functionMessage: FunctionMessage = new FunctionMessage("", "")
-    var output: any // na uchovanie outputu a nasledneho vypisania v sprave
+    var output: any // na uchovanie vystupu funkcie a nasledneho vypisania
     switch (callParams.code) {
         case -1:
             runTests()
@@ -167,7 +168,7 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
         case 201: // parent
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
             if (foundNode != null) {
-                output = naiveOP.parent(foundNode)
+                output = treeOP.parent(foundNode)
             }
             functionMessage.functionName = "parent"
             if (output == null) {
@@ -179,7 +180,7 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
         case 202: // root
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
             if (foundNode != null) {
-                output = naiveOP.root(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure)
+                output = treeOP.root(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure)
             }
             functionMessage.functionName = "root"
             functionMessage.text = 'Operacia bola spustena na uzle: <b>' + callParams.nodes[0] + '</b>. Výsledkom operácie je uzol: <b>' + output.name + '</b>' // doplnit ktora hrana    
@@ -187,7 +188,7 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
         case 203: // cost
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
             if (foundNode != null) {
-                output = naiveOP.cost(foundNode)
+                output = treeOP.cost(foundNode)
             }
             functionMessage.functionName = "cost"
             if (output == null) {
@@ -199,7 +200,7 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
         case 204: // mincost
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
             if (foundNode != null) {
-                output = naiveOP.mincost(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure)
+                output = treeOP.mincost(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure)
             }
             functionMessage.functionName = "mincost"
             functionMessage.text = 'Operacia bola spustena na uzle: <b>' + callParams.nodes[0] + '</b>. Výsledkom operácie je hodnota: <b>' + output + '</b>' // doplnit ktora hrana    
@@ -207,26 +208,26 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
         case 205: // update
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
             if (foundNode != null) {
-                naiveOP.update(foundNode, callParams.values[0], sizeStruct, paths, nodes, edges, treeDataStructure)
+                treeOP.update(foundNode, callParams.values[0], sizeStruct, paths, nodes, edges, treeDataStructure)
             }
             break
         case 206: // link
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
             var foundSecondNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[1])
             if (foundNode != null && foundSecondNode != null) {
-                naiveOP.link(foundNode, foundSecondNode, callParams.values[0], sizeStruct, paths, nodes, edges, treeDataStructure)
+                treeOP.link(foundNode, foundSecondNode, callParams.values[0], sizeStruct, paths, nodes, edges, treeDataStructure)
             }
             break
         case 207: // cut
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
             if (foundNode != null) {
-                naiveOP.cut(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure)
+                treeOP.cut(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure)
             }
             break
         case 208: // evert
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
             if (foundNode != null) {
-                output = naiveOP.evert(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure)
+                output = treeOP.evert(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure)
             }
             break
         case 301:
@@ -265,7 +266,6 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
                 console.log("Vystup operacie conceal", sizeOP.conceal(foundPath, sizeStruct, nodes, edges, paths, treeDataStructure))
             }
             break
-        /* nad 10 zacnu operacie na cestach a stromoch */
     }
 
     return [treeDataStructure, functionMessage];

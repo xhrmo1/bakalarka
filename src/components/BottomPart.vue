@@ -177,21 +177,15 @@ export default {
         );
       }
       this.callFunctionData.code = this.code;
-      console.log("XXX", this.callFunctionData);
       this.$emit("callFunction", this.callFunctionData);
-      //console.log("aaa");
-      //console.log(this.callFunctionData);
-      //console.log("aaa");
     },
     undoLastOperation() {
-      console.log("Krok späť");
       this.stepBackDisable = true;
       this.callFunctionData.code = 5;
       this.$emit("callFunction", this.callFunctionData);
     },
     functionDetails() {
       var e = document.getElementById("functionSelector");
-      //console.log(e.value, "selector");
       this.currentlySelected = e.value;
       this.nodesCount = this.functionSet.find(
         (x) => x.name == e.value
@@ -205,8 +199,6 @@ export default {
     },
     functionCategory() {
       var e = document.getElementById("categorySelector");
-      console.log(e.value, "selector2", this.paths);
-
       this.functionSet = functionData.functionSetX.filter(
         (fnc) => fnc.category == e.value || e.value == "all" || fnc.name == ""
       );

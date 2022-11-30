@@ -100,7 +100,7 @@ let paths1: Paths = {
 
 let defaultLayouts = [
   {
-    name: "Prvy defaulty layout",
+    name: "Zakladný ukážový strom",
     nodes: nodes1,
     edges: edges1,
     paths: paths1,

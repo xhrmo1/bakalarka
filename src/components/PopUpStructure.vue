@@ -4,42 +4,28 @@ import { reactive, ref, defineEmits, defineProps, watch } from "vue";
 import { Nodes, Edges, Layouts } from "v-network-graph";
 import * as vNG from "v-network-graph";
 import data from "./data";
-import functionSwitch from "../js/mainFunctions";
+import functionSwitch from "../tsFunctions/mainFunctions";
 import Structure from "./StructureForm.vue";
-import * as nodeClass from "../js/nodeClass";
+import * as nodeClass from "../tsFunctions/nodeClass";
 
 var nodes: Nodes = reactive({ ...data.nodes });
 var edges: Edges = reactive({ ...data.edges });
 
 var nextNodeIndex = ref(Object.keys(nodes).length + 1);
 var nextEdgeIndex = ref(Object.keys(edges).length + 1);
-//var nextPathIndex = ref(Object.keys(paths).length + 1);
 
 var selectedNodes = ref<string[]>([]);
 var selectedEdges = ref<string[]>([]);
-//var selectedPaths = ref<string[]>([]);
-
-/*interface Props {
-  paths?: Paths;
-}
-
-const props = withDefaults(defineProps<{paths?: Nodes}>(), {
-  paths? :  data.nodes ;
-});*/
-console.log("type", nodes);
 
 const props = defineProps({
   pathTree: Object,
   pathStructure: Boolean,
 });
 
-let tempArr: any = [];
-
 console.log("this prop is text", props.pathTree);
 var clickedNodes: any[] | undefined = reactive([]);
 const eventHandlers: vNG.EventHandlers = {
   "node:click": ({ node }) => {
-    // toggle
     if (node == null || clickedNodes == null) {
       return;
     }
@@ -53,7 +39,6 @@ const eventHandlers: vNG.EventHandlers = {
 
 function findinPath(pathTree: any, lookingName: string) {
   for (let p of pathTree) {
-    console.log("XX", p);
     let x = findProcess(p.pathRoot, lookingName);
     if (x != null) {
       return x;
@@ -66,7 +51,6 @@ function findProcess(
   p: nodeClass.PathStructure | nodeClass.StructBasic,
   lookingName: string
 ): nodeClass.PathStructure | nodeClass.StructBasic | null {
-  console.log("XXZ", p);
   if (p.name == lookingName) {
     return p;
   }
@@ -92,10 +76,7 @@ function findProcess(
 function removeNode() {
   for (const nodeId of selectedNodes.value) {
     delete nodes[nodeId];
-    // emit("nodeRemove", nodeId);
   }
-  console.log(outPutTree);
-  //emit("nodesOut", nodes);
 }
 
 let layouts: Layouts = {
@@ -107,23 +88,15 @@ watch(
     if (x == null) {
       return;
     }
-    console.log("ajajaja", z, x[0]);
     nodes = {};
     edges = {};
 
     console.log(nodes);
     var id = 0;
     var idEdge = 0;
-    /*x[0].allNodes.forEach((element: any) => {
-      nodes[id] = { name: element.name };
-      id++;
-    });*/
-    console.log("----", x);
 
     var depth = Math.ceil(Math.log2(x[0].allNodes.length));
-    console.log("Length is: ", depth, x[0]);
     inside(x[0].pathRoot, 0, depth, 0, depth);
-    console.log("Layout", layouts, nodes);
 
     function inside(
       node: any,
@@ -132,8 +105,6 @@ watch(
       axisY: number,
       distance: number
     ) {
-      console.log("ID", id);
-      console.log(node.name, "inside Name", baseX, axisX, axisY, node);
       layouts.nodes[id] = { x: baseX, y: axisY * 50 };
       nodes[id] = { name: node.name };
       var pParentId = "a";
@@ -143,7 +114,6 @@ watch(
             pParentId = index;
           }
         }
-        console.log("edge", pParentId, id.toString(), nodes);
         edges[idEdge] = {
           source: pParentId,
           target: id.toString(),
@@ -192,9 +162,6 @@ watch(
         }
       }
     }
-
-    console.log("tih are nodes", nodes, edges);
-    //emit("treeOut", outPutTree);
   },
   {
     immediate: true,
@@ -203,12 +170,9 @@ watch(
 );
 
 function removeNodeFromClicked(node: any) {
-  console.log("!!", clickedNodes);
   clickedNodes?.splice(clickedNodes.indexOf(node.name), 1);
 }
-var outPutTree: any[] | undefined;
 </script>
-
 
 <template>
   <div>
@@ -223,8 +187,7 @@ var outPutTree: any[] | undefined;
           :clickedNodes="clickedNodes"
           :whichStructure="props.pathStructure ? 'naive' : 'size'"
           @removeNodeFromClicked="removeNodeFromClicked"
-          >XX</Structure
-        >
+        />
         <v-network-graph
           v-model:selected-nodes="selectedNodes"
           v-model:selected-edges="selectedEdges"

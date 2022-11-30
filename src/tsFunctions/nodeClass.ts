@@ -45,10 +45,8 @@ export class StructBasic {
     }
 }
 
-// toto je root, vlavo to vypisem ako cestu, vytvorim pri vytvarani stromu, 
-// potom pridam odkaz na naive partition a size partition
+//root
 export class Path {
-    /* name je povinne, parent a children moze byt null */
     name: string | undefined;
     allNodes: StructBasic[] | null
     pathRoot: PathStructure | null;
@@ -98,10 +96,6 @@ export class PathStructure {
         this.pright = pright
         this.btail = btail
         this.root = root
-
-        //size
-        //this.netleftmin = netleftmin ?? 0
-        //this.netrightmin = netrightmin ?? 0
     }
 }
 

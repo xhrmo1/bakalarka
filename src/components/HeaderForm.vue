@@ -7,7 +7,7 @@
       <span class="author">Bakalárska práca, Lukáš Hrmo, FI MUNI, 2022</span>
     </div>
     <div class="flex-item2">
-      <img src="../assets/logo.png" alt="masaryk_logo" />
+      <img src="../assets/fi-logo.png" alt="masaryk_logo" />
     </div>
   </div>
 </template>

@@ -3,11 +3,10 @@ import { reactive, ref, defineEmits, defineProps, watch } from "vue";
 import { Nodes, Edges, Paths, Layouts, NodePositions } from "v-network-graph";
 import * as vNG from "v-network-graph";
 import data from "./data";
-import functionSwitch from "../js/mainFunctions";
+import functionSwitch from "../tsFunctions/mainFunctions";
 import isEqual from "lodash.isequal";
-import * as nodeClass from "../js/nodeClass";
-import * as treeFunctions from "../js/treeFunctions";
-import { path } from "@/js/naivePartition";
+import * as nodeClass from "../tsFunctions/nodeClass";
+import * as treeFunctions from "../tsFunctions/treeFunctions";
 import Popup from "./PopUpForm.vue";
 import { useRoute, useRouter } from "vue-router";
 // dagre: Directed graph layout for JavaScript
@@ -15,7 +14,7 @@ import { useRoute, useRouter } from "vue-router";
 //@ts-ignore
 import dagre from "dagre/dist/dagre.min.js";
 
-const route = useRoute(); // console.log("XXXXXXXXXXXXrouteXXXXXXXX", route.params.type);
+const route = useRoute();
 var sizeStruct = route.params.type == "size";
 
 const copyNodes = JSON.parse(
@@ -48,17 +47,6 @@ var edgeValue = ref("");
 var outPutTree: nodeClass.TreeDataStructures;
 var printFunctionMessage: any;
 var printFunctionMessageModel = ref(printFunctionMessage);
-//var selectedPaths = ref<string[]>([]);
-
-/*interface Props {
-  paths?: Paths;
-}
-
-const props = withDefaults(defineProps<{paths?: Nodes}>(), {
-  paths? :  data.nodes ;
-});*/
-//console.log("type", nodes);
-//console.log(typeof paths);
 
 const emit = defineEmits([
   "selectNode",
@@ -74,20 +62,15 @@ const emit = defineEmits([
 const props = defineProps({
   callFunction: Object,
 });
-//console.log("this prop is text", props.callFunction);
 emit("pathsOut", paths);
 emit("nodesOut", nodes);
 emit("edgesOut", edges);
-//console.log(nodes, edges, paths);
 
 const eventHandlers: vNG.EventHandlers = {
   "node:click": ({ node }) => {
     // toggle
-    if (node == null) {
-      //console.log("empssxssssssz");
-    }
-    let xx = treeFunctions.findNodeArray(outPutTree.basicRoots, node);
-    emit("selectNode", xx);
+    let foundNode = treeFunctions.findNodeArray(outPutTree.basicRoots, node);
+    emit("selectNode", foundNode);
   },
 };
 
@@ -143,7 +126,6 @@ function removeNode() {
   emit("edgesOut", nodes);
   emit("pathsOut", paths);
   emit("treeOut", outPutTree);
-  //emit("nodesOut", nodes);
 }
 
 function addEdge() {
@@ -153,13 +135,12 @@ function addEdge() {
   for (let index in edges) {
     if (
       edges[index].target == target ||
-      (edges[index].target == source && edges[index].source == target) // alebo dve hrany(rodic--> potomok a potomok--> rodic)
+      (edges[index].target == source && edges[index].source == target)
     ) {
-      alert("Cannot add edge between " + edges[index].source); //spravit peknu notifikaciu
+      alert("Cannot add edge between " + edges[index].source);
       return console.error("Nemôže pridať edge, uzol už ma rodiča");
     }
   }
-  console.log(edgeValue.value);
   const edgeId = `edge${nextEdgeIndex.value}`;
   edges[edgeId] = {
     source,
@@ -209,34 +190,16 @@ function removeEdge() {
     paths,
     outPutTree
   );
-  //console.log("x", outPutTree);
   emit("pathsOut", paths);
   emit("edgesOut", nodes);
   emit("treeOut", outPutTree);
 }
 
 function hidePath(id: string) {
-  //console.log("som tu");
-  //console.log(paths[id]);
-
   paths[id].canSee = false;
 }
 
-//maly cudlik, co prida path
-function smrdis() {
-  //console.log(props.callFunction, "xxxxxxxxxxxxxxxxxxx");
-  paths["paths20"] = {
-    id: "02",
-    edges: ["edge11"],
-    color: data.colors.pop(), // #rrggbbaa <- with alpha
-    canSee: true,
-  };
-  emit("pathsOut", paths);
-}
-
 function newLayout(value: any) {
-  console.log(":", selected.value, data.defaultLayouts);
-  console.log(selected.value[0]);
   let selectedProperties = data.defaultLayouts.find(
     (l) => l.name == selected.value
   );
@@ -248,23 +211,13 @@ function newLayout(value: any) {
   replaceObjects(edges, selectedProperties.edges);
   replaceObjects(paths, selectedProperties.paths);
 
-  console.log(
-    "coords: ",
-    JSON.stringify(layouts),
-    JSON.stringify(selectedProperties)
-  );
-
-  console.log("xxxx", JSON.stringify(data.defaultLayouts[0].layouts));
   for (const [key2, item2] of Object.entries(
     selectedProperties.layouts.nodes
   )) {
     const positions = JSON.parse(JSON.stringify(item2));
     layouts["nodes"][key2] = positions;
-    console.log("coords: ", key2, item2);
   }
-  console.log("coords: ", JSON.stringify(layouts));
   //layouts = selectedProperties.layouts;
-  console.log(":", nodes, edges, paths);
   [outPutTree, printFunctionMessage] = functionSwitch(
     { code: 0 },
     sizeStruct,
@@ -290,15 +243,7 @@ var isHidden = ref(true);
 watch(
   () => props.callFunction,
   (x, z) => {
-    if (isEqual(outPutTree, x)) {
-      //console.log("sameXXXXXXXXXXXX sad asdXx");
-    }
-
-    //console.log("AAAAAAXAXAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    //console.log(x, z, "xxxx");
-    console.log(x != undefined && x.code == 5);
     if (x != undefined && x.code == 5) {
-      console.log("backingUP");
       loadBackUP();
     } else {
       createBackUP();
@@ -314,7 +259,6 @@ watch(
       console.log(paths, edges, outPutTree);
       console.log("x", outPutTree);
       if (x != undefined && x.code == 208) {
-        console.log("som tu ppppppppppppppppppppppppppp");
         layout("TB");
       }
     }
@@ -345,17 +289,12 @@ function layout(direction: "TB" | "LR") {
     edgesep: nodeSize,
     ranksep: nodeSize * 2,
   });
-  // Default to assigning a new object as a label for each new edge.
   g.setDefaultEdgeLabel(() => ({}));
 
-  // Add nodes to the graph. The first argument is the node id. The second is
-  // metadata about the node. In this case we're going to add labels to each of
-  // our nodes.
   Object.entries(nodes).forEach(([nodeId, node]) => {
     g.setNode(nodeId, { label: node.name, width: nodeSize, height: nodeSize });
   });
 
-  // Add edges to the graph.
   Object.values(edges).forEach((edge) => {
     g.setEdge(edge.source, edge.target);
   });
@@ -364,10 +303,8 @@ function layout(direction: "TB" | "LR") {
 
   const box: Record<string, number | undefined> = {};
   g.nodes().forEach((nodeId: string) => {
-    // update node position
     const x = g.node(nodeId).x;
     const y = g.node(nodeId).y;
-    console.log("nodesssSSSS--", nodeId, x, y);
     layouts["nodes"][nodeId] = { x, y };
 
     // calculate bounding box size
@@ -388,24 +325,19 @@ function layout(direction: "TB" | "LR") {
 }
 
 function changeHidden() {
-  console.log(printFunctionMessage);
-  console.log("isHiden", isHidden);
   isHidden.value = !isHidden.value;
-  console.log("isHiden", isHidden);
 }
 
 let nodesBackUp: Nodes;
 let edgesBackUp: Edges;
 let pathsBackUp: Paths;
 function createBackUP() {
-  console.log("backinUP");
   nodesBackUp = JSON.parse(JSON.stringify(nodes));
   edgesBackUp = JSON.parse(JSON.stringify(edges));
   pathsBackUp = JSON.parse(JSON.stringify(paths));
 }
 
 function loadBackUP() {
-  console.log("backinUP2");
   replaceObjects(nodes, nodesBackUp);
   replaceObjects(edges, edgesBackUp);
   replaceObjects(paths, pathsBackUp);
