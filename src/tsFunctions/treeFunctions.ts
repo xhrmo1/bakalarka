@@ -247,25 +247,25 @@ export function findPath(pathRoots: nodeClass.Path[], name: string): nodeClass.P
 }
 
 export function findAncestor(pathRoot: nodeClass.PathStructure): nodeClass.StructBasic {
-    let nextNode = pathRoot.pleft
+    let nextNode = pathRoot.bleft
     while (!(nextNode instanceof nodeClass.StructBasic)) {
         if (nextNode == null) {
             console.error("Null ancestor was found")
             return new nodeClass.StructBasic("errorNode", 42069420)
         }
-        nextNode = nextNode.pright
+        nextNode = nextNode.bright
     }
     return nextNode
 }
 
 export function findSuccessor(pathRoot: nodeClass.PathStructure): nodeClass.StructBasic {
-    let nextNode = pathRoot.pright
+    let nextNode = pathRoot.bright
     while (!(nextNode instanceof nodeClass.StructBasic)) {
         if (nextNode == null) {
             console.error("Null successor was found")
             return new nodeClass.StructBasic("errorNode", 42069420)
         }
-        nextNode = nextNode.pleft
+        nextNode = nextNode.bleft
     }
     return nextNode
 }

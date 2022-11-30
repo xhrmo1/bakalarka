@@ -18,8 +18,8 @@
         <span class="grid-naive-netmin">netmin</span>
         <span class="grid-naive-netcost">netcost</span>
         <span class="grid-naive-bhead">bhead</span>
-        <span class="grid-naive-pleft">pleft</span>
-        <span class="grid-naive-pright">pright</span>
+        <span class="grid-naive-bleft">bleft</span>
+        <span class="grid-naive-bright">bright</span>
         <span class="grid-naive-btail">btail</span>
       </div>
       <div class="stretch"></div>
@@ -47,8 +47,8 @@
         <span class="grid-naive-netmin">netmin</span>
         <span class="grid-naive-netcost">netcost</span>
         <span class="grid-naive-bhead">bhead</span>
-        <span class="grid-naive-pleft">pleft</span>
-        <span class="grid-naive-pright">pright</span>
+        <span class="grid-naive-bleft">bleft</span>
+        <span class="grid-naive-bright">bright</span>
         <span class="grid-naive-btail">btail</span>
         <span class="grid-naive-leftmin">leftmin</span>
         <span class="grid-naive-rightmin">rightmin</span>
@@ -106,7 +106,7 @@ export default {};
   grid-template-areas:
     "reversed reversed weightt weightt pparent pparent"
     "netmin netmin netcost netcost bhead bhead"
-    "pleft pleft pright pright btail btail";
+    "bleft bleft bright bright btail btail";
   row-gap: 2px;
   column-gap: 2px;
 }
@@ -119,7 +119,7 @@ export default {};
   grid-template-areas:
     "reversed reversed weightt weightt pparent pparent"
     "netmin netmin netcost netcost bhead bhead"
-    "pleft pleft pright pright btail btail"
+    "bleft bleft bright bright btail btail"
     "leftmin leftmin rightmin rightmin pathset pathset";
   row-gap: 2px;
   column-gap: 2px;
@@ -139,12 +139,12 @@ export default {};
   grid-area: weightt;
 }
 
-.grid-naive-netleftmin {
-  grid-area: netleftmin;
+.grid-naive-leftmin {
+  grid-area: leftmin;
 }
 
-.grid-naive-netrightmin {
-  grid-area: netrightmin;
+.grid-naive-rightmin {
+  grid-area: rightmin;
 }
 
 .grid-naive-pathset {
@@ -166,11 +166,11 @@ export default {};
 .grid-naive-bhead {
   grid-area: bhead;
 }
-.grid-naive-pleft {
-  grid-area: pleft;
+.grid-naive-bleft {
+  grid-area: bleft;
 }
-.grid-naive-pright {
-  grid-area: pright;
+.grid-naive-bright {
+  grid-area: bright;
 }
 .grid-naive-btail {
   grid-area: btail;

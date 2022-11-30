@@ -119,11 +119,11 @@
         >bhead:
         <b>{{ node.reversed ? node.btail.name : node.bhead.name }}</b></span
       >
-      <span class="grid-naive-pleft"
-        >pleft: <b>{{ node.pleft.name }}</b></span
+      <span class="grid-naive-bleft"
+        >bleft: <b>{{ node.bleft.name }}</b></span
       >
-      <span class="grid-naive-pright"
-        >pright: <b>{{ node.pright.name }}</b></span
+      <span class="grid-naive-bright"
+        >bright: <b>{{ node.bright.name }}</b></span
       >
       <span class="grid-naive-btail"
         >btail:
@@ -137,11 +137,11 @@
       >
       <span v-if="sizeStruct" class="grid-naive-leftmin"
         >leftmin:
-        <b>{{ node.reversed ? node.netrightmin : node.netleftmin }}</b></span
+        <b>{{ node.reversed ? node.rightmin : node.leftmin }}</b></span
       >
       <span v-if="sizeStruct" class="grid-naive-rightmin"
         >rightmin:
-        <b>{{ node.reversed ? node.netleftmin : node.netrightmin }}</b></span
+        <b>{{ node.reversed ? node.leftmin : node.rightmin }}</b></span
       >
     </div>
   </div>
@@ -345,7 +345,7 @@ span {
     "pparent pparent pparent pparent"
     "netmin netmin netcost netcost"
     "bhead bhead btail btail"
-    "pleft pleft pright pright"
+    "bleft bleft bright bright"
     "weightt weightt reversed reversed";
 
   row-gap: 2px;
@@ -364,7 +364,7 @@ span {
     "pparent pparent pparent pparent"
     "netmin netmin netcost netcost"
     "bhead bhead btail btail"
-    "pleft pleft pright pright"
+    "bleft bleft bright bright"
     "weightt weightt reversed reversed"
     "leftmin leftmin rightmin rightmin";
   row-gap: 2px;
@@ -398,11 +398,11 @@ span {
 .grid-naive-bhead {
   grid-area: bhead;
 }
-.grid-naive-pleft {
-  grid-area: pleft;
+.grid-naive-bleft {
+  grid-area: bleft;
 }
-.grid-naive-pright {
-  grid-area: pright;
+.grid-naive-bright {
+  grid-area: bright;
 }
 .grid-naive-btail {
   grid-area: btail;

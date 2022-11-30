@@ -58,14 +58,14 @@ function findProcess(
     return null;
   }
   let node: nodeClass.PathStructure | nodeClass.StructBasic | null = null;
-  if (p.pleft != null) {
-    node = findProcess(p.pleft, lookingName);
+  if (p.bleft != null) {
+    node = findProcess(p.bleft, lookingName);
   }
   if (node != null) {
     return node;
   }
-  if (p.pright != null) {
-    node = findProcess(p.pright, lookingName);
+  if (p.bright != null) {
+    node = findProcess(p.bright, lookingName);
   }
   if (node != null) {
     return node;
@@ -122,18 +122,18 @@ watch(
       }
       id++;
       if (!node.reversed) {
-        if (node.pleft != null) {
+        if (node.bleft != null) {
           inside(
-            node.pleft,
+            node.bleft,
             baseX - 50 * axisX,
             axisX - (1 * distance) / 2,
             axisY + 1,
             distance / 2
           );
         }
-        if (node.pright != null) {
+        if (node.bright != null) {
           inside(
-            node.pright,
+            node.bright,
             baseX + 50 * axisX,
             axisX - (1 * distance) / 2,
             axisY + 1,
@@ -141,9 +141,9 @@ watch(
           );
         }
       } else {
-        if (node.pright != null) {
+        if (node.bright != null) {
           inside(
-            node.pright,
+            node.bright,
             baseX - 50 * axisX,
             axisX - (1 * distance) / 2,
             axisY + 1,
@@ -151,9 +151,9 @@ watch(
           );
         }
         id++;
-        if (node.pleft != null) {
+        if (node.bleft != null) {
           inside(
-            node.pleft,
+            node.bleft,
             baseX + 50 * axisX,
             axisX - (1 * distance) / 2,
             axisY + 1,

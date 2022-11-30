@@ -4,7 +4,6 @@ import * as treeFunctions from "./treeFunctions"
 import * as maintanance from "./maintanance"
 import data from "../components/data";
 
-
 export function path(vertex: nodeclass.StructBasic): nodeclass.Path | null {
     return vertex.pathPointer
 }
@@ -17,7 +16,6 @@ export function head(p: nodeclass.Path): nodeclass.StructBasic {
         return p.pathRoot?.btail
     }
     return p.pathRoot?.bhead
-
 }
 
 export function tail(p: nodeclass.Path): nodeclass.StructBasic {
@@ -32,32 +30,32 @@ export function tail(p: nodeclass.Path): nodeclass.StructBasic {
 }
 
 export function goingRightDown(vertex: nodeclass.PathStructure): nodeclass.StructBasic | null {
-    if (vertex.pright instanceof nodeclass.StructBasic) {
-        return vertex.pright
+    if (vertex.bright instanceof nodeclass.StructBasic) {
+        return vertex.bright
     }
-    if (vertex.pright != null) {
-        return goingRightDown(vertex.pright)
+    if (vertex.bright != null) {
+        return goingRightDown(vertex.bright)
     }
-    return vertex.pleft instanceof nodeclass.StructBasic ? vertex.pleft : null
+    return vertex.bleft instanceof nodeclass.StructBasic ? vertex.bleft : null
 }
 
 
 function goingUpLeft(vertex: nodeclass.PathStructure, previousNode: any): nodeclass.StructBasic | null {
     // z laveho uzlu sme prišli
-    if (vertex.pleft == previousNode) {
+    if (vertex.bleft == previousNode) {
         if (vertex.pParent == null) {
             return null
         }
         return goingUpLeft(vertex.pParent, vertex)
     }
     // prišli sme z praveho uzlu
-    if (vertex.pleft == null) {
+    if (vertex.bleft == null) {
         return null
     }
-    if (vertex.pleft instanceof nodeclass.StructBasic) {
-        return vertex.pleft
+    if (vertex.bleft instanceof nodeclass.StructBasic) {
+        return vertex.bleft
     }
-    return goingRightDown(vertex.pleft)
+    return goingRightDown(vertex.bleft)
 }
 
 export function before(vertex: nodeclass.StructBasic) {
@@ -70,8 +68,8 @@ export function before(vertex: nodeclass.StructBasic) {
 
 export function beforeSearch(vertex: nodeclass.StructBasic): nodeclass.StructBasic | null {
     if (vertex.pParent != null) {
-        if (vertex.pParent.pleft instanceof nodeclass.StructBasic && vertex.pParent.pleft != vertex) {
-            return vertex.pParent.pleft
+        if (vertex.pParent.bleft instanceof nodeclass.StructBasic && vertex.pParent.bleft != vertex) {
+            return vertex.pParent.bleft
         }
         return goingUpLeft(vertex.pParent, vertex)
     }
@@ -80,29 +78,29 @@ export function beforeSearch(vertex: nodeclass.StructBasic): nodeclass.StructBas
 }
 
 export function goingLeftDown(vertex: nodeclass.PathStructure): nodeclass.StructBasic | null {
-    if (vertex.pleft instanceof nodeclass.StructBasic) {
-        return vertex.pleft
+    if (vertex.bleft instanceof nodeclass.StructBasic) {
+        return vertex.bleft
     }
-    if (vertex.pleft != null) {
-        return goingLeftDown(vertex.pleft)
+    if (vertex.bleft != null) {
+        return goingLeftDown(vertex.bleft)
     }
     return null
 }
 
 function goingUpRight(vertex: nodeclass.PathStructure, previousNode: any): nodeclass.StructBasic | null {
-    if (vertex.pright == previousNode) {
+    if (vertex.bright == previousNode) {
         if (vertex.pParent == null) {
             return null
         }
         return goingUpRight(vertex.pParent, vertex)
     }
-    if (vertex.pright == null) {
+    if (vertex.bright == null) {
         return null
     }
-    if (vertex.pright instanceof nodeclass.StructBasic) {
-        return vertex.pright
+    if (vertex.bright instanceof nodeclass.StructBasic) {
+        return vertex.bright
     }
-    return goingLeftDown(vertex.pright)
+    return goingLeftDown(vertex.bright)
 }
 
 export function after(vertex: nodeclass.StructBasic) {
@@ -114,8 +112,8 @@ export function after(vertex: nodeclass.StructBasic) {
 
 export function afterSearch(vertex: nodeclass.StructBasic) {
     if (vertex.pParent != null) {
-        if (vertex.pParent.pright instanceof nodeclass.StructBasic && vertex.pParent.pright != vertex) {
-            return vertex.pParent.pright
+        if (vertex.pParent.bright instanceof nodeclass.StructBasic && vertex.pParent.bright != vertex) {
+            return vertex.pParent.bright
         }
         return goingUpRight(vertex.pParent, vertex)
     }
@@ -125,7 +123,7 @@ export function afterSearch(vertex: nodeclass.StructBasic) {
 
 // null is returned node is tail of path
 function pcostInside(vertex: nodeclass.PathStructure, previousNode: any): number | null {
-    if (vertex.pleft == previousNode) {
+    if (vertex.bleft == previousNode) {
         return vertex.value
     }
     if (vertex.pParent == null) {
@@ -143,29 +141,29 @@ export function pcost(vertex: nodeclass.StructBasic): number | null {
 
 function pmincostInside(vertex: nodeclass.PathStructure): nodeclass.StructBasic | null {
     if (vertex.netcost == 0 && vertex.netmin == 0) {
-        if (vertex.pleft instanceof nodeclass.StructBasic) {
-            return vertex.pleft
+        if (vertex.bleft instanceof nodeclass.StructBasic) {
+            return vertex.bleft
         }
-        if (vertex.pleft == null) {
-            console.log("Error - pmincostInside - vertex.pleft == null")
+        if (vertex.bleft == null) {
+            console.log("Error - pmincostInside - vertex.bleft == null")
             return null
         }
-        return goingRightDown(vertex.pleft)
+        return goingRightDown(vertex.bleft)
     }
-    let left = vertex.pleft instanceof nodeclass.PathStructure && vertex.pleft.netcost != null ? vertex.pleft.netcost : Infinity
-    let right = vertex.pright instanceof nodeclass.PathStructure && vertex.pright.netcost != null ? vertex.pright.netcost : Infinity
+    let left = vertex.bleft instanceof nodeclass.PathStructure && vertex.bleft.netcost != null ? vertex.bleft.netcost : Infinity
+    let right = vertex.bright instanceof nodeclass.PathStructure && vertex.bright.netcost != null ? vertex.bright.netcost : Infinity
     if (right <= left) {
-        if (vertex.pright == null || vertex.pright instanceof nodeclass.StructBasic) {
-            console.log("Error - pmincostInside - vertex.pright == null")
+        if (vertex.bright == null || vertex.bright instanceof nodeclass.StructBasic) {
+            console.log("Error - pmincostInside - vertex.bright == null")
             return null
         }
-        return pmincostInside(vertex.pright)
+        return pmincostInside(vertex.bright)
     } else {
-        if (vertex.pleft == null || vertex.pleft instanceof nodeclass.StructBasic) {
+        if (vertex.bleft == null || vertex.bleft instanceof nodeclass.StructBasic) {
             console.log("Error - pmincostInside - vertex.pleft2 == null")
             return null
         }
-        return pmincostInside(vertex.pleft)
+        return pmincostInside(vertex.bleft)
     }
 }
 export function pmincost(p: nodeclass.Path) {
@@ -177,11 +175,11 @@ export function pmincost(p: nodeclass.Path) {
 
 function pupdateVertex(vertex: nodeclass.PathStructure, x: number) {
     vertex.value += x
-    if (vertex.pleft instanceof nodeclass.PathStructure) {
-        pupdateVertex(vertex.pleft, x)
+    if (vertex.bleft instanceof nodeclass.PathStructure) {
+        pupdateVertex(vertex.bleft, x)
     }
-    if (vertex.pright instanceof nodeclass.PathStructure) {
-        pupdateVertex(vertex.pright, x)
+    if (vertex.bright instanceof nodeclass.PathStructure) {
+        pupdateVertex(vertex.bright, x)
     }
 }
 
@@ -207,11 +205,11 @@ export function pupdate(p: nodeclass.Path, x: number, edges: Edges) {
 
 function reverseInside(vertex: nodeclass.PathStructure) {
     vertex.reversed = !vertex.reversed
-    if (vertex.pleft instanceof nodeclass.PathStructure) {
-        reverseInside(vertex.pleft)
+    if (vertex.bleft instanceof nodeclass.PathStructure) {
+        reverseInside(vertex.bleft)
     }
-    if (vertex.pright instanceof nodeclass.PathStructure) {
-        reverseInside(vertex.pright)
+    if (vertex.bright instanceof nodeclass.PathStructure) {
+        reverseInside(vertex.bright)
     }
 }
 

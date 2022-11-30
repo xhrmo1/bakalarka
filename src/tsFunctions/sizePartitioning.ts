@@ -12,8 +12,8 @@ export function light(path: nodeClass.Path): nodeClass.StructBasic | null {
 
 export function findLightEdge(path: nodeClass.PathStructure): nodeClass.StructBasic | null {
     let rightLight: nodeClass.StructBasic | null = null, leftLight: nodeClass.StructBasic | null = null
-    if (path.pright instanceof nodeClass.PathStructure) {
-        rightLight = findLightEdge(path.pright)
+    if (path.bright instanceof nodeClass.PathStructure) {
+        rightLight = findLightEdge(path.bright)
         if (rightLight != null) {
             return rightLight
         }
@@ -24,8 +24,8 @@ export function findLightEdge(path: nodeClass.PathStructure): nodeClass.StructBa
     if (ancestor.size * 2 > succesor.size) {
         return succesor
     }
-    if (path.pleft instanceof nodeClass.PathStructure) {
-        leftLight = findLightEdge(path.pleft)
+    if (path.bleft instanceof nodeClass.PathStructure) {
+        leftLight = findLightEdge(path.bleft)
         if (leftLight != null) {
             return leftLight
         }

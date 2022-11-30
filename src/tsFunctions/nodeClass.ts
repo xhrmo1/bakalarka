@@ -68,8 +68,8 @@ export class PathStructure {
     btail: any
     reversed: boolean; //todo
     pParent: PathStructure | null;
-    pleft: PathStructure | StructBasic | null;
-    pright: PathStructure | StructBasic | null;
+    bleft: PathStructure | StructBasic | null;
+    bright: PathStructure | StructBasic | null;
     root: Path; //odkaz na path
     //naivePartition
     netmin: any;
@@ -79,11 +79,11 @@ export class PathStructure {
     //sizePartition
     lefttilt: number = 0
     righttilt: number = 0
-    netleftmin: number = 0
-    netrightmin: number = 0
+    leftmin: number = 0
+    rightmin: number = 0
     weight: number = 0
     //doplnime
-    constructor(name: string, btail: any = null, bhead: any = null, value: number = 0, insideNode: boolean = false, reversed: any = false, pparent: any = null, netmin: any = 0, netcost: any = 0, pleft: any = null, pright: any = null, root: any = null) {
+    constructor(name: string, btail: any = null, bhead: any = null, value: number = 0, insideNode: boolean = false, reversed: any = false, pparent: any = null, netmin: any = 0, netcost: any = 0, bleft: any = null, bright: any = null, root: any = null) {
         this.name = name
         this.value = value
         //info o vnutornom uzle
@@ -92,8 +92,8 @@ export class PathStructure {
         this.netmin = netmin
         this.netcost = netcost
         this.bhead = bhead
-        this.pleft = pleft
-        this.pright = pright
+        this.bleft = bleft
+        this.bright = bright
         this.btail = btail
         this.root = root
     }

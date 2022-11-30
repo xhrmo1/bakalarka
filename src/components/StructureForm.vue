@@ -10,7 +10,7 @@
         :basicDisplay="basicDisplay"
         :node="value"
         :isNode="value.hasOwnProperty('pathPointer')"
-        :isInternalNode="value.hasOwnProperty('pleft')"
+        :isInternalNode="value.hasOwnProperty('bleft')"
         :sizeStruct="this.$route.params.type == 'size'"
         @removeNodeFromClicked="removeNodeFromClicked"
       />

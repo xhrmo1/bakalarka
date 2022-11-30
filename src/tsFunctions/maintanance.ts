@@ -99,34 +99,34 @@ function netMinSizeTilt(pathVertex: nodeClass.PathStructure, allNodes: nodeClass
     llm = lrm = rlm = rrm = Math.pow(10, 1000) // positive infinum
     pathVertex.lefttilt = sumLeftTilt(findAncestor(pathVertex), allNodes)
     pathVertex.righttilt = sumRightTilt(findSuccessor(pathVertex), allNodes)
-    if (pathVertex.pleft instanceof nodeClass.PathStructure) {
-        [llm, lrm] = netMinSizeTilt(pathVertex.pleft, allNodes)
+    if (pathVertex.bleft instanceof nodeClass.PathStructure) {
+        [llm, lrm] = netMinSizeTilt(pathVertex.bleft, allNodes)
     }
 
-    if (pathVertex.pright instanceof nodeClass.PathStructure) {
-        [rlm, rrm] = netMinSizeTilt(pathVertex.pright, allNodes)
+    if (pathVertex.bright instanceof nodeClass.PathStructure) {
+        [rlm, rrm] = netMinSizeTilt(pathVertex.bright, allNodes)
     }
 
-    pathVertex.netleftmin = Math.min(llm, rlm, pathVertex.lefttilt)
-    pathVertex.netrightmin = Math.min(lrm, rrm, pathVertex.righttilt)
+    pathVertex.leftmin = Math.min(llm, rlm, pathVertex.lefttilt)
+    pathVertex.rightmin = Math.min(lrm, rrm, pathVertex.righttilt)
 
-    return [pathVertex.netleftmin, pathVertex.netrightmin]
+    return [pathVertex.leftmin, pathVertex.rightmin]
 
 
 }
 
 function setUpWeightInsideNodes(path: nodeClass.PathStructure): number {
     let sum = 0
-    if (path.pleft instanceof nodeClass.StructBasic) {
-        sum = sum + path.pleft.weight
-    } else if (path.pleft instanceof nodeClass.PathStructure) {
-        sum = sum + setUpWeightInsideNodes(path.pleft)
+    if (path.bleft instanceof nodeClass.StructBasic) {
+        sum = sum + path.bleft.weight
+    } else if (path.bleft instanceof nodeClass.PathStructure) {
+        sum = sum + setUpWeightInsideNodes(path.bleft)
     }
 
-    if (path.pright instanceof nodeClass.StructBasic) {
-        sum = sum + path.pright.weight
-    } else if (path.pright instanceof nodeClass.PathStructure) {
-        sum = sum + setUpWeightInsideNodes(path.pright)
+    if (path.bright instanceof nodeClass.StructBasic) {
+        sum = sum + path.bright.weight
+    } else if (path.bright instanceof nodeClass.PathStructure) {
+        sum = sum + setUpWeightInsideNodes(path.bright)
     }
     path.weight = sum
     return sum
@@ -190,8 +190,8 @@ export function createPathStruct(nodes: Nodes, edges: Edges, pathsEdges: string[
         rnode.pParent = node
     }
     if (node != null) {
-        node.pleft = lnode
-        node.pright = rnode
+        node.bleft = lnode
+        node.bright = rnode
     }
     return node
 }
@@ -199,21 +199,21 @@ export function createPathStruct(nodes: Nodes, edges: Edges, pathsEdges: string[
 function setNetCostMin(pathStruct: nodeClass.PathStructure) {
     pathStruct.netmin = netMin(pathStruct)
     pathStruct.netcost = netCost(pathStruct)
-    if (pathStruct.pleft != null && !(pathStruct.pleft instanceof nodeClass.StructBasic)) {
-        setNetCostMin(pathStruct.pleft)
+    if (pathStruct.bleft != null && !(pathStruct.bleft instanceof nodeClass.StructBasic)) {
+        setNetCostMin(pathStruct.bleft)
     }
-    if (pathStruct.pright != null && !(pathStruct.pright instanceof nodeClass.StructBasic)) {
-        setNetCostMin(pathStruct.pright)
+    if (pathStruct.bright != null && !(pathStruct.bright instanceof nodeClass.StructBasic)) {
+        setNetCostMin(pathStruct.bright)
     }
 }
 
 function grossMin(pathStruct: nodeClass.PathStructure): number {
     var minArray = [+pathStruct.value]
-    if (pathStruct.pleft != null && !(pathStruct.pleft instanceof nodeClass.StructBasic)) {
-        minArray.push(grossMin(pathStruct.pleft))
+    if (pathStruct.bleft != null && !(pathStruct.bleft instanceof nodeClass.StructBasic)) {
+        minArray.push(grossMin(pathStruct.bleft))
     }
-    if (pathStruct.pright != null && !(pathStruct.pright instanceof nodeClass.StructBasic)) {
-        minArray.push(grossMin(pathStruct.pright))
+    if (pathStruct.bright != null && !(pathStruct.bright instanceof nodeClass.StructBasic)) {
+        minArray.push(grossMin(pathStruct.bright))
     }
     return Math.min(...minArray)
 }
