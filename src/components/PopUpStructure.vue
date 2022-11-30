@@ -4,9 +4,9 @@ import { reactive, ref, defineEmits, defineProps, watch } from "vue";
 import { Nodes, Edges, Layouts } from "v-network-graph";
 import * as vNG from "v-network-graph";
 import data from "./data";
-import functionSwitch from "../tsFunctions/mainFunctions";
+import functionSwitch from "../implementation/mainFunctions";
 import Structure from "./StructureForm.vue";
-import * as nodeClass from "../tsFunctions/nodeClass";
+import * as nodeClass from "../implementation/nodeClass";
 
 var nodes: Nodes = reactive({ ...data.nodes });
 var edges: Edges = reactive({ ...data.edges });

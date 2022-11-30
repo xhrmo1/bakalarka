@@ -49,8 +49,8 @@ import Structure from "../components/StructureForm.vue";
 import Paths from "../components/PathsForm.vue";
 import Header from "../components/HeaderForm.vue";
 import Bottom from "../components/BottomPart.vue";
-import * as nodeClass from "../tsFunctions/nodeClass";
-import { findNodeArray } from "../tsFunctions/treeFunctions";
+import * as nodeClass from "../implementation/nodeClass";
+import { findNodeArray } from "../implementation/treeFunctions";
 
 export default {
   name: "App",

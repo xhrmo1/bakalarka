@@ -3,10 +3,10 @@ import { reactive, ref, defineEmits, defineProps, watch } from "vue";
 import { Nodes, Edges, Paths, Layouts, NodePositions } from "v-network-graph";
 import * as vNG from "v-network-graph";
 import data from "./data";
-import functionSwitch from "../tsFunctions/mainFunctions";
+import functionSwitch from "../implementation/mainFunctions";
 import isEqual from "lodash.isequal";
-import * as nodeClass from "../tsFunctions/nodeClass";
-import * as treeFunctions from "../tsFunctions/treeFunctions";
+import * as nodeClass from "../implementation/nodeClass";
+import * as treeFunctions from "../implementation/treeFunctions";
 import Popup from "./PopUpForm.vue";
 import { useRoute, useRouter } from "vue-router";
 // dagre: Directed graph layout for JavaScript
