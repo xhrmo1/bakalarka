@@ -5,8 +5,12 @@
     </transition>
     <transition name="slide" appear>
       <div class="popup-inner">
-        <h2 v-if="whichPopup == 'structure'">Nápoveda o štruktúre</h2>
-        <h2 v-if="whichPopup == 'paths'">Nápoveda o ceste</h2>
+        <structureExplanation
+          v-if="whichPopup == 'structure'"
+          :isInternalNode="isInternalNode"
+          :sizeStruct="this.$route.params.type == 'size'"
+        />
+        <pathExplanation v-if="whichPopup == 'paths'" />
         <h2 v-if="whichPopup == 'functionOutput'">
           Vystup funkcie: <b>{{ dataAbout.functionName }}</b>
         </h2>
@@ -22,8 +26,15 @@
 </template>
 
 <script>
+import pathExplanation from "../explanations/pathExplanation.vue";
+import structureExplanation from "../explanations/structureExplanation.vue";
 export default {
+  components: {
+    pathExplanation,
+    structureExplanation,
+  },
   props: {
+    isInternalNode: Boolean,
     whichPopup: String,
     dataAbout: Object, // functionName,  text
   },
@@ -52,7 +63,7 @@ export default {
   z-index: 99;
 
   width: 100%;
-  max-width: 400px;
+  max-width: 401px;
   background-color: #fff;
   border-radius: 16px;
 

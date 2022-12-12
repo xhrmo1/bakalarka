@@ -25,6 +25,7 @@
       v-if="isHidden"
       @changeHide="changeHidden"
       :whichPopup="'structure'"
+      :isInternalNode="isInternalNode"
     />
     <div class="explanation" v-if="isNode && basicDisplay">
       Základné informácie o uzli:

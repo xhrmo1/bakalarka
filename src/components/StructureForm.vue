@@ -1,14 +1,21 @@
 <template>
   <div style="overflow-y: auto">
-    <select @change="sort" class="sorting" id="sortingSelector">
-      <option
-        :key="key"
-        v-for="(index, key) in sortingOptions"
-        :value="index.by"
+    <div class="sorting sortingLine">
+      <select
+        @change="sort"
+        class="sorting"
+        id="sortingSelector"
+        style="margin: 5px 5px 0px 5px"
       >
-        {{ index.name }}
-      </option>
-    </select>
+        <option
+          :key="key"
+          v-for="(index, key) in sortingOptions"
+          :value="index.by"
+        >
+          {{ index.name }}
+        </option>
+      </select>
+    </div>
     <div
       class="container"
       :key="key"
@@ -88,9 +95,12 @@ export default {
   border-style: solid;
   border-color: #0d3059;
 }
+.sortingLine {
+  border-bottom: 6px solid #0d3059;
+}
 .sorting {
   display: flex;
   flex-grow: 1;
-  margin: 10px;
+  font-size: 20px;
 }
 </style>

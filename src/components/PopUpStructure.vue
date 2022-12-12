@@ -181,6 +181,10 @@ function removeNodeFromClicked(node: any) {
     </transition>
     <transition name="slide" appear>
       <div class="splitPopGrid popup-inner">
+        <span class="PopGrid--Header"
+          >Zobrazenie virtuálneho stromu reprezentujúceho cestu:
+          <b>{{ pathTree[0].name }}</b>
+        </span>
         <Structure
           class="PopGrid--Structure"
           :basicDisplay="false"
@@ -216,9 +220,9 @@ function removeNodeFromClicked(node: any) {
 .splitPopGrid {
   display: grid;
   grid-template-columns: 10fr 3fr;
-  grid-template-rows: 1fr 8fr;
+  grid-template-rows: auto 15fr;
   grid-template-areas:
-    "network structure"
+    "header structure"
     "network structure";
   position: absolute;
   top: 50%;
@@ -233,7 +237,10 @@ function removeNodeFromClicked(node: any) {
 
 .PopGrid--Header {
   grid-area: header;
-  background: #0d3059;
+  font-size: 24px;
+  text-align: center;
+  text-indent: center;
+  background-color: #ffd166;
 }
 
 .PopGrid--Structure {
