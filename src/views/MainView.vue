@@ -31,6 +31,7 @@
         :clickedNodes="clickedNodes"
         :whichStructure="'basic'"
         @removeNodeFromClicked="removeNodeFromClicked"
+        @sortClickedNodes="sortClickedNodes"
       />
       <Bottom
         class="grid-item-textarea"
@@ -63,6 +64,7 @@ export default {
   },
   data() {
     return {
+      clickedNodesIndex: 0,
       clickedNodes: [],
       paths: Object,
       nodes: Object,
@@ -81,6 +83,28 @@ export default {
     selectNode(node) {
       if (!this.clickedNodes.includes(node)) {
         this.clickedNodes.push(node);
+        node.clickedIndex = this.clickedNodesIndex;
+        this.clickedNodesIndex++;
+      }
+    },
+    sortClickedNodes(by) {
+      if (by == "clickASC") {
+        this.clickedNodes.sort((a, b) => {
+          return a.clickedIndex - b.clickedIndex;
+        });
+      } else if (by == "clickDESC") {
+        this.clickedNodes.sort((a, b) => {
+          return b.clickedIndex - a.clickedIndex;
+        });
+      } else if (by == "alphaASC") {
+        this.clickedNodes.sort((a, b) => {
+          console.log("som tu", by, this.clickedNodes);
+          return b.name.localeCompare(a.name);
+        });
+      } else if (by == "alphaDESC") {
+        this.clickedNodes.sort((a, b) => {
+          return a.name.localeCompare(b.name);
+        });
       }
     },
     removeNodeFromClicked(node) {

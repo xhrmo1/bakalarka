@@ -1,5 +1,14 @@
 <template>
   <div style="overflow-y: auto">
+    <select @change="sort" class="sorting" id="sortingSelector">
+      <option
+        :key="key"
+        v-for="(index, key) in sortingOptions"
+        :value="index.by"
+      >
+        {{ index.name }}
+      </option>
+    </select>
     <div
       class="container"
       :key="key"
@@ -33,6 +42,12 @@ export default {
           name: "aaa",
         },
       },
+      sortingOptions: [
+        { name: "Radenie uzlov podľa kliknutia ASC", by: "clickASC" },
+        { name: "Radenie uzlov podľa kliknutia DESC", by: "clickDESC" },
+        { name: "Radenie uzlov abecedne ASC", by: "alphaASC" },
+        { name: "Radenie uzlov abecedbe DESC", by: "alphaDESC" },
+      ],
     };
   },
   props: {
@@ -43,10 +58,14 @@ export default {
       node2: Object,
     },
   },
-  emit: ["removeNodeFromClicked"],
+  emit: ["removeNodeFromClicked", "sortClickedNodes"],
   methods: {
     removeNodeFromClicked(node) {
       this.$emit("removeNodeFromClicked", node);
+    },
+    sort(value) {
+      let by = document.getElementById("sortingSelector");
+      this.$emit("sortClickedNodes", by.value);
     },
   },
 };
@@ -68,5 +87,10 @@ export default {
   border-top-left-radius: 20px;
   border-style: solid;
   border-color: #0d3059;
+}
+.sorting {
+  display: flex;
+  flex-grow: 1;
+  margin: 10px;
 }
 </style>
