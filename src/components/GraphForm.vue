@@ -365,6 +365,17 @@ function replaceObjects(oldObjects: Nodes, newObjects: Nodes) {
     oldObjects[key] = item;
   }
 }
+
+async function downloadAsSvg() {
+  if (!graph.value) return;
+  const text = await graph.value.exportAsSvgText();
+  const url = URL.createObjectURL(new Blob([text], { type: "octet/stream" }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "network-graph.svg"; // filename to download
+  a.click();
+  window.URL.revokeObjectURL(url);
+}
 </script>
 
 <template>
@@ -400,6 +411,7 @@ function replaceObjects(oldObjects: Nodes, newObjects: Nodes) {
         Remove Edge
       </button>
       <div style="flex-grow: 1"></div>
+      <button @click="downloadAsSvg">Stiahnuť graf</button>
       <button @click="newLayout">Reset image</button>
       <select name="defaultLayouts" v-model="selected" @change="newLayout">
         <option

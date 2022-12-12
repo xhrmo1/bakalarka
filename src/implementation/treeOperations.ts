@@ -1,7 +1,8 @@
 import { Edges, Nodes, Paths } from "v-network-graph"
 import * as naiveOP from "./naivePartition"
 import * as nodeclass from "./nodeClass"
-
+import * as maintanance from "./maintanance"
+import { sizeSumForWholeTree } from "./treeFunctions"
 //treeOperations
 export function parent(vertex: nodeclass.StructBasic): nodeclass.StructBasic | null {
     return vertex.parent?.target ?? null
@@ -101,4 +102,5 @@ export function evert(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths:
     naiveOP.reverse(vertex.pathPointer)
     paths[vertex.pathPointer.pathID].edges = paths[vertex.pathPointer.pathID].edges.reverse()
     flipParentChild(vertex, edges, treeDataStructure)
+    sizeSumForWholeTree(vertex)
 }

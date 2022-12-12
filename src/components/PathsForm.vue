@@ -45,7 +45,7 @@
         </label>
       </div>
       <span class="title" style="border-top: 6px solid #0d3059; font-size: 14px"
-        >Cesty s jednym uzlom</span
+        >Cesty s jedným uzlom:</span
       >
       <div
         :key="key"
@@ -107,7 +107,6 @@ export default {
       console.log(this.treeOut.pathRoots);
       if (this.treeOut.pathRoots != null) {
         let xx = this.treeOut.pathRoots.filter((i) => i.allNodes.length == 1);
-        console.log(xx[0].allNodes[0].name);
         return xx;
       }
     },
@@ -158,6 +157,7 @@ export default {
   justify-items: center;
   align-content: center;
   align-items: center;
+  min-width: 130px;
 }
 
 .switch {

@@ -10,6 +10,7 @@
           id="categorySelector"
           @change="functionCategory"
           class="valuesGrid-item-item"
+          style="font-family: Times New Roman"
         >
           <option
             :key="key"
@@ -27,6 +28,7 @@
           id="functionSelector"
           @change="functionDetails"
           class="valuesGrid-item-item2"
+          style="font-family: Times New Roman"
         >
           <option
             :key="key"
@@ -291,9 +293,11 @@ select {
 
 .valuesGrid-item-item1 {
   grid-area: item1;
+  font-family: "Times New Roman";
 }
 .valuesGrid-item-item2 {
   grid-area: item2;
+  font-family: "Times New Roman";
 }
 .valuesGrid-item-item3 {
   grid-area: item3;

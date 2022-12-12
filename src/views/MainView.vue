@@ -177,4 +177,7 @@ export default {
   grid-area: header;
   background-color: #0d3059;
 }
+* {
+  font-family: "Times New Roman";
+}
 </style>

@@ -1,6 +1,7 @@
 import * as nodeClass from "./nodeClass"
 import { Nodes, Edges, Paths, Edge } from "v-network-graph";
 import * as naiveOP from "./naivePartition"
+import { flatMapDeep } from "lodash";
 
 
 //nodeBasic používam pri výpise štruktúry vpravo
@@ -21,7 +22,7 @@ export function initializeTree(nodes: Nodes, edges: Edges, paths: Paths, callPar
 }
 
 //including node size itself (children + 1)
-function sumSizeOfChildren(node: nodeClass.StructBasic) {
+export function sumSizeOfChildren(node: nodeClass.StructBasic) {
     let sum = 0
     if (node.children == null) {
         return 1
@@ -290,5 +291,18 @@ export function getWeightNode(node: nodeClass.StructBasic) {
         return node.weight
     }
     return node.pathPointer.pathRoot.weight
+}
 
+export function sizeSumForWholeTree(node: nodeClass.StructBasic) {
+    let sum = 0
+    console.log(node.name)
+    if (node.children == null || node.children.length == 0) {
+        node.size = 1
+        return node.size
+    }
+    for (let c of node.children) {
+        sum += sizeSumForWholeTree(c.target)
+    }
+    node.size = sum + 1
+    return node.size
 }
