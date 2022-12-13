@@ -2,11 +2,11 @@
   <div v-if="!isInternalNode">
     <h2>Základné informácie o uzle</h2>
     Samotná štruktúra ST-Trees nepracuje s týmito atribútmi. Slúži to ako
-    nápoveda pre použivateľa, v prípade že by mu graf prišiel neprehľadný
+    nápoveda pre použivateľa, v prípade, že by mu graf prišiel neprehľadný.
     <ol>
       <li><b>Rodič:</b> Uzol, ktorý je rodič pre daný uzol</li>
       <li><b>Size:</b> Označuje počet všetký potomkov uzla + 1</li>
-      <li><b>Potomkovia</b> Všetky uzly, ktoré su potomkom daného uzla</li>
+      <li><b>Potomkovia:</b> Všetky uzly, ktoré sú potomkom daného uzla</li>
     </ol>
     <div class=""></div>
     <h2>Nápoveda o štruktúre vonkajšieho uzla</h2>
@@ -20,14 +20,14 @@
     </p>
     <p>
       <span
-        >Štruktúra vonkajšieho uzlu závisi od zvoleného spôsobu dátovej
+        >Štruktúra vonkajšieho uzla závisi od zvoleného spôsobu dátovej
         štruktúry.
         <br />
         Aktuálne máte zvolený spôsob:
         <b>{{ sizeStruct ? "Partitioning by Size" : "Naive Partitioning" }}</b>
       </span>
       <br />
-      <span>Ukážka všetkých atribútov, ktorý daný uzol môže nadobúdať</span>
+      <span>Ukážka všetkých atribútov, ktorý daný uzol môže nadobúdať:</span>
       <img v-if="sizeStruct" class="image" src="./outerNodeSize.png" alt="" />
       <img v-if="!sizeStruct" class="image" src="./outerNodeNaive.png" alt="" />
     </p>

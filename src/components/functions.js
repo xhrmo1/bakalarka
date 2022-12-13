@@ -4,7 +4,7 @@ let categorySetX = [
         name: "Všetky",
         category: "all"
     }, {
-        name: "Operacie na cestach",
+        name: "Operácie na cestách",
         category: "pathOP"
     }, {
         name: "Operácie na stromoch",
@@ -26,10 +26,10 @@ let functionSetX = [
         values: 0,
         code: "zatial nepouzivat",
     },
-    {
+    /*{
         name: "test",
         description: {
-            args: "Vertex x",
+            args: "Uzol x",
             description: "Returns the path containing x"
         },
         category: "pathOP",
@@ -38,14 +38,14 @@ let functionSetX = [
         paths: 0,
         values: 0,
         code: -1,
-    },
+    },*/
 
     //category - pathOP.
     {
         name: "path",
         description: {
-            args: "Vertex x",
-            description: "Returns the path containing x"
+            args: "Uzol x",
+            description: "Vráti cestu, do ktorej patrí uzol x"
         },
         category: "pathOP",
         nodes: 0,
@@ -57,8 +57,8 @@ let functionSetX = [
     {
         name: "head",
         description: {
-            args: "Path p",
-            description: "Returns the first vertex of path p"
+            args: "Cesta p",
+            description: "Vráti prvý uzol cesty p, označovaný ako head"
         },
         category: "pathOP",
         nodes: 0,
@@ -70,8 +70,8 @@ let functionSetX = [
     {
         name: "tail",
         description: {
-            args: "Path p",
-            description: "Return the last vertex from path p"
+            args: "Cesta p",
+            description: "Vráti posledný uzol cesty p, označovaný ako tail"
         },
         category: "pathOP",
         nodes: 0,
@@ -83,8 +83,8 @@ let functionSetX = [
     {
         name: "before",
         description: {
-            args: "Vertex x",
-            description: "Return vertex y before vertex x on path(x). If x is head of path(x), return null"
+            args: "Uzol x",
+            description: "Vráti uzol y, ktorý je potomkom x na rovnakej ceste. Ak je x head cesty, vráti null"
         },
         category: "pathOP",
         nodes: 0,
@@ -96,8 +96,8 @@ let functionSetX = [
     {
         name: "after",
         description: {
-            args: "Vertex x",
-            description: "Return vertex y after vertex x on path(x). If x is tail of path(x), return null"
+            args: "Uzol x",
+            description: "Vráti uzol y, ktorý je rodičom x na rovnakej ceste. Y je potomkom x. Ak je y tail cesty, vráti null"
         },
         category: "pathOP",
         nodes: 0,
@@ -109,8 +109,8 @@ let functionSetX = [
     {
         name: "pcost",
         description: {
-            args: "Vertex x",
-            description: "Return the cost of the edge (v, after(v)). Assuming v is not tail of path(x)"
+            args: "Uzol x",
+            description: "Vráti cenu hrany (x, after(x)). Predpokladá že x nieje tail cesty"
         },
         category: "pathOP",
         nodes: 0,
@@ -122,8 +122,8 @@ let functionSetX = [
     {
         name: "pmincost",
         description: {
-            args: "path p",
-            description: "Returns the vertex x closest to tail(p) such that (x, after(x)) has minimum cost among edges on p"
+            args: "Cesta p",
+            description: "Vráti najmenšiu cenu hrany na ceste p. Cenu hrany zistí zavolaním pcost"
         },
         category: "pathOP",
         nodes: 0,
@@ -135,8 +135,8 @@ let functionSetX = [
     {
         name: "pupdate",
         description: {
-            args: "path p, real x",
-            description: "Add x to the cost of every edge on p"
+            args: "Cesta p, Int a",
+            description: "Zväčší cenu všetký hrán na ceste p o a"
         },
         category: "pathOP",
         nodes: 0,
@@ -148,8 +148,8 @@ let functionSetX = [
     {
         name: "reverse",
         description: {
-            args: "path p",
-            description: "Reverse the direction of p, making the head the tail and vice versa"
+            args: "Cesta p",
+            description: "Na ceste p otočí všetky hodnoty (rodič-potomok) / (head/tail)... "
         },
         category: "pathOP",
         nodes: 0,
@@ -161,8 +161,8 @@ let functionSetX = [
     {
         name: "concatenate",
         description: {
-            args: "path p, path q, real x",
-            description: "Combine paths p, q. Adding edge (tail(p), head(q)) with value x. Returns combine path"
+            args: "Cesta p, Cesta q, Int a",
+            description: "Spojí cesty p, q. Vytvorí hranu medzi uzlami: (tail(p), head(q)) s hodnotou a. Vráti skombinovanú cestu"
         },
         category: "pathOP",
         nodes: 0,
@@ -174,8 +174,8 @@ let functionSetX = [
     {
         name: "split",
         description: {
-            args: "vertex x",
-            description: "Reverse the direction of p, making the head the tail and vice versa"
+            args: "Uzol x",
+            description: "Rozdelí cestu v ktorej sa x nachádza. Jedna cesta obsahu uzly od head(path(x)) po before(x), druhá obsahuje od after(x) po tail(path(x))"
         },
         category: "pathOP",
         nodes: 0,
@@ -187,8 +187,8 @@ let functionSetX = [
     {
         name: "splice",
         description: {
-            args: "path p",
-            description: "Reverse the direction of p, making the head the tail and vice versa"
+            args: "Cesta p",
+            description: "Hrana vychádzajúca z tail(p) "
         },
         category: "pathOP",
         nodes: 0,
@@ -200,8 +200,8 @@ let functionSetX = [
     {
         name: "expose",
         description: {
-            args: "vertex x",
-            description: "Reverse the direction of p, making the head the tail and vice versa"
+            args: "Uzol x",
+            description: "Vytvorí novú cestu, od x po koreň stromu "
         },
         category: "pathOP",
         nodes: 0,
@@ -214,8 +214,8 @@ let functionSetX = [
     {
         name: "parent",
         description: {
-            args: "vertex x",
-            description: "Return the parent of x. Returns null if x is root of a tree"
+            args: "Uzol x",
+            description: "Vráti rodiča uzlu x, ak je x koreň stromu, vráti null"
         },
         category: "treeOP",
         nodes: 0,
@@ -227,8 +227,8 @@ let functionSetX = [
     {
         name: "root",
         description: {
-            args: "vertex x",
-            description: "Return root of the tree containing x"
+            args: "Uzol x",
+            description: "Vráti koreň stromu"
         },
         category: "treeOP",
         nodes: 0,
@@ -240,8 +240,8 @@ let functionSetX = [
     {
         name: "cost",
         description: {
-            args: "vertex x",
-            description: "Return the cost of the edge (parent(x),x), assuming x is not a tree root"
+            args: "Uzol x",
+            description: "Vráti cenu hrany medzi x a jeho rodičom"
         },
         category: "treeOP",
         nodes: 0,
@@ -253,8 +253,8 @@ let functionSetX = [
     {
         name: "mincost",
         description: {
-            args: "vertex x",
-            description: "Return minimum edge cost closest to root(x), assuming x is not a tree root"
+            args: "Uzol x",
+            description: "Vráti cenu najmenšej hrany medzi x a koreňom stromu"
         },
         category: "treeOP",
         nodes: 0,
@@ -266,8 +266,8 @@ let functionSetX = [
     {
         name: "update",
         description: {
-            args: "vertex x, real y",
-            description: "Add y to all edges cost on path from x to root(x)"
+            args: "Uzol x, Int y",
+            description: "Zväčší cenu všetkých hrán od x po koreň stromu o y"
         },
         category: "treeOP",
         nodes: 0,
@@ -279,8 +279,8 @@ let functionSetX = [
     {
         name: "link",
         description: {
-            args: "vertex x, vertex y, real z",
-            description: "Same as ADD EDGE. Combines the trees containing x and y by adding edge(y,x) with cost z. Assuming y and x are in different trees and y is a root of tree"
+            args: "Uzol x, Uzol y, Int z",
+            description: "Spojí dva uzly x, y. Predpokladá že y je koreňom stromu. Vytvorí hranu s cenou z, tak že x sa stane rodičom pre y"
         },
         category: "treeOP",
         nodes: 0,
@@ -292,8 +292,8 @@ let functionSetX = [
     {
         name: "cut",
         description: {
-            args: "vertex x",
-            description: "Same as REMOVE EDGE. Divide the tree containing vertex x into two tree by deleting edge (parent(x),x) returns cost of this edge. Assuming that x is not a tree root"
+            args: "Uzol x",
+            description: "Predpokladá že x nieje koreňom stromu, odstráni hranu medzi x a rodičom x. Vráti cenu odstránenej hrany"
         },
         category: "treeOP",
         nodes: 0,
@@ -305,8 +305,8 @@ let functionSetX = [
     {
         name: "evert",
         description: {
-            args: "vertex x",
-            description: "Modify the tree containing vertex x by making x the root"
+            args: "Uzol x",
+            description: "Upraví strom v ktorom sa x nachádza tak, aby sa x stalo koreňom stromu. (Medzi x a koreňom x zmení orientáciu hrán)"
         },
         category: "treeOP",
         nodes: 0,
@@ -318,7 +318,7 @@ let functionSetX = [
     {
         name: "light",
         description: {
-            args: "cesta p",
+            args: "Cesta p",
             description: "Na ceste p vráti light hranu najbližšiu ku tail(p) "
         },
         category: "sizeOP",
@@ -331,7 +331,7 @@ let functionSetX = [
     {
         name: "maxwt",
         description: {
-            args: "uzol x",
+            args: "Uzol x",
             description: "Vráti uzol, ktorý má najväčšiu weight,je synom uzlu x a nepatrí do rovnakej cesty"
         },
         category: "sizeOP",
@@ -344,7 +344,7 @@ let functionSetX = [
     {
         name: "slice",
         description: {
-            args: "cesta p",
+            args: "Cesta p",
             description: "Predpokladá že na ceste p sa nachádza light hrana. Hranu prekonvertuje na dashed a tým cestu rozdelí na dve cesty"
         },
         category: "sizeOP",
@@ -357,7 +357,7 @@ let functionSetX = [
     {
         name: "conceal",
         description: {
-            args: "cesta p",
+            args: "Cesta p",
             description: "Na ceste p opraví všetky hrany na dashed"
         },
         category: "sizeOP",

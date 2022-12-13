@@ -389,7 +389,7 @@ async function downloadAsSvg() {
     <div class="operations">
       <input
         type="text"
-        placeholder="node name"
+        placeholder="Node name"
         v-model="nodeName"
         style="width: 100px"
       />
@@ -400,7 +400,7 @@ async function downloadAsSvg() {
 
       <input
         type="text"
-        placeholder="edge value"
+        placeholder="Edge value"
         v-model="edgeValue"
         style="width: 70px"
       />

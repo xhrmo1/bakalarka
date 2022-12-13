@@ -3,13 +3,13 @@
     <div class="optionBox">
       <span class="header">Naive Partitioning</span>
       <span
-        ><b>Časová zložitost</b>: Amortizovaná časová zložitosť O(log(n))</span
+        ><b>Časová zložitosť</b>: Amortizovaná časová zložitosť O(log(n))</span
       >
       <span
         ><b>Hrany v cestách:</b> Každá hrana môže byť <i>solid</i>, stačí ju
-        pomocou operácii prekonvertovať</span
+        pomocou operácií prekonvertovať</span
       >
-      <span><b>Vnútorná štruktúra uzlu:</b></span>
+      <span><b>Štruktúra vnútorného uzla:</b></span>
       <div class="naive">
         <!--<span class="grid-naive-reversed">reversed: true</span>  -->
         <span class="grid-naive-reversed">reversed</span>
@@ -30,15 +30,15 @@
       </router-link>
     </div>
     <div class="optionBox">
-      <span class="header">Partitioning by size</span>
+      <span class="header">Partitioning by Size</span>
       <span
-        ><b>Časová zložitost</b>: Časová zložitosť za operáciu O(log(n))</span
+        ><b>Časová zložitosť</b>: Časová zložitosť za operáciu O(log(n))</span
       >
       <span
-        ><b>Hrany v cestách:</b> Aby bola hrana <i> solid</i> musí mať vlastnosť
-        <i>: size(parent(x)) &lt; 2 * size(x);</i></span
+        ><b>Hrany v cestách:</b> Aby bola hrana <i> solid</i> musí mať
+        vlastnosť: <i> size(parent(x)) &lt; 2 * size(x);</i></span
       >
-      <span><b>Vnútorná štruktúra uzlu:</b></span>
+      <span><b>Štruktúra vnútorného uzla:</b></span>
       <div class="size">
         <!--<span class="grid-naive-reversed">reversed: true</span>  -->
         <span class="grid-naive-reversed">reversed</span>

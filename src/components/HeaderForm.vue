@@ -2,7 +2,7 @@
   <div class="container">
     <div class="flex-item1">
       <span class="title"
-        >DATOVÁ ŠTRUKTÚRA PRE REPREZENTÁCIU DYNAMICKÝCH STROMOV</span
+        >DÁTOVÁ ŠTRUKTÚRA PRE REPREZENTÁCIU DYNAMICKÝCH STROMOV</span
       >
       <span class="author">Bakalárska práca, Lukáš Hrmo, FI MUNI, 2022</span>
     </div>

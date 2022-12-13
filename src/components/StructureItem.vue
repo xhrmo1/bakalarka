@@ -28,11 +28,11 @@
       :isInternalNode="isInternalNode"
     />
     <div class="explanation" v-if="isNode && basicDisplay">
-      Základné informácie o uzli:
+      Základné informácie o uzle:
     </div>
     <div class="general" v-if="isNode && basicDisplay">
       <span class="grid-general-parent"
-        >rodic:
+        >rodič:
         <b>{{
           node.parent != null ? node.parent.target.name : "koreň"
         }}</b></span
@@ -43,7 +43,7 @@
       <span
         v-if="node.children != null && node.children.length != 0"
         class="grid-general-children"
-        >Potomkovia</span
+        >potomkovia:</span
       >
     </div>
     <div
@@ -60,7 +60,7 @@
       </template>
     </div>
     <div class="explanation" v-if="isNode && basicDisplay">
-      Informacie o vonkajšom uzle:
+      Informácie o vonkajšom uzle:
     </div>
     <div class="externalNode" v-if="isNode">
       <span class="externalNode-weight"><b>weight: </b>{{ node.weight }}</span>
