@@ -179,7 +179,7 @@ export function pupdate(p: nodeclass.Path, x: number, edges: Edges) {
     if (currentNode instanceof nodeclass.StructBasic) {
         while (currentNode != tailVertex && currentNode != undefined) {
             if (currentNode.parent?.edgeID != null) {
-                edges[currentNode.parent?.edgeID].label = +edges[currentNode.parent?.edgeID].label + x
+                edges[currentNode.parent?.edgeID].label = +edges[currentNode.parent?.edgeID].label + +x
                 currentNode = currentNode.parent.target
             }
         }
