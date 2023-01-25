@@ -170,7 +170,7 @@ let layouts3: Layouts = {
 }
 
 //let colors: string[] = ["#ff000066", "#00000066", "#0000ff66", "#00ffff66", "#00ff0066"]
-let colors: string[] = ["#00000066", "#0000ff66", "#00ffff66", "#00ff0066"]
+let colors: string[] = ["#00000066", "#0000ff66", "#00ffff66"]
 
 let layouts: Layouts = { nodes: {} }
 

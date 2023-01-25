@@ -146,3 +146,10 @@ export function conceal(path: nodeClass.Path | null, sizeStruct: boolean, nodes:
         }
     }
 }
+
+export function concealOnVertex(vertex: nodeClass.StructBasic, sizeStruct: boolean, nodes: Nodes, edges: Edges, paths: Paths, treeDataStructure: nodeClass.TreeDataStructures) {
+    let path = naiveOP.path(vertex)
+    if (path != null) {
+        conceal(path, sizeStruct, nodes, edges, paths, treeDataStructure)
+    }
+}

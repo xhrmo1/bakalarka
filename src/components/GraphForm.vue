@@ -350,6 +350,8 @@ function loadBackUP() {
     paths,
     outPutTree
   );
+  printFunctionMessage.functionName = "Stronovanie operácie Split";
+  printFunctionMessageModel.value = printFunctionMessage;
   emit("treeOut", outPutTree);
   emit("pathsOut", paths);
   emit("nodesOut", nodes);

@@ -114,13 +114,14 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
         case 107:
             foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
             if (foundPath !== undefined) {
-                output = naiveOP.pmincost(foundPath)
+                console.log("AAA", foundPath)
+                output = naiveOP.pmincost(foundPath, edges)
             }
             functionMessage.functionName = "PMinCost"
             if (output == null) {
-                functionMessage.text = 'Operacia bola spustena s uzlom x: <b>' + callParams.nodes[0] + '</b>. Cesta, do ktorej patri uzol ' + callParams.nodes[0] + ', nemá žiadnu hranu'
+                functionMessage.text = 'Operacia bola spustena na ceste p: <b>' + callParams.paths[0] + '</b>. Výsledkom operácie je hodnota: <b>' + output + '</b>' // doplnit ktora hrana
             } else {
-                functionMessage.text = 'Operacia bola spustena na ceste p: <b>' + callParams.paths[0] + '</b>. Výsledkom operácie je hodnota: <b>' + output.value + '</b>' // doplnit ktora hrana
+                functionMessage.text = 'Operacia bola spustena na ceste p: <b>' + callParams.paths[0] + '</b>. Výsledkom je hrana medzi uzlami: <b>' + edges[output.parent.edgeID].source + '-' + edges[output.parent.edgeID].target + '</b>' // doplnit ktora hrana
             }
             break
         case 108:
@@ -149,6 +150,7 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
             if (foundNode != null) {
                 console.log("Vystup operacie split: ", naiveOP.split(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure))
             }
+            functionMessage.functionName = "Split"
             break
         case 112:
             console.error("xxxxxx", JSON.parse(JSON.stringify(paths)))
@@ -203,7 +205,7 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
                 output = treeOP.mincost(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure)
             }
             functionMessage.functionName = "mincost"
-            functionMessage.text = 'Operacia bola spustena na uzle: <b>' + callParams.nodes[0] + '</b>. Výsledkom operácie je hodnota: <b>' + output + '</b>' // doplnit ktora hrana    
+            functionMessage.text = 'Operacia bola spustena na ceste p: <b>' + callParams.paths[0] + '</b>. Výsledkom je hrana medzi uzlami: <b>' + edges[output.parent.edgeID].source + '-' + edges[output.parent.edgeID].target + '</b>' // doplnit ktora hrana
             break
         case 205: // update
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
@@ -215,7 +217,7 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
             var foundSecondNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[1])
             if (foundNode != null && foundSecondNode != null) {
-                treeOP.link(foundNode, foundSecondNode, callParams.values[0], sizeStruct, paths, nodes, edges, treeDataStructure)
+                treeOP.link(foundSecondNode, foundNode, callParams.values[0], sizeStruct, paths, nodes, edges, treeDataStructure)
             }
             break
         case 207: // cut
@@ -229,6 +231,7 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
             if (foundNode != null) {
                 output = treeOP.evert(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure)
             }
+            functionMessage.functionName = "Evert"
             break
         case 301:
             foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])

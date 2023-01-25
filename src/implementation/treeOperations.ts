@@ -1,7 +1,7 @@
 import { Edges, Nodes, Paths } from "v-network-graph"
 import * as naiveOP from "./naivePartition"
 import * as nodeclass from "./nodeClass"
-import * as maintanance from "./maintanance"
+import * as sizeOP from "./sizePartitioning"
 import { sizeSumForWholeTree } from "./treeFunctions"
 //treeOperations
 export function parent(vertex: nodeclass.StructBasic): nodeclass.StructBasic | null {
@@ -13,7 +13,11 @@ export function root(v: nodeclass.StructBasic, sizeStruct: boolean, paths: Paths
     if (x === undefined) {
         return null
     }
-    return naiveOP.tail(x)
+    let output = naiveOP.tail(x)
+    if (sizeStruct) {
+        sizeOP.conceal(x, sizeStruct, nodes, edges, paths, treeDataStructure)
+    }
+    return output
 }
 
 export function cost(vertex: nodeclass.StructBasic) {
@@ -25,7 +29,11 @@ export function mincost(v: nodeclass.StructBasic, sizeStruct: boolean, paths: Pa
     if (x === undefined) {
         return null
     }
-    return naiveOP.pmincost(x)
+    let output = naiveOP.pmincost(x, edges)
+    if (sizeStruct) {
+        sizeOP.conceal(x, sizeStruct, nodes, edges, paths, treeDataStructure)
+    }
+    return output
 }
 
 export function update(v: nodeclass.StructBasic, r: number, sizeStruct: boolean, paths: Paths, nodes: Nodes, edges: Edges, treeDataStructure: nodeclass.TreeDataStructures) {
@@ -33,7 +41,10 @@ export function update(v: nodeclass.StructBasic, r: number, sizeStruct: boolean,
     if (x === undefined) {
         return null
     }
-    return naiveOP.pupdate(x, r, edges)
+    naiveOP.pupdate(x, r, edges)
+    if (sizeStruct) {
+        sizeOP.conceal(x, sizeStruct, nodes, edges, paths, treeDataStructure)
+    }
 }
 
 export function link(x: nodeclass.StructBasic, y: nodeclass.StructBasic, r: number, sizeStruct: boolean, paths: Paths, nodes: Nodes, edges: Edges, treeDataStructure: nodeclass.TreeDataStructures) {
@@ -47,7 +58,18 @@ export function link(x: nodeclass.StructBasic, y: nodeclass.StructBasic, r: numb
         console.error("link expose(y) is null")
         return
     }
-    naiveOP.concatenate(p, e, r, sizeStruct, nodes, edges, paths, treeDataStructure)
+    let pp = naiveOP.path(y)
+    if (pp == null) {
+        console.error("link path(x) is null")
+        return
+    }
+    console.log(p, e, x, y)
+    naiveOP.concatenate(p, pp, r, sizeStruct, nodes, edges, paths, treeDataStructure)
+    if (sizeStruct) {
+        sizeOP.conceal(p, sizeStruct, nodes, edges, paths, treeDataStructure)
+    }
+    console.log(p, e)
+
 }
 
 export function cut(v: nodeclass.StructBasic, sizeStruct: boolean, paths: Paths, nodes: Nodes, edges: Edges, treeDataStructure: nodeclass.TreeDataStructures): number {
@@ -56,6 +78,10 @@ export function cut(v: nodeclass.StructBasic, sizeStruct: boolean, paths: Paths,
         return 0
     }
     let [a, b, c, d] = naiveOP.split(v, sizeStruct, paths, nodes, edges, treeDataStructure)
+    if (sizeStruct) {
+        sizeOP.conceal(a, sizeStruct, nodes, edges, paths, treeDataStructure)
+        sizeOP.concealOnVertex(v, sizeStruct, nodes, edges, paths, treeDataStructure)
+    }
     return d
 }
 function findSolidEdge(vertex: nodeclass.StructBasic, edges: Edges): number {
@@ -103,4 +129,7 @@ export function evert(vertex: nodeclass.StructBasic, sizeStruct: boolean, paths:
     paths[vertex.pathPointer.pathID].edges = paths[vertex.pathPointer.pathID].edges.reverse()
     flipParentChild(vertex, edges, treeDataStructure)
     sizeSumForWholeTree(vertex)
+    if (sizeStruct) {
+        sizeOP.concealOnVertex(vertex, sizeStruct, nodes, edges, paths, treeDataStructure)
+    }
 }

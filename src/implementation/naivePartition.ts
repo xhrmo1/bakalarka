@@ -139,38 +139,22 @@ export function pcost(vertex: nodeclass.StructBasic): number | null {
     return null
 }
 
-function pmincostInside(vertex: nodeclass.PathStructure): nodeclass.StructBasic | null {
-    if (vertex.netcost == 0 && vertex.netmin == 0) {
-        if (vertex.bleft instanceof nodeclass.StructBasic) {
-            return vertex.bleft
+function pmincostInside(vertex: nodeclass.Path, edges: Edges): nodeclass.StructBasic | null {
+    let currentNode: nodeclass.StructBasic | null = head(vertex)
+    let max: number = Infinity
+    let maxNode: nodeclass.StructBasic = currentNode
+    while (currentNode != null && currentNode.parent != null) {
+        console.log("XX", currentNode, max, edges[currentNode.parent?.edgeID].value)
+        if (edges[currentNode.parent?.edgeID].label < max) {
+            max = edges[currentNode.parent?.edgeID].label
+            maxNode = currentNode
         }
-        if (vertex.bleft == null) {
-            console.log("Error - pmincostInside - vertex.bleft == null")
-            return null
-        }
-        return goingRightDown(vertex.bleft)
+        currentNode = after(currentNode)
     }
-    let left = vertex.bleft instanceof nodeclass.PathStructure && vertex.bleft.netcost != null ? vertex.bleft.netcost : Infinity
-    let right = vertex.bright instanceof nodeclass.PathStructure && vertex.bright.netcost != null ? vertex.bright.netcost : Infinity
-    if (right <= left) {
-        if (vertex.bright == null || vertex.bright instanceof nodeclass.StructBasic) {
-            console.log("Error - pmincostInside - vertex.bright == null")
-            return null
-        }
-        return pmincostInside(vertex.bright)
-    } else {
-        if (vertex.bleft == null || vertex.bleft instanceof nodeclass.StructBasic) {
-            console.log("Error - pmincostInside - vertex.pleft2 == null")
-            return null
-        }
-        return pmincostInside(vertex.bleft)
-    }
+    return maxNode
 }
-export function pmincost(p: nodeclass.Path) {
-    if (p.pathRoot != null) {
-        return pmincostInside(p.pathRoot)
-    }
-    return null
+export function pmincost(p: nodeclass.Path, edges: Edges) {
+    return pmincostInside(p, edges)
 }
 
 function pupdateVertex(vertex: nodeclass.PathStructure, x: number) {
@@ -490,5 +474,6 @@ export function expose(v: nodeclass.StructBasic, sizeStruct: boolean, paths: Pat
         }
     }
     maintanance.setPropertiesForPath(p, sizeStruct)
+    console.log(p.allNodes?.length)
     return p
 }
