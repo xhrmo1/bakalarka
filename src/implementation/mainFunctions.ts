@@ -35,15 +35,19 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
         case 1: // pridanie uzlu -> do zoznamu uzlov
             treeFunctions.addNode(treeDataStructure, callParams.name)
             console.log('Node was added', callParams.name, treeDataStructure)
+            functionMessage.functionName = "Add node"
             break;
         case 2: // odobratie uzlu -> vymazat zo zoznamu uzlov, vymazat hrany, aktualizovat DS
             treeFunctions.removeNode(treeDataStructure, callParams.name, sizeStruct, nodes, edges, paths)
             console.log('Node was removed', callParams.name, treeDataStructure)
+            functionMessage.functionName = "Remove node"
             break;
         case 3: // pridanie hrany -> aktualizovat zoznam uzlov (pridat syna a rodica), prebehnut dotknute DS
+            functionMessage.functionName = "Add edge"
             treeFunctions.addEdge(treeDataStructure, edges, callParams.edgeID)
             break;
         case 4: // odobratie hrany -> aktualizovat zoznam uzlov (odobrat syna a rodica), prebehnut dotknute DS
+            functionMessage.functionName = "Remove edge"
             treeFunctions.removeEdge(treeDataStructure, callParams.edgeToRemove)
             treeDataStructure.pathRoots = maintanance.buildPaths(nodes, edges, paths, treeDataStructure.basicRoots, sizeStruct) // premazem z paths
             break;
@@ -126,18 +130,21 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
             break
         case 108:
             foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
+            functionMessage.functionName = "pupdate"
             if (foundPath !== undefined) {
                 console.log("Vystup operacie pupdate", naiveOP.pupdate(foundPath, callParams.values[0], edges))
             }
             break
         case 109:
             foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
+            functionMessage.functionName = "reverse"
             if (foundPath !== undefined) {
                 console.log("Vystup operacie reverse", naiveOP.reverse(foundPath))
             }
             break
         case 110:
             foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
+            functionMessage.functionName = "concatenate"
             var foundPath2 = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[1])
             if (foundPath !== undefined && foundPath2 !== undefined) {
                 let pathID = naiveOP.concatenate(foundPath, foundPath2, callParams.values[0], sizeStruct, nodes, edges, paths, treeDataStructure)
@@ -155,6 +162,7 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
         case 112:
             console.error("xxxxxx", JSON.parse(JSON.stringify(paths)))
             foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
+            functionMessage.functionName = "splice"
             if (foundPath !== undefined) {
                 console.log("xxxxxx", paths)
                 console.log("Vystup operacie splice", naiveOP.splice(foundPath, sizeStruct, paths, nodes, edges, treeDataStructure))
@@ -163,6 +171,7 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
             break
         case 113:
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
+            functionMessage.functionName = "expose"
             if (foundNode != null) {
                 console.log("Vystup operacie expose: ", naiveOP.expose(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure))
             }
@@ -201,6 +210,7 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
             break
         case 204: // mincost
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
+            functionMessage.functionName = "mincost"
             if (foundNode != null) {
                 output = treeOP.mincost(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure)
             }
@@ -209,6 +219,7 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
             break
         case 205: // update
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
+            functionMessage.functionName = "update"
             if (foundNode != null) {
                 treeOP.update(foundNode, callParams.values[0], sizeStruct, paths, nodes, edges, treeDataStructure)
             }
@@ -216,18 +227,21 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
         case 206: // link
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
             var foundSecondNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[1])
+            functionMessage.functionName = "link"
             if (foundNode != null && foundSecondNode != null) {
                 treeOP.link(foundSecondNode, foundNode, callParams.values[0], sizeStruct, paths, nodes, edges, treeDataStructure)
             }
             break
         case 207: // cut
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
+            functionMessage.functionName = "cut"
             if (foundNode != null) {
                 treeOP.cut(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure)
             }
             break
         case 208: // evert
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
+            functionMessage.functionName = "evert"
             if (foundNode != null) {
                 output = treeOP.evert(foundNode, sizeStruct, paths, nodes, edges, treeDataStructure)
             }
@@ -249,7 +263,7 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
             foundNode = treeFunctions.findNodeArray(treeDataStructure.basicRoots, callParams.nodes[0])
             if (foundNode != null) {
                 let [output, output2] = sizeOP.maxwt(foundNode)
-                functionMessage.functionName = "light"
+                functionMessage.functionName = "maxwt"
                 if (output == null) {
                     functionMessage.text = 'Operacia bola spustena na uzle: <b>' + callParams.nodes[0] + '</b>. Uzol nieje prepojený so žiadnym ponokom pomocou dashed hrany' // doplnit ktora hrana    
                 } else {
@@ -259,12 +273,14 @@ export default function functionSwitch(callParams: any, sizeStruct: boolean, nod
             break
         case 303:
             foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
+            functionMessage.functionName = "slice"
             if (foundPath !== undefined) {
                 console.log("Vystup operacie pupdate", sizeOP.slice(foundPath, sizeStruct, nodes, edges, paths, treeDataStructure))
             }
             break
         case 304:
             foundPath = treeFunctions.findPath(treeDataStructure.pathRoots, callParams.paths[0])
+            functionMessage.functionName = "conceal"
             if (foundPath !== undefined) {
                 console.log("Vystup operacie conceal", sizeOP.conceal(foundPath, sizeStruct, nodes, edges, paths, treeDataStructure))
             }

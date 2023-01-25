@@ -255,6 +255,7 @@ watch(
         paths,
         outPutTree
       );
+      lastUsedOpName = printFunctionMessage.functionName;
       printFunctionMessageModel.value = printFunctionMessage;
       console.log(paths, edges, outPutTree);
       console.log("x", outPutTree);
@@ -350,7 +351,7 @@ function loadBackUP() {
     paths,
     outPutTree
   );
-  printFunctionMessage.functionName = "Stronovanie operácie Split";
+  printFunctionMessage.functionName = "Stornovanie operácie " + lastUsedOpName;
   printFunctionMessageModel.value = printFunctionMessage;
   emit("treeOut", outPutTree);
   emit("pathsOut", paths);
@@ -358,7 +359,7 @@ function loadBackUP() {
   emit("edgesOut", edges);
   emit("replaceSelectedNodes");
 }
-
+var lastUsedOpName: String = "";
 function replaceObjects(oldObjects: Nodes, newObjects: Nodes) {
   for (const [key, item] of Object.entries(oldObjects)) {
     delete oldObjects[key];
